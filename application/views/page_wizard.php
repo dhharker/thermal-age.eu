@@ -4,8 +4,8 @@
 
     <head>
         <title>thermal-age.eu</title>
-        <link rel="stylesheet" href="reset-min.css" type="text/css" media="screen" charset="utf-8">
-        <link rel="stylesheet" href="thermal-age.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="/assets/css/reset-min.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="/assets/css/thermal-age-wizard.css" type="text/css" media="screen" charset="utf-8">
     </head>
     <body>
         <div id="mainWindow">
@@ -30,17 +30,30 @@
 
                     <div id="wizardRightColumn">
                         <a href="/" id="thermalAgeLogo"></a>
-                        <a href="#somewhereelse6" id="synthesysLogo"></a>
+<!--                        <a href="#somewhereelse6" id="synthesysLogo"></a>-->
+                        <h3>Wizard Progress:</h3>
                         <ul class="menu">
-                            <li><a href="#here1" class="complete" title=""><div class="icon"></div>Model Reaction</a></li>
-                            <li><a href="#here2" class="error" title=""><div class="icon"></div>Site Location</a></li>
-                            <li><a href="#here3" class="complete" title=""><div class="icon"></div>Sample Age</a></li>
+                            <li><a href="#here1" class="complete" title=""><div class="icon"></div>Sample Name <div class="blurbCon">&rArr; <strong>Pickled monkey brains #1 overlong...</strong></div></a></li>
+                            <li><a href="#here1" class="complete" title=""><div class="icon"></div>Model Reaction <div class="blurbCon">&rArr; DNA Depurination</div></a></li>
+                            <li><a href="#here2" class="error" title=""><div class="icon"></div>Site Location <div class="blurbCon">&rArr; Error(s) - please amend!</div></a></li>
+                            <li><a href="#here3" class="complete" title=""><div class="icon"></div>Sample Age <div class="blurbCon">&rArr; 4500 BCE</div></a></li>
                             <li><a href="#here4" class="current" title="">Excavation Date</a></li>
-                            <li><a href="#here5" title="">Burial</a></li>
-                            <li><a href="#here6" title="">Storage</a></li>
-                            <li><a href="#here7" title="">Sampling</a></li>
+                            <li><a href="#here5" class="future" title="">Burial</a></li>
+                            
+                        </ul>
+
+                        <div style="height: 1em;"></div>
+
+                        <h3>Options:</h3>
+                        <ul class="options menu">
+                            <li><a href="#here1" class="save" title=""><div class="icon"></div>Save <div class="blurbCon">...your answers so far</div></a></li>
+                            <li><a href="#here2" class="load" title=""><div class="icon"></div>Load <div class="blurbCon">...previously saved answers</div></a></li>
+                            <li><a href="#here3" class="help" title=""><div class="icon"></div>Help <div class="blurbCon">...if you're stuck</div></a></li>
+                        </ul>
 
 
+                        <ul class="menu" style="position: absolute; bottom: 1em;">
+                            <li><a href="http://www.synthesys.info/II_JRA_1.htm" title="Part of the SYNTHESYS project" id="synthesysLogoLink">&nbsp;</a></li>
                         </ul>
                     </div>
                     
