@@ -14,17 +14,15 @@ a {
 em {
     font-style: italic;
 }
-#mainWindow {
+#gradientContainer {
     position: absolute;
-    overflow: hidden;
+    overflow: auto;
     top: 0px;
     bottom: 0px;
     left: 0px;
     right: 0px;
     width: 100%;
     height: 100%;
-    display: table;
-    
     position: fixed;
     background-image: -webkit-gradient(
         linear,
@@ -38,6 +36,19 @@ em {
         rgb(182,212,176) 0%,
         rgb(173,179,194) 100%
     );
+}
+#mainWindow {
+    position: absolute;
+    overflow: hidden;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    display: table;
+
+    background: url('/assets/img/bg_spiral.png') transparent center center no-repeat;
 
 }
 
@@ -46,12 +57,12 @@ em {
     border-radius: 5px;
     padding: 0px;
     margin: 0px;
-    background-color: rgba(255,255,255,0.4);
+    background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     
-    -moz-box-shadow: 1px 1px 4px rgba(138,152,129,0.4);
-    -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.4);
-    box-shadow: 1px 1px 4px rgba(138,152,129,0.4);
+    -moz-box-shadow: 1px 1px 4px rgba(138,152,129,.7);
+    -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
+    box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
     
 }
 
@@ -224,11 +235,21 @@ h2 {
     color: #505451;
     font-size: 75%;
     overflow: hidden;
-    width: 100%;
+    width: 171px;
     height: 1.2em;
     text-overflow: ellipsis;
     white-space: nowrap;
-
+    display: none;
+}
+#wizardRightColumn ul.menu li a:hover .blurbCon {
+    display: block;
+    
+}
+#wizardRightColumn ul.menu li a.error .blurbCon {
+    display: block;
+}
+#wizardRightColumn ul.menu li a.error:hover .blurbCon {
+    position: relative;
 }
 #wizardRightColumn ul.menu li a.current {
     background-color: #fff;
@@ -246,7 +267,8 @@ h2 {
     font-style: italic;   
 }
 #wizardRightColumn ul.menu li a.future {
-    
+    text-align: right;
+    padding-right: 1.5em;
     font-size: 85%;
 
 }
@@ -347,7 +369,7 @@ h2 {
 
 a#synthesysLogoLink {
     width: 171px;
-    height: 18px;
+    height: 24px;
     background: url('/assets/img/synthlogo.png') center left no-repeat;
     background-image: url('/assets/img/synthlogo.png')  !important;
     opacity: .5;
