@@ -389,3 +389,25 @@ a#synthesysLogoLink:hover {
     opacity: 1.0;
     background-image: url('/assets/img/synthlogo.png')  !important;
 }
+
+
+
+
+
+
+
+
+/* for index action big chooser thing */
+
+ul.massiveChooser {
+    display: inline;
+}
+ul.massiveChooser li {
+    display: block;
+    height: 33%;
+}
+ul.massiveChooser li a {
+    display: block;
+    
+}
+

@@ -33,7 +33,7 @@ class WizardController extends AppController {
      * The curator wizard is for estimating k*t for a geolocated sample with a single burial context
      * and optional storage phase.
      */
-    function curator () {
+    function dna_survival_screening_tool () {
         $this->layout = 'wizard';
     }
 }
