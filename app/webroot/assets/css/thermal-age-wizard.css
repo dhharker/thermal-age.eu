@@ -195,6 +195,7 @@ h2 {
     margin: 0px;
     padding: 6px 10px 3px 10px;
     font-size: 15px;
+    border-color: #B1C4B8;
     border-bottom: 1px solid #B1C4B8;
     background-image: -webkit-gradient(
         linear,
@@ -213,6 +214,7 @@ h2 {
 }
 #wizardRightColumn ul.menu li a:hover {
 /*    background-color: #fff;*/
+    
     background-image: -webkit-gradient(
         linear,
         left top,
@@ -230,26 +232,35 @@ h2 {
 
 #wizardRightColumn ul.options li a:hover {
     background-color: #fff;
+    z-index: 1001 !important;
 }
 #wizardRightColumn ul.menu li .blurbCon {
     color: #505451;
     font-size: 75%;
     overflow: hidden;
-    width: 171px;
+    max-width: 155px;
     height: 1.2em;
     text-overflow: ellipsis;
     white-space: nowrap;
-    display: none;
+
 }
 #wizardRightColumn ul.menu li a:hover .blurbCon {
-    display: block;
     
 }
 #wizardRightColumn ul.menu li a.error .blurbCon {
+    position: relative;
     display: block;
+    border: none;
+    background: transparent;
 }
 #wizardRightColumn ul.menu li a.error:hover .blurbCon {
     position: relative;
+    display: block;
+    border: none;
+    background: transparent;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 #wizardRightColumn ul.menu li a.current {
     background-color: #fff;
