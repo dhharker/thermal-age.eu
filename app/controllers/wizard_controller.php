@@ -1,12 +1,12 @@
 <?php
 
 class WizardController extends AppController {
-    var $helpers = array ('Html','Form');
+    var $helpers = array ('Html','Form','Javascript');
     var $layout = 'wizard';
 
 
     /**
-     * The index action performs the following tasks
+     * The index action...
      *  Acts as the common point of entry to the different wizards
      *  Performs browser, js & cookie checks on client and sets "environment is good" cookie with results
      *  Displays a nice clear menu to navigate to one of the wizards
@@ -25,15 +25,32 @@ class WizardController extends AppController {
      *  Cookie set, env. bad or crawler     ->      show description of wizard & browser reqs.
      */
     function _checkEnvironment () {
-        
+        $environmentGood = true;
+        return $environmentGood;
     }
 
+    /**
+     * Checks to see if the environment is a supported browser, if not returns false, if so returns
+     * true if the environment is successfully initialised or false if there are errors.
+     */
+    function _initWizardEnvironment () {
+        if ($this->_checkEnvironment ()) {
+
+            $this->layout = 'wizard';
+
+            $this->set('minified_javascript',$this->Minify->js(array(
+              'js/wizard_components.js',
+            )));
+            
+        }
+    }
 
     /**
      * The curator wizard is for estimating k*t for a geolocated sample with a single burial context
      * and optional storage phase.
      */
     function dna_survival_screening_tool () {
-        $this->layout = 'wizard';
+        
+        $this->_checkEnvironment();
     }
 }

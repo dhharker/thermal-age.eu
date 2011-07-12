@@ -48,7 +48,7 @@ em {
     height: 100%;
     display: table;
 
-    background: url('/assets/img/bg_spiral.png') transparent center center no-repeat;
+    background: url('/img/bg_spiral.png') transparent center center no-repeat;
 
 }
 
@@ -159,7 +159,7 @@ h2 {
     display: block;
     width: 196px;
     height: 42px;
-    background: url('/assets/img/logo_text_small.png') top left no-repeat;
+    background: url('/img/logo_text_small.png') top left no-repeat;
     margin: -44px 45px 0px 0px;
     padding: 0px;    
 }
@@ -298,10 +298,10 @@ h2 {
     height: 20px;
 }
 #wizardRightColumn ul.menu .error .icon {
-    background: url('/assets/img/warn_emblem_20.png') center center no-repeat;
+    background: url('/img/warn_emblem_20.png') center center no-repeat;
 }
 #wizardRightColumn ul.menu .complete .icon {
-    background: url('/assets/img/tick_emblem_20.png') center center no-repeat;
+    background: url('/img/tick_emblem_20.png') center center no-repeat;
 }
 
 #wizardControlBox #pageLinks {
@@ -363,7 +363,7 @@ h2 {
     padding: 0px;
     margin: -41px 5px 0px 0px;
 
-    background: url('/assets/img/synthlogo.png') center left no-repeat;
+    background: url('/img/synthlogo.png') center left no-repeat;
 
     border: 1px solid rgba(138,152,129,1);
     -moz-border-radius-topleft: 5px;
@@ -381,13 +381,13 @@ h2 {
 a#synthesysLogoLink {
     width: 171px;
     height: 24px;
-    background: url('/assets/img/synthlogo.png') center left no-repeat;
-    background-image: url('/assets/img/synthlogo.png')  !important;
+    background: url('/img/synthlogo.png') center left no-repeat;
+    background-image: url('/img/synthlogo.png')  !important;
     opacity: .5;
 }
 a#synthesysLogoLink:hover {
     opacity: 1.0;
-    background-image: url('/assets/img/synthlogo.png')  !important;
+    background-image: url('/img/synthlogo.png')  !important;
 }
 
 
@@ -408,6 +408,6 @@ ul.massiveChooser li {
 }
 ul.massiveChooser li a {
     display: block;
-    
+
 }
 
