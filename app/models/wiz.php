@@ -1,7 +1,7 @@
 <?php
 
-class Wizard extends AppModel {
-    var $name = 'Wizard';
+class Wiz extends AppModel {
+    var $name = 'Wiz';
 
     function __construct () {
         

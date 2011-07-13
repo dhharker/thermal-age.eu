@@ -1,6 +1,6 @@
 <?php
 
-class WizardController extends AppController {
+class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard');
     var $layout = 'wizard';
