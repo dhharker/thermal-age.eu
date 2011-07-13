@@ -1,3 +1,6 @@
 [submodule "app/plugins/minify"]
 	path = app/plugins/minify
 	url = https://github.com/connrs/minify.git
+[submodule "app/plugins/wizard"]
+	path = app/plugins/wizard
+	url = https://github.com/jaredhoyt/cakephp-wizard.git
