@@ -45,7 +45,10 @@ class WizController extends AppController {
                 $this->Wizard->initialize ($this, array (
                     'wizardAction' => $wizardAction
                 ));
-            
+
+            /** @todo this must change with action once more than one wizard is >0% written */
+            $this->Wizard->steps = array('specimen', 'reaction', 'site', 'timeline', 'burial');
+
             $this->set('minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
             )));
@@ -54,6 +57,12 @@ class WizController extends AppController {
         }
         return false;
     }
+
+
+    function beforeFilter() {
+        
+		
+	}
 
     /**
      * The curator wizard is for estimating k*t for a geolocated sample with a single burial context
@@ -67,9 +76,7 @@ class WizController extends AppController {
 
     }
 
-    function beforeFilter() {
-		$this->Wizard->steps = array('specimen', 'reaction', 'site', 'timeline', 'burial');
-	}
+    
 
 
 }

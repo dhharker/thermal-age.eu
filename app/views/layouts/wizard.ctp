@@ -15,7 +15,7 @@
         <?php
         //when debugging: (prod add to minify)
         //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
-        $this->addScript($this->Javascript->link('jwizard_components.js'));
+        echo $this->Javascript->link('wizard_components.js');
         ?>
         
         <?php echo $scripts_for_layout ?>
