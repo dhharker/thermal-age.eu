@@ -1,6 +1,9 @@
 <?php
 //when debugging:
-$this->addScript($this->Javascript->link('wizard_components.js'));?>
+$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
+$this->addScript($this->Javascript->link('wizard_components.js'));
+
+?>
 
                     <div id="wizardScreen" class="smartBox wizScreenPos">
 
