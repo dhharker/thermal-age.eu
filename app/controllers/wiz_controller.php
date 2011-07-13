@@ -62,7 +62,7 @@ class WizController extends AppController {
     function dna_survival_screening_tool ($step = null) {
         $environmentGood = $this->_initWizardEnvironment(__FUNCTION__);
 
-        if (!$environmentGood == true)
+        if ($environmentGood == true)
             $this->Wizard->process($step);
 
     }
