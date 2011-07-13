@@ -1,7 +1,8 @@
 <?php
 
 class WizardController extends AppController {
-    var $helpers = array ('Html','Form','Javascript');
+    var $helpers = array ('Html','Form','Javascript','Minify.Minify');
+    var $components = array ('Wizard.Wizard');
     var $layout = 'wizard';
 
 
@@ -34,10 +35,11 @@ class WizardController extends AppController {
      * true if the environment is successfully initialised or false if there are errors.
      */
     function _initWizardEnvironment () {
-        if ($this->_checkEnvironment ()) {
+        if ($this->_checkEnvironment () == true) {
 
             $this->layout = 'wizard';
-
+            $this->set ('content_for_layout', 'I am a wizard!');
+            
             $this->set('minified_javascript',$this->Minify->js(array(
               'js/wizard_components.js',
             )));
@@ -50,7 +52,12 @@ class WizardController extends AppController {
      * and optional storage phase.
      */
     function dna_survival_screening_tool () {
+        $this->set ('content_for_layout', 'I am not a wizard :-(');
+
+        $this->_initWizardEnvironment();
+
+        // wizardy stuff
         
-        $this->_checkEnvironment();
+
     }
 }

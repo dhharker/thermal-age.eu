@@ -1,7 +1,10 @@
 <?php
-//$this->addScript($this->Javascript->link('wizard_components.js'));
-?>
+//when debugging:
+$this->addScript($this->Javascript->link('wizard_components.js'));?>
+
                     <div id="wizardScreen" class="smartBox wizScreenPos">
+
+                        <?=$content_for_layout?>
                         
 
                     </div>

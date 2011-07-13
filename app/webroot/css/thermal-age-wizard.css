@@ -72,23 +72,23 @@ em {
     width: 100%;*/
     position: absolute;
     top: 50%;
-    height: 580px;
+    height: 570px;
     width: 100%;
-    margin-top: -290px;
+    margin-top: -300px;
 }
 .centreFloater {
     
-    height: 580px;
-    width: 1000px;
-    margin: 0px auto;
+    height: 570px;
+    width: 880px;
+    margin: 40px auto;
 
 }
 .centreFloater .wizScreenPos {
     float: left;
     position: absolute;
     margin: 7px;
-    width: 800px;
-    height: 564px;
+    width: 680px;
+    height: 554px;
 }
 #wizardScreen {
     overflow: auto;
@@ -172,7 +172,7 @@ h2 {
     z-index: 1000;
 
     top: 10px;
-    height: 560px;
+    height: 550px;
     width: 190px;
 
     padding: 10px 0px;
@@ -239,7 +239,7 @@ h2 {
     font-size: 75%;
     overflow: hidden;
     max-width: 155px;
-    height: 1.2em;
+    height: 0px/*1.2em*/;
     text-overflow: ellipsis;
     white-space: nowrap;
 
@@ -306,8 +306,8 @@ h2 {
 
 #wizardControlBox #pageLinks {
     position: absolute;
-    width: 978px;
-    bottom: -36px;
+    width: 878px;
+    bottom: -76px;
     
     padding: 0px 15px 0px 15px;
 }
