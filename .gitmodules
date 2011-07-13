@@ -4,3 +4,6 @@
 [submodule "app/plugins/wizard"]
 	path = app/plugins/wizard
 	url = https://github.com/jaredhoyt/cakephp-wizard.git
+[submodule "app/webroot/js/jqf"]
+	path = app/webroot/js/jqf
+	url = https://github.com/malsup/form.git
