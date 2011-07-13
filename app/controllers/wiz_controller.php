@@ -34,14 +34,19 @@ class WizController extends AppController {
      * Checks to see if the environment is a supported browser, if not returns false, if so returns
      * true if the environment is successfully initialised or false if there are errors.
      */
-    function _initWizardEnvironment () {
+    function _initWizardEnvironment ($wizardAction = null) {
         if ($this->_checkEnvironment () == true) {
 
             $this->layout = 'wizard';
             $this->set ('content_for_layout', 'I am a wizard!');
+
+            if ($wizardAction !== null)
+                $this->Wizard->initialize ($this, array (
+                    'wizardAction' => $wizardAction
+                ));
             
             $this->set('minified_javascript',$this->Minify->js(array(
-              'js/wizard_components.js',
+              /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
             )));
             
         }
@@ -51,13 +56,18 @@ class WizController extends AppController {
      * The curator wizard is for estimating k*t for a geolocated sample with a single burial context
      * and optional storage phase.
      */
-    function dna_survival_screening_tool () {
+    function dna_survival_screening_tool ($step = null) {
         $this->set ('content_for_layout', 'I am not a wizard :-(');
 
-        $this->_initWizardEnvironment();
+        $this->_initWizardEnvironment(__FUNCTION__);
 
-        // wizardy stuff
-        
+        $this->Wizard->process($step);
 
     }
+
+    function beforeFilter() {
+		$this->Wizard->steps = array('specimen', 'reaction', 'site', 'timeline', 'burial');
+	}
+
+
 }

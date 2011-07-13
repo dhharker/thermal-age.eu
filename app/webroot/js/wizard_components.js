@@ -29,6 +29,9 @@ var wc = {
                 return false;
             });
             
+        },
+        init: function () {
+            
         }
     }
 }
