@@ -36,6 +36,7 @@ class WizController extends AppController {
      */
     function _initWizardEnvironment ($wizardAction = null) {
         if ($this->_checkEnvironment () == true) {
+            $success = true;
 
             $this->layout = 'wizard';
             $this->set ('content_for_layout', 'I am a wizard!');
@@ -48,8 +49,10 @@ class WizController extends AppController {
             $this->set('minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
             )));
-            
+
+            return $success;
         }
+        return false;
     }
 
     /**
@@ -57,11 +60,10 @@ class WizController extends AppController {
      * and optional storage phase.
      */
     function dna_survival_screening_tool ($step = null) {
-        $this->set ('content_for_layout', 'I am not a wizard :-(');
+        $environmentGood = $this->_initWizardEnvironment(__FUNCTION__);
 
-        $this->_initWizardEnvironment(__FUNCTION__);
-
-        $this->Wizard->process($step);
+        if (!$environmentGood == true)
+            $this->Wizard->process($step);
 
     }
 
