@@ -1,12 +1,9 @@
 <?php echo $this->Form->create('Specimen', array('id' => 'SignupForm', 'url' => $this->here)); ?>
-	<h2>Step 1: Account Information</h2>
+	<h2>Specimen Details</h2>
 	<?php
-		echo $this->Form->input('Client.first_name', array('label' => 'First Name:'));
-		echo $this->Form->input('Client.last_name', array('label' => 'Last Name:'));
-		echo $this->Form->input('Client.phone', array('label' => 'Phone Number:'));
-		echo $this->Form->input('User.email', array('label'=>'Email:'));
-		echo $this->Form->input('User.password',array('label'=>'Password:'));
-		echo $this->Form->input('User.confirm', array('label'=>'Confirm:', 'type'=>'password'));
+		echo $this->Form->input('Specimen.code', array('label' => 'ID:'));
+		echo $this->Form->input('Specimen.name', array('label' => 'Name:'));
+		echo $this->Form->input('Specimen.description', array('label' => 'Description:'));
 	?>
 	<div class="submit">
 		<?php echo $this->Form->submit('Continue', array('div' => false)); ?>

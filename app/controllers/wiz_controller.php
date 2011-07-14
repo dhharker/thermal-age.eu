@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard');
-    var $layout = 'wizard';
+    var $uses = array('specimen', 'reaction', 'site', 'timeline', 'burial');
 
 
     /**
@@ -76,7 +76,13 @@ class WizController extends AppController {
 
     }
 
-    
+
+    /**
+     * Specimen input handler
+     */
+    function _processSpecimen () {
+        
+    }
 
 
 }
