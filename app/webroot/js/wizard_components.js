@@ -10,7 +10,7 @@ var wc = {
             $(sel).hover (
                 function (e) {
                     $(this).find('.blurbCon').not(':animated').animate ({
-                        height: '+=1.2em'
+                        height: '+=1.2em',
                     }, 150, 'easeInOutQuad');
                 },
                 function (e) {

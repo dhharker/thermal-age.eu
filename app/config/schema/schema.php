@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* App schema generated on: 2011-07-15 15:07:34 : 1310740834*/
+/* App schema generated on: 2011-07-16 17:07:45 : 1310834505*/
 class AppSchema extends CakeSchema {
 	var $name = 'App';
 
@@ -75,6 +75,21 @@ class AppSchema extends CakeSchema {
 		'range_years' => array('type' => 'float', 'null' => true, 'default' => NULL),
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+	);
+	var $users = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
+		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
+		'username' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
+		'password' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 40),
+		'alias' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 25),
+		'email_priv' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 200),
+		'url' => array('type' => 'string', 'null' => true, 'default' => NULL),
+		'institution' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 200),
+		'bio' => array('type' => 'text', 'null' => true, 'default' => NULL),
+		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);

@@ -1,4 +1,4 @@
-<?php echo $this->Form->create('Specimen', array('id' => 'SignupForm', 'url' => $this->here)); ?>
+<?php echo $this->Form->create('Specimen', array('id' => 'SpecimenForm', 'url' => $this->here)); ?>
 	<h2>Specimen Details</h2>
 	<?php
 		echo $this->Form->input('Specimen.code', array('label' => 'ID:'));
