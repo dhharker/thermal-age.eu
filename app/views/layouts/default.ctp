@@ -24,20 +24,14 @@
         <div id="gradientContainer"><div id="mainWindow">
             <div id="central">
 
-                <div id="wizardControlBox" class="smartBox centreFloater">
 
+                <div id="wizardScreen" class="smartBox wizScreenPos">
 
+                    <?=$content_for_layout?>
 
-
-                    <div id="wizardScreen" class="smartBox wizScreenPos">
-
-                        <?=$content_for_layout?>
-
-                    </div>
-
-
-                    
                 </div>
+
+
             </div>
         </div></div>
     </body>
