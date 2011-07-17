@@ -3,15 +3,7 @@ class Temporothermal extends AppModel {
 	var $name = 'Temporothermal';
 	var $displayField = 'name';
 	var $validate = array(
-		'temp_mean_c' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
+		'name' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
@@ -21,17 +13,19 @@ class Temporothermal extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'temp_pp_amp_c' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
+		'temp_mean_c' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-			'notempty' => array(
-				'rule' => array('notempty'),
+		),
+		'temp_pp_amp_c' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

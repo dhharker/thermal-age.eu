@@ -26,9 +26,9 @@ class TemporothermalsController extends AppController {
 				$this->Session->setFlash(__('The temporothermal could not be saved. Please, try again.', true));
 			}
 		}
-		$files = $this->Temporothermal->File->find('list');
+		$uploads = $this->Temporothermal->Upload->find('list');
 		$users = $this->Temporothermal->User->find('list');
-		$this->set(compact('files', 'users'));
+		$this->set(compact('uploads', 'users'));
 	}
 
 	function edit($id = null) {
@@ -47,9 +47,9 @@ class TemporothermalsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Temporothermal->read(null, $id);
 		}
-		$files = $this->Temporothermal->File->find('list');
+		$uploads = $this->Temporothermal->Upload->find('list');
 		$users = $this->Temporothermal->User->find('list');
-		$this->set(compact('files', 'users'));
+		$this->set(compact('uploads', 'users'));
 	}
 
 	function delete($id = null) {
