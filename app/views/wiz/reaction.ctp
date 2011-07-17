@@ -1,5 +1,5 @@
 <div class="reactions form">
-<?php echo $this->Form->create('Reaction', array('id' => 'SpecimenForm', 'url' => $this->here)); ?>
+<?php echo $this->Form->create('Reaction', array('id' => 'ReactionForm', 'url' => $this->here)); ?>
 	<fieldset>
  		<legend><?php __('Edit Reaction'); ?></legend>
 	<?php

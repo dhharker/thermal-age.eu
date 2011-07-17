@@ -1,15 +1,15 @@
 <div class="sites form">
-<?php echo $this->Form->create('Site');?>
+<?php echo $this->Form->create('Site', array('id' => 'SiteForm', 'url' => $this->here)); ?>
 	<fieldset>
  		<legend><?php __('Edit Site'); ?></legend>
 	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('lat_dec');
-		echo $this->Form->input('lon_dec');
-		echo $this->Form->input('user_id');
-		echo $this->Form->input('citation_id');
-		echo $this->Form->input('description');
+		echo $this->Form->input('Site.id');
+		echo $this->Form->input('Site.name');
+		echo $this->Form->input('Site.lat_dec');
+		echo $this->Form->input('Site.lon_dec');
+		echo $this->Form->input('Site.user_id');
+		echo $this->Form->input('Site.citation_id');
+		echo $this->Form->input('Site.description');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

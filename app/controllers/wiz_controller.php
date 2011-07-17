@@ -108,4 +108,18 @@ class WizController extends AppController {
     }
 
 
+    /**
+     * Site input handler
+     */
+    function _processSite () {
+        $this->site->set ($this->data);
+        return false;
+        if ($this->site->validates()) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
