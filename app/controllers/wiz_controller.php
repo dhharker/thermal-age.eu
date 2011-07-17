@@ -49,6 +49,9 @@ class WizController extends AppController {
             /** @todo this must change with action once more than one wizard is >0% written */
             $this->Wizard->steps = array('specimen', 'reaction', 'site', 'temporothermal');
 
+            // validates against models automatically if no cb
+            $this->Wizard->autoValidate = true;
+
             $this->set('minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
             )));
