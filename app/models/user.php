@@ -60,8 +60,8 @@ class User extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'File' => array(
-			'className' => 'File',
+		'Upload' => array(
+			'className' => 'Upload',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
 			'conditions' => '',

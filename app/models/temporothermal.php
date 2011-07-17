@@ -3,9 +3,9 @@ class Temporothermal extends AppModel {
 	var $name = 'Temporothermal';
 	var $displayField = 'name';
 	var $validate = array(
-		'name' => array(
-			'alphanumeric' => array(
-				'rule' => array('alphanumeric'),
+		'temp_mean_c' => array(
+			'decimal' => array(
+				'rule' => array('decimal'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -21,7 +21,7 @@ class Temporothermal extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'temp_mean_c' => array(
+		'temp_pp_amp_c' => array(
 			'decimal' => array(
 				'rule' => array('decimal'),
 				//'message' => 'Your custom message here',
@@ -30,10 +30,8 @@ class Temporothermal extends AppModel {
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-		),
-		'temp_pp_amp_c' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
+			'notempty' => array(
+				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -62,8 +60,8 @@ class Temporothermal extends AppModel {
 			),
 		),
 		'range_years' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -75,9 +73,9 @@ class Temporothermal extends AppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
-		'File' => array(
-			'className' => 'File',
-			'foreignKey' => 'file_id',
+		'Upload' => array(
+			'className' => 'Upload',
+			'foreignKey' => 'upload_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard');
-    var $uses = array('specimen', 'reaction', 'site', 'timeline', 'burial');
+    var $uses = array('specimen', 'reaction', 'site', 'temporothermal');
 
 
     /**
@@ -47,7 +47,7 @@ class WizController extends AppController {
                 ));
 
             /** @todo this must change with action once more than one wizard is >0% written */
-            $this->Wizard->steps = array('specimen', 'reaction', 'site', 'timeline', 'burial');
+            $this->Wizard->steps = array('specimen', 'reaction', 'site', 'temporothermal');
 
             $this->set('minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
@@ -60,6 +60,9 @@ class WizController extends AppController {
 
 
     function beforeFilter() {
+
+ 
+        parent::beforeFilter();
         
 		
 	}
@@ -81,7 +84,13 @@ class WizController extends AppController {
      * Specimen input handler
      */
     function _processSpecimen () {
-        
+        $this->specimen->set ($this->data);
+
+        if ($this->specimen->validates()) {
+            return true;
+        }
+
+        return false;
     }
 
 
