@@ -125,4 +125,21 @@ class WizController extends AppController {
     }
 
 
+    /**
+     * [Wizard Completion Callback]
+     */
+	function _afterComplete() {
+		
+        $this->redirect(array('controller' => 'wiz', 'action' => 'disptest'));
+
+	}
+
+
+    function disptest () {
+        $wizardData = $this->Wizard->read();
+		extract($wizardData);
+
+        $this->set ('wizdata', $wizardData);
+    }
+
 }

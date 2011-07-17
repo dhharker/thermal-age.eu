@@ -1,0 +1,1 @@
+<pre><?=print_r ($wizdata, TRUE);?></pre>
