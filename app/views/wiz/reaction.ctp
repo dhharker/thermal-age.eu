@@ -1,16 +1,16 @@
 <div class="reactions form">
-<?php echo $this->Form->create('Reaction');?>
+<?php echo $this->Form->create('Reaction', array('id' => 'SpecimenForm', 'url' => $this->here)); ?>
 	<fieldset>
  		<legend><?php __('Edit Reaction'); ?></legend>
 	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('molecule_name');
-		echo $this->Form->input('reaction_name');
-		echo $this->Form->input('ea_kj_per_mol');
-		echo $this->Form->input('f_sec');
-		echo $this->Form->input('user_id');
-		echo $this->Form->input('citation_id');
+		echo $this->Form->input('Reaction.id');
+		echo $this->Form->input('Reaction.name');
+		echo $this->Form->input('Reaction.molecule_name');
+		echo $this->Form->input('Reaction.reaction_name');
+		echo $this->Form->input('Reaction.ea_kj_per_mol');
+		echo $this->Form->input('Reaction.f_sec');
+		echo $this->Form->input('Reaction.user_id');
+		echo $this->Form->input('Reaction.citation_id');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

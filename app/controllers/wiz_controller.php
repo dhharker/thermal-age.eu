@@ -94,4 +94,18 @@ class WizController extends AppController {
     }
 
 
+    /**
+     * Reaction input handler
+     */
+    function _processReaction () {
+        $this->reaction->set ($this->data);
+
+        if ($this->reaction->validates()) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
