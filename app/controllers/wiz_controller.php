@@ -86,7 +86,7 @@ class WizController extends AppController {
     /**
      * Specimen input handler
      */
-    function _processSpecimen () {
+    function _XprocessSpecimen () {
         $this->specimen->set ($this->data);
 
         if ($this->specimen->validates()) {
@@ -100,7 +100,7 @@ class WizController extends AppController {
     /**
      * Reaction input handler
      */
-    function _processReaction () {
+    function _XprocessReaction () {
         $this->reaction->set ($this->data);
 
         if ($this->reaction->validates()) {
@@ -114,7 +114,7 @@ class WizController extends AppController {
     /**
      * Site input handler
      */
-    function _processSite () {
+    function _XprocessSite () {
         $this->site->set ($this->data);
         return false;
         if ($this->site->validates()) {
