@@ -216,6 +216,7 @@ h2 {
     height: 0px/*1.2em*/;
     text-overflow: ellipsis;
     white-space: nowrap;
+    
 
 }
 #wizardRightColumn ul.menu li a:hover .blurbCon {
