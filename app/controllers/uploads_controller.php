@@ -17,19 +17,42 @@ class UploadsController extends AppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
-			$this->Upload->create();
-			if ($this->Upload->save($this->data)) {
+
+        if (!empty($this->data) &&
+             is_uploaded_file($this->data['Upload']['file']['tmp_name'])) {
+            $fileData = fread(fopen($this->data['Upload']['file']['tmp_name'], "r"),
+                                     $this->data['Upload']['file']['size']);
+
+            $this->data['Upload']['name'] = $this->data['Upload']['file']['name'];
+            $this->data['Upload']['type'] = $this->data['Upload']['file']['type'];
+            $this->data['Upload']['size'] = $this->data['Upload']['file']['size'];
+            $this->data['Upload']['data'] = $fileData;
+
+            if ($this->Upload->save($this->data)) {
 				$this->Session->setFlash(__('The upload has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The upload could not be saved. Please, try again.', true));
 			}
-		}
+        }
+        
 		$citations = $this->Upload->Citation->find('list');
 		$users = $this->Upload->User->find('list');
 		$this->set(compact('citations', 'users'));
 	}
+
+    function download($id) {
+        Configure::write('debug', 0);
+        $file = $this->Upload->findById($id);
+
+        header('Content-type: ' . $file['MyFile']['type']);
+        header('Content-length: ' . $file['MyFile']['size']); // some people reported problems with this line (see the comments), commenting out this line helped in those cases
+        header('Content-Disposition: attachment; filename="'.$file['MyFile']['name'].'"');
+        echo $file['Upload']['data'];
+
+        exit();
+    }
+
 
 	function edit($id = null) {
 		if (!$id && empty($this->data)) {

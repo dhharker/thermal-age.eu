@@ -13,9 +13,9 @@ class Upload extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'title' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
+		'size' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -52,5 +52,22 @@ class Upload extends AppModel {
 			'order' => ''
 		)
 	);
+
+	var $hasMany = array(
+		'Temporothermal' => array(
+			'className' => 'Temporothermal',
+			'foreignKey' => 'upload_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
+	);
+
 }
 ?>
