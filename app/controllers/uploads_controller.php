@@ -1,7 +1,6 @@
 <?php
 class UploadsController extends AppController {
-
-	var $name = 'Uploads';
+    var $name = 'Uploads';
 
 	function index() {
 		$this->Upload->recursive = 0;
@@ -18,8 +17,16 @@ class UploadsController extends AppController {
 
 	function add() {
 
-        if (!empty($this->data) &&
-             is_uploaded_file($this->data['Upload']['file']['tmp_name'])) {
+        if (empty($this->data)) {
+            $this->Session->setFlash(__('No data.', true));
+        }
+        elseif (!isset ($this->data['Upload']['file']['tmp_name']) ||
+            !is_uploaded_file($this->data['Upload']['file']['tmp_name'])) {
+            
+            $this->Session->setFlash(__('No file uploaded... feeeed meeeee dataaa!.', true));
+            die (print_r ($this->data, TRUE));
+        }
+        else {
             $fileData = fread(fopen($this->data['Upload']['file']['tmp_name'], "r"),
                                      $this->data['Upload']['file']['size']);
 
@@ -37,7 +44,7 @@ class UploadsController extends AppController {
         }
         
 		$citations = $this->Upload->Citation->find('list');
-		$users = $this->Upload->User->find('list');
+		//$users = $this->Upload->User->find('list');
 		$this->set(compact('citations', 'users'));
 	}
 

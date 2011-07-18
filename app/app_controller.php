@@ -25,5 +25,5 @@
 
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session');
-    var $helpers = array ('Html','Form','Javascript','Minify.Minify');
+    var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
 }
