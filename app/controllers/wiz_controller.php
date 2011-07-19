@@ -6,6 +6,8 @@ class WizController extends AppController {
     var $uses = array('specimen', 'reaction', 'site', 'temporothermal');
 
 
+    
+
     /**
      * The index action...
      *  Acts as the common point of entry to the different wizards
@@ -51,10 +53,6 @@ class WizController extends AppController {
 
             // validates against models automatically if no cb
             $this->Wizard->autoValidate = true;
-
-            $this->set('minified_javascript',$this->Minify->js(array(
-              /*prod:'js/wizard_components.js',*/ 'js/jqf/jquery.form.js',
-            )));
 
             return $success;
         }

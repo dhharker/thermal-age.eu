@@ -26,4 +26,26 @@
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session');
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
+
+    function __construct () {
+        
+        // Remove in production
+        //clearCache();
+
+        parent::__construct();
+    }
+
+    /**
+     * Global stuff goes here
+     */
+    function beforeFilter () {
+        $this->set('global_minified_javascript',$this->Minify->js(array(
+              /*prod:'js/wizard_components.js',*/
+            'js/config.js',
+            'js/jqf/jquery.form.js',
+            'js/adapt/adapt.min.js',
+        )));
+        parent::beforeFilter();
+    }
+
 }
