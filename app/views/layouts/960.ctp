@@ -21,8 +21,6 @@
             <?= $this->Html->css('adapt/mobile.css') . "\n"; ?>
         </noscript>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js" type="text/javascript"></script>
     <?php
         //when debugging: (prod add to minify)
         //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
@@ -38,6 +36,7 @@
 </head>
 
 <body>
+    <div id="bg1"><div id="bg2">
     <div id="container" class="container_12">
         <header class="grid_12">
             <nav>
@@ -74,6 +73,7 @@
             <p>Copyright 2009 Your name</p>
         </footer>
     </div>
+    </div></div>
 </body>
 
 </html>
