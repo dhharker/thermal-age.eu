@@ -41,9 +41,15 @@
     <div id="container" class="container_12 smartbox">
         <header class="grid_12">
             <nav>
-                <ul>
-                    
-                </ul>
+                <div class="fg-buttonset fg-buttonset-single">
+                    <a class="fg-button ui-state-default ui-priority-primary ui-corner-left">Home</a>
+                    <a class="fg-button ui-state-default ui-priority-primary">About</a>
+                    <a class="fg-button ui-state-default ui-priority-primary">Wizards</a>
+                    <a class="fg-button ui-state-default ui-priority-primary">Developers</a>
+                    <a class="fg-button ui-state-default ui-priority-primary">Data</a>
+                    <a class="fg-button ui-state-default ui-priority-primary">Help</a>
+                    <a class="fg-button ui-state-default ui-priority-primary ui-corner-right">Log In</a>
+                </div>
             </nav>
         </header>
 
