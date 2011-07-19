@@ -42,7 +42,10 @@
         <header class="grid_12">
             <nav>
                 <div class="fg-buttonset fg-buttonset-single">
-                    <a class="fg-button ui-state-default ui-priority-primary ui-corner-left">Home</a>
+                    <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
+                    <?php echo $this->Html->link('Home', '/', array('class' => 'fg-button ui-state-default ui-priority-primary ui-corner-left')); ?>
+                    <?php echo $this->Html->link('Clear Cache', array ('controller' => 'wiz', 'action' => 'clearcache'), array('class' => 'fg-button ui-state-default ui-priority-primary')); ?>
+
                     <a class="fg-button ui-state-default ui-priority-primary">About</a>
                     <a class="fg-button ui-state-default ui-priority-primary">Wizards</a>
                     <a class="fg-button ui-state-default ui-priority-primary">Developers</a>
