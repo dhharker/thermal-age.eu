@@ -13,7 +13,7 @@
 
 		echo $this->Html->css('adapt/reset.css') . "\n";
         echo $this->Html->css('adapt/text.css') . "\n";
-        echo $this->Html->css('custom-theme/jquery-ui-1.8.14.custom.css') . "\n";
+        echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
         echo $this->Html->css('thermal-age.css') . "\n";
 
     ?>
