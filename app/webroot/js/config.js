@@ -1,6 +1,6 @@
 var ADAPT_CONFIG = {
   // Where is your CSS?
-  path: 'css/adapt/',
+  path: '/css/adapt/',
 
   // false = Only run once, when page first loads.
   // true = Change on window resize and page tilt.
