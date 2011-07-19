@@ -148,7 +148,7 @@ footer {
    font-size: .9em;
    outline: 0;
    margin: 0px -6px 0px 0px;
-   padding: .4em 1em .3em 1em;
+   padding: .3em .85em .2em .8em;
    text-decoration:none !important;
    cursor:pointer;
    position: relative;
@@ -229,6 +229,11 @@ header nav .fg-buttonset {
     background: url('/img/logo_text_small.png') center center no-repeat;
     width: 196px;
     height: 42px;
-    margin: 0px 1em;
+    margin: -3px 10px 0px 12px;
     color: rgba(255,255,255,0);
+}
+
+#topMainMenu {
+    float: right;
+    margin-right: .5em;
 }

@@ -26,7 +26,7 @@
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session');
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
-    //var $layout = '960';
+    var $layout = '960';
     function __construct () {
         
         // Remove in production
