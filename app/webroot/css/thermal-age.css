@@ -1,6 +1,6 @@
 body {
     font-family: sans-serif;
-    font-size: 12px;
+    font-size: 15px;
     z-index: 1;
     width: 100%;
     height: 100%;
@@ -14,6 +14,14 @@ a {
 }
 em {
     font-style: italic;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+h1 {
+    font-size: 2em;
 }
 
 /* The background comes in 2 layers;  */
@@ -49,10 +57,84 @@ em {
     right: 0px;
     width: 100%;
     height: 100%;
-    
+
     background: url('/img/bg_spiral.png') transparent center center no-repeat;
 
 }
+
+#container.smartbox {
+    margin: -5px auto;
+    padding: 20px 10px;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid #8a9881;
+    -moz-box-shadow: 1px 1px 4px rgba(138,152,129,.7);
+    -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
+    box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
+    
+}
+
 #container {
     z-index: 5;
 }
+
+/* headers and footers*/
+
+footer {
+    margin-top: 20px;
+}
+
+/* smartboxes are smart */
+.smartbox {
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0px 5px;
+    margin: 0px;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid #8a9881;
+    overflow: hidden;
+    -moz-box-shadow: 1px 1px 4px rgba(138,152,129,.7);
+    -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
+    box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
+
+}
+
+.smartbox .sbHeading {
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    border-radius-top: 5px;
+    margin: 0px -5px 5px -5px;
+    padding: 4px 8px 1px 8px;
+    text-shadow: rgba(173,179,194,1) 0px 0px 2px;
+    overflow: hidden;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        right bottom,
+        color-stop(0.45, rgba(255,255,255,.7)),
+        color-stop(0.95, rgba(255,255,255,0))
+    );
+    background-image: -moz-linear-gradient(
+        left center,
+        rgba(255,255,255,.7) 45%,
+        rgba(255,255,255,0) 95%
+    );
+}
+
+
+/* classes from http://www.filamentgroup.com/lab/styling_buttons_and_toolbars_with_the_jquery_ui_css_framework/ */
+
+.fg-button {
+   outline: 0;
+   margin:0 4px 0 0;
+   padding: .4em 1em;
+   text-decoration:none !important;
+   cursor:pointer;
+   position: relative;
+   text-align: center;
+   zoom: 1;
+}
+.fg-toolbar { padding: .5em; margin: 0; width:50%; }
+.fg-toolbar .fg-buttonset { margin-right:1.5em; padding-left: 1px; }
+.fg-toolbar .fg-button { font-size: 1em;  }

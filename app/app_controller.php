@@ -26,7 +26,7 @@
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session');
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
-
+    //var $layout = '960';
     function __construct () {
         
         // Remove in production
@@ -44,6 +44,7 @@ class AppController extends Controller {
             'js/jquery-1.5.1.min.js',
             'js/jquery-ui-1.8.14.custom.min.js',
             'js/config.js',
+            //prod:'js/ui.js', // basic interaction stuffs
             'js/jqf/jquery.form.js',
             'js/adapt/adapt.min.js',
         )));

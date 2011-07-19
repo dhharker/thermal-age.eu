@@ -21,6 +21,10 @@ class WizController extends AppController {
     }
 
 
+    function clearcache () {
+        $this->set ('clearedOk', (clearCache ()) ? TRUE : FALSE);
+    }
+
     /**
      * Each of the wizards should check on pageload whether the client environment cookie is set:
      *  Cookie not set, is a browser        ->      redirect to index

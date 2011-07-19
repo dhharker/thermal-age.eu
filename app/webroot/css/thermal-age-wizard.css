@@ -40,8 +40,7 @@
 .smartBox {
     -moz-border-radius: 5px;
     border-radius: 5px;
-    padding: 0px;
-    margin: 0px;
+    
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     
