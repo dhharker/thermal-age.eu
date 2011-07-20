@@ -1,16 +1,30 @@
 
-<div class="grid_9">
+<div class="grid_4">
     <div class="smartbox">
-        <h1 class="sbHeading">Welcome to Thermal-Age.eu</h1>
+        <h2 class="sbHeading">Welcome!</h2>
+        <p>
+            Thermal-age.eu is the development site for <a href="http://www.synthesys.info/II_JRA_1.htm" target="_blank">JRA 1: PrediCtoR</a> A novel decision-making software tool being developed within the framework of SYNTHESYS, the European Union-funded Integrated Activities project designed to help collections managers and users to quantify the risks associated with destructive analysis of specimens.
+        </p>
+        <?php echo $this->Html->link('Read more...', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ui-corner-all cta-button')); ?>
+    </div>
+</div>
+
+<div class="grid_5">
+    <div class="smartbox">
+        <h2 class="sbHeading">Calls to action</h2>
         <p>This is about molecules...</p>
         <p>...and other small, ancient things.</p>
 
 
     </div>
 </div>
+
 <div class="grid_3">
     <div class="smartbox">
         <h2 class="sbHeading">Quick Links</h2>
-        <p>Mmmmm pie.. ok it looks like we need a longer message in here hello world again</p>
+        <p>This is about molecules...</p>
+        <p>...and other small, ancient things.</p>
+
+
     </div>
 </div>

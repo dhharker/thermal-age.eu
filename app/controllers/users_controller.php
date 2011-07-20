@@ -3,6 +3,10 @@ class UsersController extends AppController {
 
 	var $name = 'Users';
 
+    function login () {
+        
+    }
+
 	function index() {
 		$this->User->recursive = 0;
 		$this->set('users', $this->paginate());
