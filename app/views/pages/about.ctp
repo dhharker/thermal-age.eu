@@ -32,6 +32,23 @@
 </div></div>
 
 <div class="grid_4"><div class="smartbox">
+        <h2 class="sbHeading">
+            What?
+        </h2>
+        <ul>
+            <li>
+                Primer of TA model w/pics
+            </li>
+            <li>
+                Overview of datasources used
+            </li>
+        </ul>
+</div></div>
+
+<div class="grid_4 grid_under"><div class="smartbox">
+        <h2 class="sbHeading">
+            Who?
+        </h2>
         <ul>
             <li>
                 Funded by SYNTHII & is JRA 1
@@ -40,13 +57,8 @@
                 Written by dhharker etc.
             </li>
             <li>
-                You might also like zooms etc.
+                @SB, so you might like zooms etc.
             </li>
         </ul>
 </div></div>
 
-
-<div class="grid_4"><div class="smartbox" style="margin-top: 20px">
-        yeah baby
-
-</div></div>

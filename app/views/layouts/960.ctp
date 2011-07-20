@@ -48,23 +48,31 @@
                 <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix">
                     <div id="topMainMenu">
                         <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
+                        
                         <?php echo $this->Html->link('Home', '/', array('class' => 'fg-button ui-state-default  ui-corner-left')); ?>
+
                         <?php echo $this->Html->link('Clear', array ('controller' => 'wiz', 'action' => 'clearcache'), array('class' => 'fg-button ui-state-default')); ?>
+
                         <?php echo $this->Html->link('About', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ')); ?>
-                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => ''), array('class' => 'fg-button ui-state-default ui-priority-primary')); ?>
+
+                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => ''), array('class' => 'fg-button ui-state-default')); ?>
+
                         <?php echo $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
                         <?php echo $this->Html->link('Data', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
                         <?php echo $this->Html->link('Help', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
                         <?php echo $this->Html->link('Login', array ('controller' => 'users', 'action' => 'login'), array('class' => 'fg-button ui-state-default  ui-corner-right')); ?>
                     </div>
                 </div>
             </nav>
         </header>
 
-        <div class="grid_12" style="clear: both;">
+        <div class="grid_12">
             <?php echo $this->Session->flash(); ?>
         </div>
-        <div id="content">
+        <div id="content" style="clear: both;">
             <?= $content_for_layout ?>
         </div>
 

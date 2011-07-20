@@ -1,7 +1,7 @@
 
 <div class="grid_4">
     <div class="smartbox">
-        <h2 class="sbHeading">Welcome!</h2>
+        <h1 class="sbHeading">Welcome!</h1>
         <p>
             Thermal-age.eu is the development site for <a href="http://www.synthesys.info/II_JRA_1.htm" target="_blank">JRA 1: PrediCtoR</a> A novel decision-making software tool being developed within the framework of SYNTHESYS, the European Union-funded Integrated Activities project designed to help collections managers and users to quantify the risks associated with destructive analysis of specimens.
         </p>
@@ -11,9 +11,12 @@
 
 <div class="grid_5">
     <div class="smartbox">
-        <h2 class="sbHeading">Calls to action</h2>
+        <h2 class="sbHeading">Got Bone?</h2>
         <p>This is about molecules...</p>
+        <div class="smartHr">&nbsp;</div>
         <p>...and other small, ancient things.</p>
+        <div class="smartHr">&nbsp;</div>
+        <p>...this, too.</p>
 
 
     </div>
