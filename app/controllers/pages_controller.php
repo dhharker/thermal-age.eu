@@ -6,8 +6,6 @@ class PagesController extends AppController {
 	var $uses = array();
     
 
-
-
 /**
  * Displays a view
  *

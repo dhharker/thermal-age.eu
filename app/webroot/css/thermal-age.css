@@ -309,6 +309,15 @@ header nav .fg-buttonset {
     margin: 15px 10px 5px 20px;
 }
 
+#flying-donkey {
+    background: url('/img/overwhelmed.png') bottom left no-repeat transparent;
+    height: 265px;
+    max-width: 500px
+}
+.smartbox #flying-donkey {
+    margin: 0px -5px;
+}
+
 .imagey-link {
     margin: 1em auto;
     display: block;
@@ -326,7 +335,7 @@ header nav .fg-buttonset {
 .imagey-link img {
     
 }
-/* harvested from jqui css - '...with some fava beans & a nice chianti; fpfpfpfpfpfp!' */
+
 .ui-ish {
     color: #505451;
     background-image: -webkit-gradient(
