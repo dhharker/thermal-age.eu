@@ -58,6 +58,14 @@
     <div class="grid_under">
     <div class="smartbox">
         <h2 class="sbHeading">Quick Links</h2>
+
+        <?php echo $this->Html->link(
+                $this->Html->image("synthlogo_274_trans.png", array("alt" => "SYNTHESYS logo", 'style' => 'margin: 3px;')),
+                'http://www.synthesys.info/',
+                array('escape' => false, 'target' => '_blank')//, 'class' => 'fg-button ui-state-default ui-corner-all cta-button')
+        );?>
+
+
         <p>This is about molecules...</p>
         <p>...and other small, ancient things.</p>
     </div>

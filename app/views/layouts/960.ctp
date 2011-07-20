@@ -11,7 +11,11 @@
 	<?php
 		echo $this->Html->meta('icon') . "\n";
 
+        //echo $this->Html->css('cake.generic.css') . "\n";
+
 		echo $this->Html->css('adapt/reset.css') . "\n";
+
+
         echo $this->Html->css('adapt/text.css') . "\n";
         echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
         echo $this->Html->css('thermal-age.css') . "\n";
@@ -72,7 +76,7 @@
         <div class="grid_12">
             <?php echo $this->Session->flash(); ?>
         </div>
-        <div id="content" style="clear: both;">
+        <div id="pageContent" style="clear: both;">
             <?= $content_for_layout ?>
         </div>
 
