@@ -14,7 +14,7 @@
 
 
         <div class="smartHr">&nbsp;</div>
-        <?= $this->Html->image("lambda_graph_small.png", array("alt" => "dancing skeletons", 'class' => 'lead-image-small')) ?>
+        <?= $this->Html->image("lambda_graph_small.png", array("alt" => "graphs of lambda", 'class' => 'lead-image-small')) ?>
         <p>
             No date? If you've got qualitative DNA data for a sample and you know where it's from, then give
             our sample dating proxy tool a go!
@@ -27,7 +27,19 @@
 
 
         <div class="smartHr">&nbsp;</div>
-        <p>...this, too.</p>
+        <?= $this->Html->image("ice_cliffs_small.png", array("alt" => "ice cliff", 'class' => 'lead-image-small')) ?>
+        <p>
+            A pie left in the fridge for a week has a <em>10&deg;C thermal age</em> of less than a
+            week (assuming the fridge is below 10&deg;C, which it should be!). A thermal age is only
+            valid for a single chemical reaction (because they have individual responses to heat).
+        </p>
+        <?php echo $this->Html->link(
+                "Get a Thermal Age",
+                array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+
+
+
 
 
     </div>
