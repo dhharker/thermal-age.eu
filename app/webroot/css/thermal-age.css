@@ -144,10 +144,8 @@ header, .no-v-margin {
 }
 /* a nice hr to break up smartboxen gradient bgs don't work in <hr>s in ff :-(' */
 .smartbox .smartHr {
-    
-    
     height: 1px;
-    margin: .5em -5px;
+    margin: 2px -5px;
     color: #8a9881;
     border: none;
     background-image: -webkit-gradient(
@@ -155,12 +153,12 @@ header, .no-v-margin {
         left top,
         right top,
         color-stop(0, rgba(182,212,176,1.0)),
-        color-stop(1, rgba(182,212,176,0))
+        color-stop(1, rgba(182,212,176,0.5))
     );
     background-image: -moz-linear-gradient(
         top left,
         rgba(182,212,176,1.0) 0%,
-        rgba(182,212,176,0.2) 100%
+        rgba(182,212,176,0.5) 100%
     );
     -moz-box-shadow: 1px 1px 1px rgba(182,212,176,0.5);
     -webkit-box-shadow: 1px 1px 1px rgba(182,212,176,0.5);
@@ -173,7 +171,7 @@ header, .no-v-margin {
     -webkit-border-top-left-radius: 5px;
     -webkit-border-top-right-radius: 5px;
     border-radius-top: 5px;
-    margin: 0px -5px 5px -5px;
+    margin: 0px -5px 0px -5px;
     padding: 4px 8px 1px .8em;
     text-shadow: rgba(173,179,194,1) 0px 0px 2px;
     overflow: hidden;
@@ -189,6 +187,10 @@ header, .no-v-margin {
         rgba(255,255,255,.7) 45%,
         rgba(255,255,255,0) 95%
     );
+}
+.smartbox .sbHeading .heading-bones {
+    margin: -4px -8px -1px -.8em;
+    padding: 4px 8px 1px .8em;
 }
 
 
@@ -276,7 +278,7 @@ header nav .fg-buttonset {
 /* Call To Action stuffs*/
 
 .cta-button {
-    margin: -1em 1em 1em 1em;
+    margin: 0px 1em 1em 1em;
     font-size: 1em;
     font-weight: bold;
     display: block;
@@ -284,7 +286,7 @@ header nav .fg-buttonset {
     clear: both;
 }
 
-/* logos and other static floaty shit */
+/* logos and other static and±or floaty shit */
 
 #thermalAgeLogo {
     display: block;
@@ -300,6 +302,8 @@ header nav .fg-buttonset {
     margin-right: .5em;
 }
 
+
+/* home page and other */
 .lead-image-small {
     float: left;
     margin: 15px 10px 5px 20px;
@@ -321,4 +325,23 @@ header nav .fg-buttonset {
 }
 .imagey-link img {
     
+}
+/* harvested from jqui css - '...with some fava beans & a nice chianti; fpfpfpfpfpfp!' */
+.ui-ish {
+    color: #505451;
+    background-image: -webkit-gradient(
+        linear,
+        right top,
+        right bottom,
+        color-stop(0, rgba(231,237,234,.5)),
+        color-stop(1, rgba(212,223,218,.5))
+    );
+    background-image: -moz-linear-gradient(
+        center top,
+        rgba(231,237,234,.5) 0%,
+        rgba(212,223,218,.5) 100%
+    );
+}
+.smartbox .ui-ish {
+    margin: 0px -5px 0px -5px;
 }
