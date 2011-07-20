@@ -250,9 +250,12 @@ header nav .fg-buttonset {
 /* Call To Action stuffs*/
 
 .cta-button {
-    margin: 1em;
+    margin: -1em 1em 1em 1em;
+    font-size: 1em;
+    font-weight: bold;
     display: block;
     float: none !important;
+    clear: both;
 }
 
 /* logos and other static floaty shit */
@@ -269,4 +272,9 @@ header nav .fg-buttonset {
 #topMainMenu {
     float: right;
     margin-right: .5em;
+}
+
+.lead-image-small {
+    float: left;
+    margin: 15px 10px 5px 20px;
 }
