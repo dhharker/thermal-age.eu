@@ -24,6 +24,10 @@ h1 {
     font-size: 2em;
 }
 
+.heading-bones {
+    background: url('/img/heading_bones.png') center left no-repeat transparent;
+}
+
 p {
     margin: 20px;
     text-align: justify;
@@ -41,6 +45,21 @@ li {
 /* class for padding 960 grid divs at the top */
 .grid_under {
     margin-top: 20px;
+}
+/* but don't do that, just change them all! \o/ '*/
+.grid_1,
+.grid_2,
+.grid_3,
+.grid_4,
+.grid_5,
+.grid_6,
+.grid_7,
+.grid_8,
+.grid_9,
+.grid_10,
+.grid_11,
+.grid_12 {
+  margin-bottom: 10px;
 }
 
 /* The background comes in 2 layers;  */
@@ -100,6 +119,13 @@ li {
 
 footer {
     margin-top: 20px;
+}
+header {
+
+}
+/* to get rid of ugly gap under header */
+header, .no-v-margin {
+    margin-bottom: 0px !important;
 }
 
 /* smartboxes are smart */
@@ -277,4 +303,22 @@ header nav .fg-buttonset {
 .lead-image-small {
     float: left;
     margin: 15px 10px 5px 20px;
+}
+
+.imagey-link {
+    margin: 1em auto;
+    display: block;
+    overflow: hidden;
+    padding: 0.3em 0.3em 0em 0.3em;
+    background-color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(138,152,129,.7);
+    text-align: center;
+    font-style: italic;
+}
+.imagey-link:hover {
+    background-color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(138,152,129,1);
+}
+.imagey-link img {
+    
 }

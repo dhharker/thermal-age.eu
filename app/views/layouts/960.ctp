@@ -45,11 +45,11 @@
     <div id="container" class="container_12 smartbox">
 
         <header class="grid_12" style="clear: both;">
-            <div class="grid_4 alpha clearfix">
+            <div class="grid_4 alpha clearfix no-v-margin">
                 <?php echo $this->Html->link('', '/', array('id' => 'thermalAgeLogo', 'title' => 'thermal-age.eu home')); ?>
             </div>
             <nav>
-                <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix">
+                <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
                     <div id="topMainMenu">
                         <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
                         
@@ -80,28 +80,11 @@
             <?= $content_for_layout ?>
         </div>
 
-        <!--<div id="secondary1" class="grid_3">
-            <p>"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-        </div>
-
-        <div id="mainContent" class="grid_9">
-            <p>"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-            <aside class="grid_2">
-                <h2>Did you know?</h2>
-                <p>DNA is really long until you bake it.</p>
-            </aside>
-            <p>"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-
-        </div>
-        -->
-
-        
-
         <footer class="grid_12">
             <div class="smartbox">Copyright 2009 Your name</div>
         </footer>
     </div>
-    </div></div></div>
+    </div></div>
 </body>
 
 </html>

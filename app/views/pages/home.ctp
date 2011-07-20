@@ -1,7 +1,7 @@
 
 <div class="grid_7">
     <div class="smartbox">
-        <h1 class="sbHeading">Got Bone?</h1>
+        <h1 class="sbHeading"><div class="heading-bones">Got Bone?</div></h1>
         <?= $this->Html->image("skele_dance_small.png", array("alt" => "dancing skeletons", 'class' => 'lead-image-small')) ?>
         <p>
             If you know a little bit about the conditions a bone was buried in and where in the world it came from then why not see how the DNA is getting on?
@@ -36,7 +36,8 @@
         <?php echo $this->Html->link(
                 "Get a Thermal Age",
                 array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
-                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)
+        ); ?>
 
 
 
@@ -56,18 +57,15 @@
         <?php echo $this->Html->link('Read more...', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ui-corner-all cta-button')); ?>
     </div>
     <div class="grid_under">
-    <div class="smartbox">
-        <h2 class="sbHeading">Quick Links</h2>
+        <div class="smartbox">
+            <h2 class="sbHeading">Quick Links</h2>
 
-        <?php echo $this->Html->link(
-                $this->Html->image("synthlogo_274_trans.png", array("alt" => "SYNTHESYS logo", 'style' => 'margin: 3px;')),
-                'http://www.synthesys.info/',
-                array('escape' => false, 'target' => '_blank')//, 'class' => 'fg-button ui-state-default ui-corner-all cta-button')
-        );?>
-
-
-        <p>This is about molecules...</p>
-        <p>...and other small, ancient things.</p>
-    </div>
+            <?php echo $this->Html->link(
+                    $this->Html->image("synthlogo_274_trans.png", array("alt" => "SYNTHESYS logo")) .
+                    "<br />Funding under SYNTHESYS",
+                    'http://www.synthesys.info/',
+                    array('escape' => false, 'target' => '_blank', 'class' => 'imagey-link ui-corner-all', 'style' => 'min-width: 257px; max-width: 274px;')//, 'class' => 'fg-button ui-state-default ui-corner-all cta-button')
+            );?>
+        </div>
     </div>
 </div>
