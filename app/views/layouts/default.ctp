@@ -1,59 +1,90 @@
-<?php
-/**
- *
- * PHP versions 4 and 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.cake.libs.view.templates.layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+
+<html>
+
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php __('CakePHP: the rapid development php framework:'); ?>
-		<?php echo $title_for_layout; ?>
+        <?php echo $title_for_layout; ?> ::
+        <?php __('thermal-age.eu'); ?>
 	</title>
 	<?php
-		echo $this->Html->meta('icon');
+		echo $this->Html->meta('icon') . "\n";
 
-		echo $this->Html->css('cake.generic');
+        //echo $this->Html->css('cake.generic.css') . "\n";
 
-		echo $scripts_for_layout;
+		echo $this->Html->css('adapt/reset.css') . "\n";
+
+
+        echo $this->Html->css('adapt/text.css') . "\n";
+        echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
+        echo $this->Html->css('thermal-age.css') . "\n";
+
+    ?>
+        <noscript>
+            <?= $this->Html->css('adapt/mobile.css') . "\n"; ?>
+        </noscript>
+
+    <?php
+        echo $this->Minify->js_link($global_minified_javascript) . "\n";
+        if (isset ($minified_javascript))
+            echo $this->Minify->js_link($minified_javascript) . "\n";
+
+		echo $scripts_for_layout . "\n";
+
+        //when debugging: (prod add to minify)
+        //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
+        echo $this->Javascript->link('wizard_components.js');
+        echo $this->Javascript->link('ui.js');
+
 	?>
 </head>
+
 <body>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link(__('CakePHP: the rapid development php framework', true), 'http://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
+    <div id="bg1"><div id="bg2">
+    <div id="container" class="container_12 smartbox">
 
-			<?php echo $this->Session->flash(); ?>
+        <header class="grid_12" style="clear: both;">
+            <div class="grid_4 alpha clearfix no-v-margin">
+                <?php echo $this->Html->link('', '/', array('id' => 'thermalAgeLogo', 'title' => 'thermal-age.eu home')); ?>
+            </div>
+            <nav>
+                <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
+                    <div id="topMainMenu">
+                        <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
+                        
+                        <?php echo $this->Html->link('Home', '/', array('class' => 'fg-button ui-state-default  ui-corner-left')); ?>
 
-			<?php echo $content_for_layout; ?>
+                        <?php echo $this->Html->link('Clear', array ('controller' => 'wiz', 'action' => 'clearcache'), array('class' => 'fg-button ui-state-default')); ?>
 
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt'=> __('CakePHP: the rapid development php framework', true), 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
-		</div>
-	</div>
-	<?php echo $this->element('sql_dump'); ?>
+                        <?php echo $this->Html->link('About', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ')); ?>
+
+                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => ''), array('class' => 'fg-button ui-state-default')); ?>
+
+                        <?php echo $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
+                        <?php echo $this->Html->link('Data', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
+                        <?php echo $this->Html->link('Help', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+
+                        <?php echo $this->Html->link('Login', array ('controller' => 'users', 'action' => 'login'), array('class' => 'fg-button ui-state-default  ui-corner-right')); ?>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="grid_12">
+            <?php echo $this->Session->flash(); ?>
+        </div>
+        <div id="pageContent" style="clear: both;">
+            <?= $content_for_layout ?>
+        </div>
+
+        <footer class="grid_12">
+            <div class="smartbox">Copyright 2009 Your name</div>
+        </footer>
+    </div>
+    </div></div>
 </body>
+
 </html>

@@ -26,13 +26,11 @@
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session');
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
-    var $layout = '960';
+    
     function __construct () {
-        
-        // Remove in production
-        //clearCache();
 
         parent::__construct();
+        
     }
 
     /**
@@ -52,7 +50,17 @@ class AppController extends Controller {
         )));
 
         // The minify controller needs a blank layout otherwise it'll inherit from $layout above
-        $this->Minify->layout = '';
+
+        
+    }
+
+    function  beforeRender() {
+        parent::beforeRender();
+        //die ("<pre>".print_r ($this, TRUE));
+
+        if ($this->name) {
+            //$this->layout = '960';
+        }
     }
 
 }
