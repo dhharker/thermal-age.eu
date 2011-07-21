@@ -20,6 +20,10 @@
         echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
         echo $this->Html->css('thermal-age.css') . "\n";
 
+        if (isset ($isWizard) && $isWizard == TRUE) {
+            echo $this->Html->css('thermal-age-wizard.css') . "\n";
+        }
+
     ?>
         <noscript>
             <?= $this->Html->css('adapt/mobile.css') . "\n"; ?>
@@ -34,7 +38,11 @@
 
         //when debugging: (prod add to minify)
         //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
-        echo $this->Javascript->link('wizard_components.js');
+
+        // @todo move this to $minified_javascript via wizController::_initialiseWizardEnvironment()
+        if (isset ($isWizard) && $isWizard == TRUE) {
+            echo $this->Javascript->link('wizard_components.js');
+        }
         echo $this->Javascript->link('ui.js');
 
 	?>
@@ -78,7 +86,15 @@
             <?php echo $this->Session->flash(); ?>
         </div>
         <div id="pageContent" style="clear: both;">
+            <? if (isset ($isWizard) && $isWizard == TRUE) { ?>
+            <div class="grid_12" id="wizardContainer">
+                <div class="smartbox clearfix">
+                    <?= $content_for_layout ?>
+                </div>
+            </div>
+            <?php } else { ?>
             <?= $content_for_layout ?>
+            <?php } ?>
         </div>
 
         <footer class="grid_12">
