@@ -7,21 +7,23 @@
     </p>
 </div></div>
 
-<div class="grid_4"><div class="smartbox">
+<div class="grid_4"><div class="smartbox cleafix">
     <h2 class="sbHeading">
         Thermal Age
     </h2>
-    <p>
-        Thermal age expresses the age of a sample in "equivalent years at 10°C" for a given reaction.
-        It is an absolute measure, meaning that two different bones with the same (DNA depurination)
-        thermal age should have experienced the same amount of bond breakage to depurination and will
-        have the same mean fragment length and fragment length distribution.
-    </p>
-    <p>
-        This property makes thermal age useful for comparing samples of different ages and from different
-        sites, e.g. for choosing which one of two samples to spend limited funds on sampling.
-    </p>
-
+    <div class="spoiler">
+        <p>
+            Thermal age expresses the age of a sample in "equivalent years at 10°C" for a given reaction.
+            It is an absolute measure, meaning that two different bones with the same (DNA depurination)
+            thermal age should have experienced the same amount of bond breakage to depurination and will
+            have the same mean fragment length and fragment length distribution.
+        </p>
+        <p>
+            This property makes thermal age useful for comparing samples of different ages and from different
+            sites, e.g. for choosing which one of two samples to spend limited funds on sampling.
+        </p>
+    </div>
+    
     <?php echo $this->Html->link(
         "Thermal Age Tool",
         array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
