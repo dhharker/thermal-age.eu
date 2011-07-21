@@ -8,17 +8,17 @@
 
             <?php echo $this->Html->link(
                     "I have ancient biomaterial in my museum/university/attic and am considering destructive sampling for DNA extraction",
-                    array ('controller' => 'wiz', 'action' => 'dna_survival_screening_tool'),
+                    array ('controller' => 'pages', 'action' => 'help', 'curator_intro'),
                     array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
 
             <?php echo $this->Html->link(
                     "I am reading/writing something and want to make/retrieve/understand a reference/thermal age/&lambda; value",
-                    array ('controller' => 'wiz', 'action' => 'dna_survival_screening_tool'),
+                    array ('controller' => 'pages', 'action' => 'help', 'researcher_intro'),
                     array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
 
             <?php echo $this->Html->link(
                     "I have no idea what's going on...",
-                    array ('controller' => 'wiz', 'action' => 'dna_survival_screening_tool'),
+                    array ('controller' => 'pages', 'action' => 'help', 'intro'),
                     array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
         
         <div id="flying-donkey" class="ui-corner-br"></div>
