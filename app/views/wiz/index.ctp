@@ -44,8 +44,8 @@
             array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
        <div class="spoiler">
             <p>
-                Because thermal age is an absolute amount of a reaction which has taken place in a sample, we
-                can define cut-offs above which DNA is so degraded as to be not worth sampling. This varies
+                Because thermal age is the absolute amount of a reaction which has taken place in a sample, we
+                can define thermal ages above which DNA is so degraded as to be not worth sampling. This varies
                 with experimental design and sequencing methodology.
             </p>
         </div>
