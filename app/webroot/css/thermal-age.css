@@ -278,12 +278,17 @@ header nav .fg-buttonset {
 /* Call To Action stuffs*/
 
 .cta-button {
-    margin: 0px 1em 1em 1em;
+    margin: .5em 1em .5em 1em;
     font-size: 1em;
     font-weight: bold;
     display: block;
     float: none !important;
     clear: both;
+}
+
+/* used in wizard index cta buttons */
+.subtler-text {
+    color: rgba(102,120,130,.5);
 }
 
 /* logos and other static and±or floaty shit */
