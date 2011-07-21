@@ -1,6 +1,6 @@
 <div class="grid_12"><div class="smartbox">
     <p>
-        Our technology will boil aeons of buffered temperature fluctuation down to
+        Our technology will boil tens of thousands of years of underground temperature fluctuation down to
         a single magic number - unsurprisingly it's pretty intense behind the scenes. We have
         developed these wizards to make things simpler, quicker and easier. Please choose one to get
         started:
