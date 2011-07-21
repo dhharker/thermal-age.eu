@@ -7,3 +7,6 @@
 [submodule "app/webroot/js/jqf"]
 	path = app/webroot/js/jqf
 	url = https://github.com/malsup/form.git
+[submodule "app/webroot/js/pageslide"]
+	path = app/webroot/js/pageslide
+	url = https://github.com/srobbin/jquery-pageslide.git
