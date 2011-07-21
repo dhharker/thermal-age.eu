@@ -45,7 +45,7 @@
         </ul>
 </div></div>
 
-<div class="grid_4 grid_under"><div class="smartbox">
+<div class="grid_4"><div class="smartbox">
         <h2 class="sbHeading">
             Who?
         </h2>
@@ -62,7 +62,7 @@
         </ul>
 </div></div>
 
-<div class="grid_4 grid_under"><div class="smartbox">
+<div class="grid_4"><div class="smartbox">
         <h2 class="sbHeading">
             Technology
         </h2>
