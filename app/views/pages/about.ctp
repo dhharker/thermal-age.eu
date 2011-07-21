@@ -14,7 +14,7 @@
             generating beautiful reports on these predictions.
         </li>
         <li>
-            Keep indexed records of past calculations so these maybe published and subject to
+            Keep indexed records of past calculations so these may be published and subject to
         scrutiny.
         </li>
         <li>
