@@ -63,9 +63,21 @@
             array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
         <div class="spoiler">
             <p>
-                Because thermal age is the absolute amount of a reaction which has taken place in a sample, we
-                can define cut-offs above which DNA is so degraded as to be not worth sampling. This varies
-                with experimental design and sequencing methodology.
+                You can work out thermal age two ways, by estimating the temperature history, or by
+                extracting the DNA and having a look at it. Knowing where in the world a bone has
+                come from and a little about its burial conditions allows us to work backwards in time,
+                modelling the thermal age until it matches the measured value. The point at which it
+                matches is an estimate of the age of the sample.
+            </p>
+            <p>
+                This is a new dating technique and since it is hard to quantify the error associated
+                with it, it may be more helpful for testing between distinct age
+                hypotheses rather than attaining a water-tight date.
+            </p>
+            <p>
+                We believe this technique has exciting potential as a dating proxy using other
+                molecules than DNA, so we'll perhaps be making announcements about this in the future.
+                It's here for your entertainment until then!
             </p>
         </div>
     </div>
