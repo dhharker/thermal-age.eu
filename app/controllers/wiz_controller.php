@@ -44,7 +44,7 @@ class WizController extends AppController {
         if ($this->_checkEnvironment () == true) {
             $success = true;
 
-            //$this->layout = 'wizard';
+            $this->layout = 'wizard';
             $this->set ('content_for_layout', 'I am a wizard!');
 
             if ($wizardAction !== null)
