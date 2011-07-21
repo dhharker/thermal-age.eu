@@ -62,3 +62,29 @@
         </ul>
 </div></div>
 
+<div class="grid_4 grid_under"><div class="smartbox">
+        <h2 class="sbHeading">
+            Technology
+        </h2>
+        <ul>
+            <li>
+                LAMP & Cake, 960, jquery/ui clicky links.
+            </li>
+            <li>
+                link to developers info on internals, 3rd party code credits etc.
+            </li>
+            <li>
+                code @ github
+            </li>
+        </ul>
+
+        <div class="smartHr">&nbsp;</div>
+
+        <ul>
+            <li>
+                PMIP2, Bintanja, That other one.
+            </li>
+        </ul>
+
+</div></div>
+
