@@ -10,7 +10,7 @@
             <?= $this->Form->input('Site.lon_dec'); ?>
         </div>
 
-        <div class="grid_11 alpha ui-corner-all" style="overflow: hidden">
+        <div class="grid_11 alpha ui-corner-all" style="overflow: hidden; clear: both;">
             <div id="gMapContainer" class="smartbox" style="height: 300px; margin: 0px 0px 0px 5px;"></div>
         </div>
         <div class="grid_11 alpha">
