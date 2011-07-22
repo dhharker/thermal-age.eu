@@ -1,23 +1,32 @@
-/* for the layout of the form elements */
-.wf-cell {
-    margin: 0px 0px 0px 0px;
-    padding: 5px 0px;
-    background-color: #f00;
-}
+
 
 #wizardContainer .smartbox {
     padding: 0px;
-    margin: 0px;
+    margin: -1px;
+    
 }
 
 #wizardBottomBar {
     margin: 1em -1px -1px -1px;
-    padding: .4em .4em;
+    padding: -1px;
     font-size: 120%;    
 }
 #wizardProgressButtons {
-
+    background-color: #8080ff;
+    
+    
 }
 #wizardProgressBar {
+    background-color: #ff8080;
+    
+}
+#wizardBottomBar input[type=submit] {
+    float: right;
+}
+
+#wizardContainer fieldset {
+
+}
+#wizardContainer fieldset legend {
 
 }
