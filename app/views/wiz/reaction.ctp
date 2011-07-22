@@ -1,20 +1,51 @@
-<div class="reactions form">
+<h1 class="sbHeading ui-corner-tl">
+    Reaction to Model
+</h1>
 <?php echo $this->Form->create('Reaction', array('id' => 'ReactionForm', 'url' => $this->here)); ?>
 	<fieldset>
- 		<legend><?php __('Edit Reaction'); ?></legend>
-	<?php
-		echo $this->Form->input('Reaction.id');
-		echo $this->Form->input('Reaction.name');
-		echo $this->Form->input('Reaction.molecule_name');
-		echo $this->Form->input('Reaction.reaction_name');
-		echo $this->Form->input('Reaction.ea_kj_per_mol');
-		echo $this->Form->input('Reaction.f_sec');
-		echo $this->Form->input('Reaction.user_id');
-		echo $this->Form->input('Reaction.citation_id');
-	?>
+		
+		<?// $this->Form->input('Reaction.id'); ?>
+        <div class="grid_5 alpha">
+            <?= $this->Form->input('Reaction.molecule_name'); ?>
+        </div>
+        <div class="grid_6 omega">
+            <?= $this->Form->input('Reaction.reaction_name'); ?>
+        </div>
+        <div class="grid_11 alpha">
+            <?= $this->Form->input('Reaction.name', array (
+                'disabled' => 'disabled',
+                'style' => 'text-align: center'
+            )); ?>
+        </div>
+        <div class="grid_4 alpha">
+            <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
+                'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
+            )); ?>
+        </div>
+        <div class="grid_4">
+            <?= $this->Form->input('Reaction.f_sec', array (
+                'label' => 'Pre-exponential Factor (sec.)'
+            )); ?>
+        </div>
+        <div class="grid_3 omega">
+            <?= $this->Form->input('Reaction.citation_id'); ?>
+        </div>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
-</div>
+
+<?
+
+echo $this->element('wiz/wizardControlBar', $wizard);?>
+
+<?php echo $this->Form->end(); ?>
+
+
+
+
+
+
+
+
+<!--
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
@@ -26,4 +57,4 @@
 		<li><?php echo $this->Html->link(__('List Citations', true), array('controller' => 'citations', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
 	</ul>
-</div>
+</div>-->

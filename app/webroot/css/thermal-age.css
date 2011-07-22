@@ -62,6 +62,22 @@ li {
   margin-bottom: 20px;
 }
 
+/* but don't do that, just change them all! \o/ '*/
+#wizardContainer .smartbox .grid_1,
+#wizardContainer .smartbox .grid_2,
+#wizardContainer .smartbox .grid_3,
+#wizardContainer .smartbox .grid_4,
+#wizardContainer .smartbox .grid_5,
+#wizardContainer .smartbox .grid_6,
+#wizardContainer .smartbox .grid_7,
+#wizardContainer .smartbox .grid_8,
+#wizardContainer .smartbox .grid_9,
+#wizardContainer .smartbox .grid_10,
+#wizardContainer .smartbox .grid_11,
+#wizardContainer .smartbox .grid_12 {
+  margin-bottom: 5px;
+}
+
 /* The background comes in 2 layers;  */
 #bg1 {
     position: fixed;
