@@ -570,7 +570,8 @@ form div.error-message {
 	-moz-border-radius-bottomleft:5px;
 	-moz-border-radius-bottomright:5px;
 	padding: 2px 10px;
-    margin: -1px 0px 5px 1.5em;
+    margin: -1px 5px 5px 1em;
+    float: right;
 }
 
 /* cake sql dump */
