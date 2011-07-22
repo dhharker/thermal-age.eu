@@ -10,8 +10,8 @@
             <?= $this->Form->input('Site.lon_dec'); ?>
         </div>
 
-        <div class="grid_11 alpha ui-corner-all" id="gMapContainer">
-            ( google map goes here )
+        <div class="grid_11 alpha ui-corner-all" style="overflow: hidden">
+            <div id="gMapContainer" class="smartbox" style="height: 300px; margin: 0px 0px 0px 5px;"></div>
         </div>
         <div class="grid_11 alpha">
             <?= $this->Form->input('Site.name'); ?>
@@ -31,6 +31,12 @@
 echo $this->element('wiz/wizardControlBar', $wizard);?>
 
 <?php echo $this->Form->end(); ?>
+
+<script type="text/javascript">
+$(document).ready (function () {
+    wc.initMap ('#gMapContainer');
+});
+</script>
 
 <!--
 <div class="actions">
