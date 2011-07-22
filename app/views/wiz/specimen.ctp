@@ -32,13 +32,14 @@
                     
                 </div>
             </div>
-            <div id="wizardProgressBar" class="clearfix grid_4 omega no-v-margin ui-corner-br">
+            <a id="wizardProgressBar" class="clearfix grid_4 omega no-v-margin ui-corner-br"
+               href="<?=$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>">
                 <div class="progressbarPadding ui-state-default hover ui-corner-br">
                     <div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
                         61%
                     </div>
                     <div id="wpbContainer" class=""></div>
                 </div>
-            </div>
+            </a>
         </div>
 <?php echo $this->Form->end(); ?>

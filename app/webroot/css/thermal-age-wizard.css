@@ -16,8 +16,10 @@
     padding-left: 4px;
 }
 #wizardProgressBar {
+    display: block;
     border-left: 1px solid #8a9881;
     margin-left: -1px;
+    
     
 }
 #wizardProgressBar .progressbarPadding {

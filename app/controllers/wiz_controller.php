@@ -20,9 +20,18 @@ class WizController extends AppController {
 
     }
 
-
+    // temporary
     function clearcache () {
         $this->set ('clearedOk', (clearCache ()) ? TRUE : FALSE);
+    }
+
+    /**
+     * Displays the progress through the current wizard. Using info from this controller and the
+     * state of the Wizard component, populates a view for display down the rhs of the wizard in
+     * progress or stand-alone as the wizard re-entry start page (possibly).
+     */
+    function progress () {
+        
     }
 
     /**

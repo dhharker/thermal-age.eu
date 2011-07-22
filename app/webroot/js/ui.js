@@ -17,7 +17,10 @@ $(document).ready (function () {
         }).after ($('<a style="margin: -1.5em 20px .5em 20px; display: block; float: right;" href="#" onclick="$(this).prev(\'.spoiler\').find(\'*\').unwrap (); $(this).remove(); return false;">read more...</a>'));
     });
     
-    $('#wizardProgressBar #wpbContainer').progressbar ({
+    $('#wizardProgressBar').pageSlide ({
+        width: '350px',
+        direction: 'left'
+    }).find ('#wpbContainer').progressbar ({
         value: 61,
         
     });
