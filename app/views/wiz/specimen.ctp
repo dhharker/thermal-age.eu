@@ -19,7 +19,4 @@
     "progress" => 2.22,
 ));?>
 
-
-
-
 <?php echo $this->Form->end(); ?>
