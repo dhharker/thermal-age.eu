@@ -12,16 +12,13 @@
     font-size: 120%;    
 }
 #wizardProgressButtons {
-    background-color: #8080ff;
-    
-    
+    text-align: right;
 }
 #wizardProgressBar {
-    background-color: #ff8080;
     
 }
 #wizardBottomBar input[type=submit] {
-    float: right;
+    
 }
 
 #wizardContainer fieldset {
@@ -29,4 +26,11 @@
 }
 #wizardContainer fieldset legend {
 
+}
+
+
+
+/* padding */
+.paddedCell_5 {
+    padding: 5px;
 }

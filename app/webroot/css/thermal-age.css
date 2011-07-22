@@ -214,6 +214,11 @@ header, .no-v-margin {
    padding: .2em .5em;
    font-size: 0.8em;
 }
+/*for putting 2° buttons next to 1° ones*/
+.fg-button.ui-margin-match-primary {
+    margin-top: .2em;
+    margin-bottom: .2em;
+}
 .fg-button .ui-icon {
     left: 50%;
     margin-left: -8px;
