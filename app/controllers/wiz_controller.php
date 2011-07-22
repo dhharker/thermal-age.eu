@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard', 'RequestHandler');
-    var $uses = array('specimen', 'reaction', 'site', 'temporothermal');
+    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal');
 
 
     
@@ -92,6 +92,7 @@ class WizController extends AppController {
         if ($environmentGood == true)
             $this->Wizard->process($step);
 
+        //$this->Session->setFlash (print_r ($this->data, true));
     }
 
 
@@ -99,9 +100,9 @@ class WizController extends AppController {
      * Specimen input handler
      */
     function _processSpecimen () {
-        $this->specimen->set ($this->data);
-
-        if ($this->specimen->validates() == true) {
+        $this->Specimen->set ($this->data);
+        
+        if ($this->Specimen->validates() == true) {
             return true;
         }
         
@@ -113,9 +114,9 @@ class WizController extends AppController {
      * Reaction input handler
      */
     function _processReaction () {
-        $this->reaction->set ($this->data);
+        $this->Reaction->set ($this->data);
 
-        if ($this->reaction->validates() == true) {
+        if ($this->Reaction->validates() == true) {
             return true;
         }
         
@@ -127,10 +128,10 @@ class WizController extends AppController {
     /**
      * Site input handler
      */
-    function _XprocessSite () {
-        $this->site->set ($this->data);
-        return false;
-        if ($this->site->validates()) {
+    function _processSite () {
+        $this->Site->set ($this->data);
+        
+        if ($this->Site->validates()) {
             return true;
         }
 
