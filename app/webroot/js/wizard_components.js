@@ -8,7 +8,6 @@ var wc = {
     initMap: function (ele) {
         ele = ele || '#mapContainer';
         $mc = $(ele);
-        console.log ($mc);
         latlng = new google.maps.LatLng(20, 0);
         myOptions = {
             zoom: 2,
@@ -16,7 +15,6 @@ var wc = {
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var ni = $('.mapContainer').length + 1;
-        console.log (ni);
         var mcid = 'mapContainer_' + (ni);
         $mc.attr ('id', mcid).addClass ('mapContainer');
         wc.maps[ni] = $mc;
