@@ -10,7 +10,7 @@
             <?= $this->Form->input('Site.lon_dec'); ?>
         </div>
 
-        <div class="grid_11 alpha" id="gMapContainer ui-corner-all">
+        <div class="grid_11 alpha ui-corner-all" id="gMapContainer">
             ( google map goes here )
         </div>
         <div class="grid_11 alpha">

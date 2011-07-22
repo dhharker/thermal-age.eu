@@ -4,6 +4,7 @@ var wc = {
         var context = $(sel || '#wizardControlBox');
     },
     initMap (ele) {
+        $mc = ele || 
         latlng = new google.maps.LatLng(20, 0);
         myOptions = {
             zoom: 2,
