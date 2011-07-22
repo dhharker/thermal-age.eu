@@ -1,8 +1,8 @@
-<h1 class="sbHeading">
+<h1 class="sbHeading ui-corner-tl">
     Specimen Info
 </h1>
 
-<?php echo $this->Form->create  ('Specimen', array('id' => 'SpecimenForm', 'url' => $this->here)); ?>
+<?php echo $this->Form->create  ('Specimen', array('id' => 'SpecimenForm', 'url' => $this->here, 'class' => 'ui-corner-all')); ?>
 	<fieldset>
         <div class="grid_7 alpha">
             <?= $this->Form->input('Specimen.name', array('label' => 'Name:'));?>

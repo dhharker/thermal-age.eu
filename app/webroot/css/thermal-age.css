@@ -170,8 +170,8 @@ header, footer, .no-v-margin {
     -webkit-border-top-left-radius: 5px;
     -webkit-border-top-right-radius: 5px;
     border-radius-top: 5px;
-    margin: 0px -5px 0px -5px;
-    padding: 4px 8px 1px .8em;
+    margin: 0px -5px 10px 0px;
+    padding: 4px 8px 5px .5em;
     text-shadow: rgba(173,179,194,1) 0px 0px 2px;
     overflow: hidden;
     background-image: -webkit-gradient(
