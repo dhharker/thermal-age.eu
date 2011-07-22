@@ -23,6 +23,7 @@ class WizController extends AppController {
     // temporary
     function clearcache () {
         $this->set ('clearedOk', (clearCache ()) ? TRUE : FALSE);
+        $this->set ('clearedWizard', ($this->Wizard->reset()) ? TRUE : FALSE);
     }
 
     /**
@@ -97,10 +98,10 @@ class WizController extends AppController {
     /**
      * Specimen input handler
      */
-    function _XprocessSpecimen () {
+    function _processSpecimen () {
         $this->specimen->set ($this->data);
 
-        if ($this->specimen->validates()) {
+        if ($this->specimen->validates() == true) {
             return true;
         }
 
