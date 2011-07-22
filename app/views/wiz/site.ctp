@@ -34,7 +34,7 @@ echo $this->element('wiz/wizardControlBar', $wizard);?>
 
 <script type="text/javascript">
 $(document).ready (function () {
-    wc.initMap ('#gMapContainer');
+    wc.initSiteForm ();
 });
 </script>
 

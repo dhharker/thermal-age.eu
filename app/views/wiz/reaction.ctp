@@ -49,7 +49,12 @@ echo $this->element('wiz/wizardControlBar', $wizard);?>
 
 <?php echo $this->Form->end(); ?>
 
-
+<script type="text/javascript">
+$(document).ready (function () {
+    wc.initReactionForm ();
+    alert ("hai");
+});
+</script>
 
 
 
