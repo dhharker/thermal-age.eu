@@ -1,19 +1,38 @@
-<div class="sites form">
+<h1 class="sbHeading ui-corner-tl">
+    Site Info
+</h1>
 <?php echo $this->Form->create('Site', array('id' => 'SiteForm', 'url' => $this->here)); ?>
 	<fieldset>
- 		<legend><?php __('Edit Site'); ?></legend>
-	<?php
-		echo $this->Form->input('Site.id');
-		echo $this->Form->input('Site.name');
-		echo $this->Form->input('Site.lat_dec');
-		echo $this->Form->input('Site.lon_dec');
-		echo $this->Form->input('Site.user_id');
-		echo $this->Form->input('Site.citation_id');
-		echo $this->Form->input('Site.description');
-	?>
+        <div class="grid_5 alpha">
+            <?= $this->Form->input('Site.lat_dec'); ?>
+        </div>
+        <div class="grid_6 omega">
+            <?= $this->Form->input('Site.lon_dec'); ?>
+        </div>
+
+        <div class="grid_11 alpha" id="gMapContainer ui-corner-all">
+            ( google map goes here )
+        </div>
+        <div class="grid_11 alpha">
+            <?= $this->Form->input('Site.name'); ?>
+        </div>
+
+        <div class="grid_11 alpha">
+            <?= $this->Form->input('Site.citation_id'); ?>
+        </div>
+        <div class="grid_11 alpha">
+            <?= $this->Form->input('Site.description'); ?>
+        </div>
+
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
-</div>
+
+<?
+
+echo $this->element('wiz/wizardControlBar', $wizard);?>
+
+<?php echo $this->Form->end(); ?>
+
+<!--
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
@@ -25,4 +44,4 @@
 		<li><?php echo $this->Html->link(__('List Citations', true), array('controller' => 'citations', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
 	</ul>
-</div>
+</div>-->

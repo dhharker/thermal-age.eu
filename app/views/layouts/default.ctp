@@ -25,6 +25,11 @@
         }
 
     ?>
+
+        <script type="text/javascript"
+            src="http://maps.google.com/maps/api/js?sensor=false">
+        </script> 
+
         <noscript>
             <?= $this->Html->css('adapt/mobile.css') . "\n"; ?>
         </noscript>
