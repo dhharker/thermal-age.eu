@@ -9,3 +9,15 @@
     padding: 0px;
     margin: 0px;
 }
+
+#wizardBottomBar {
+    margin: 1em -1px -1px -1px;
+    padding: .4em .4em;
+    font-size: 120%;    
+}
+#wizardProgressButtons {
+
+}
+#wizardProgressBar {
+
+}

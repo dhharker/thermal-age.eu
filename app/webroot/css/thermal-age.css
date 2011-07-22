@@ -520,7 +520,7 @@ p.error em {
 	color: #fff;
 }
 
-/**  Actions  **/
+/**  Actions (still from cake)  **/
 div.actions ul {
 	margin: 0;
 	padding: 0;
@@ -563,3 +563,4 @@ td.actions a:hover {
 	background: #f0f09a;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f7f7e1), to(#eeeca9));
 }
+
