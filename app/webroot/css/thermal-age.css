@@ -136,7 +136,7 @@ header, footer, .no-v-margin {
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     overflow: hidden;
-    -moz-box-shadow: 0px 0px 1px rgba(0,0,0,.4);
+    -moz-box-shadow: 0px 0px 5px rgba(0,0,0,.2);
     -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
     box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
 

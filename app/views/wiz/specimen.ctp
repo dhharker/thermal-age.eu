@@ -15,8 +15,8 @@
         </div>
     </fieldset>
 
-<?= $this->element('wiz/wizardControlBar', array(
-    "progress" => 2.22,
-));?>
+<?
+
+echo $this->element('wiz/wizardControlBar', $wizard);?>
 
 <?php echo $this->Form->end(); ?>

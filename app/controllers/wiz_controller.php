@@ -56,7 +56,11 @@ class WizController extends AppController {
 
             $this->set ('isWizard', true);
             $this->set ('content_for_layout', 'I am a wizard!');
-
+            $this->set ('wizard', array (
+                "progress" => 42,
+                "stepname" => "!UNKNOWN!",
+                "steps" => array  (),
+            ));
             if ($wizardAction !== null)
                 $this->Wizard->initialize ($this, array (
                     'wizardAction' => $wizardAction
