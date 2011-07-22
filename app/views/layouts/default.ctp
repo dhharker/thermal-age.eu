@@ -67,7 +67,7 @@
 
                         <?php echo $this->Html->link('About', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => ''), array('class' => 'fg-button ui-state-default')); ?>
+                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => 'index'), array('class' => 'fg-button ui-state-default')); ?>
 
                         <?php echo $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
 
@@ -100,6 +100,7 @@
         <footer class="grid_12">
             <div class="smartbox">Copyright 2009 Your name</div>
         </footer>
+        
     </div>
     </div></div>
 

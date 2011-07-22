@@ -104,7 +104,7 @@ class WizController extends AppController {
         if ($this->specimen->validates() == true) {
             return true;
         }
-
+        
         return false;
     }
 
@@ -112,12 +112,13 @@ class WizController extends AppController {
     /**
      * Reaction input handler
      */
-    function _XprocessReaction () {
+    function _processReaction () {
         $this->reaction->set ($this->data);
 
-        if ($this->reaction->validates()) {
+        if ($this->reaction->validates() == true) {
             return true;
         }
+        
 
         return false;
     }

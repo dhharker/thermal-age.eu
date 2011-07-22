@@ -4,11 +4,11 @@ class Specimen extends AppModel {
 	var $displayField = 'name';
 	var $validate = array(
 		'name' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				'message' => 'Your custom message here',
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
+				//'message' => 'wtf',
 				'allowEmpty' => false,
-				'required' => false,
+				//'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
