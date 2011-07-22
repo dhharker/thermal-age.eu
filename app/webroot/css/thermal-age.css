@@ -376,7 +376,7 @@ header nav .fg-buttonset {
 	padding: 0;
 	width: 95%;
 }
-fieldset {
+.cakeform fieldset {
 	border: 1px solid #ccc;
 	margin: 1em;
 	padding: 16px 20px;

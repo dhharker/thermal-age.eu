@@ -2,7 +2,7 @@
 
 #wizardContainer .smartbox {
     padding: 0px;
-    margin: -1px;
+    margin: 0px;
     
 }
 
@@ -39,7 +39,7 @@
 }
 
 #wizardContainer fieldset {
-
+    margin: 2em;
 }
 #wizardContainer fieldset legend {
 
@@ -54,4 +54,8 @@
 
 .paddedCell_10 {
     padding: 10px;
+}
+.grid_h_padding {
+    padding-left: 10px;
+    padding-right: 10px;
 }
