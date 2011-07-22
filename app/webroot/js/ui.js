@@ -1,5 +1,5 @@
 $(document).ready (function () {
-    $('.fg-button').hover(
+    $('.fg-button,.hover').hover(
         function(){
             $(this).addClass("ui-state-hover");
         },
@@ -18,7 +18,7 @@ $(document).ready (function () {
     });
     
     $('#wizardProgressBar #wpbContainer').progressbar ({
-        value: 52,
+        value: 61,
         
     });
 });

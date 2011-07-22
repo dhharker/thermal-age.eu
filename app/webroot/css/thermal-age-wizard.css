@@ -13,12 +13,27 @@
 }
 #wizardProgressButtons {
     text-align: right;
+    padding-left: 4px;
 }
 #wizardProgressBar {
+    border-left: 1px solid #8a9881;
+    margin-left: -1px;
     
 }
-#wizardBottomBar input[type=submit] {
+#wizardProgressBar .progressbarPadding {
+    padding: 9px 15px 9px 15px;
     
+    cursor: pointer !important;
+    margin: -1px;
+    margin-right: -7px;
+
+}
+
+#wizardBottomBar .fg-button {
+    margin: 4px -1px 4px 0px;
+}
+#wizardBottomBar input[type=submit] {
+    margin: 0px;
 }
 
 #wizardContainer fieldset {
@@ -33,4 +48,8 @@
 /* padding */
 .paddedCell_5 {
     padding: 5px;
+}
+
+.paddedCell_10 {
+    padding: 10px;
 }

@@ -137,7 +137,7 @@ header, .no-v-margin {
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     overflow: hidden;
-    -moz-box-shadow: 1px 1px 4px rgba(138,152,129,.7);
+    -moz-box-shadow: 0px 0px 2px rgba(0,0,0,.2);
     -webkit-box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
     box-shadow: 1px 1px 4px rgba(138,152,129,0.7);
 
@@ -203,7 +203,7 @@ header, .no-v-margin {
    font-size: .9em;
    outline: 0;
    margin: 0px;
-   padding: .3em .85em .2em .8em;
+   padding: 4px 8px;
    text-decoration:none !important;
    cursor:pointer;
    position: relative;
@@ -228,10 +228,12 @@ header, .no-v-margin {
 }
 a.fg-button {
     float: left;
+    line-height: normal;
 }
 button.fg-button {
     overflow: visible;
     width: auto;
+    line-height: normal;
 }
 .fg-button-icon-left {
     padding-left: 2.1em;
@@ -368,7 +370,7 @@ header nav .fg-buttonset {
 
 
 /** Forms from cake.generic.css **/
-.cakeform {
+.cakeform form {
 	clear: both;
 	margin-right: 20px;
 	padding: 0;
@@ -385,16 +387,16 @@ fieldset {
 	font-size: 160%;
 	font-weight: bold;
 }
-fieldset fieldset {
+.cakeform fieldset fieldset {
 	margin-top: 0px;
 	margin-bottom: 20px;
 	padding: 16px 10px;
 }
-fieldset fieldset legend {
+.cakeform fieldset fieldset legend {
 	font-size: 120%;
 	font-weight: normal;
 }
-fieldset fieldset div {
+.cakeform fieldset fieldset div {
 	clear: left;
 	margin: 0 20px;
 }
@@ -415,7 +417,7 @@ form .required label:after {
 	content: '*';
 	display:inline;
 }
-form div.submit {
+.cakeform form div.submit {
 	border: 0;
 	clear: both;
 	margin-top: 10px;
@@ -429,7 +431,7 @@ input, textarea {
 	clear: both;
 	font-size: 140%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 1%;
+	padding: 5px 1%;
 	width:98%;
 }
 select {
@@ -463,7 +465,7 @@ div.radio label {
 }
 input[type=submit] {
 	display: inline;
-	font-size: 110%;
+	
 	width: auto;
 }
 
