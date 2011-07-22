@@ -45,7 +45,11 @@
 
 }
 
+/* specific form element fixen */
 
+#wizardContainer form select {
+    width: 100%;
+}
 
 /* padding */
 .paddedCell_5 {

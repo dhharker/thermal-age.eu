@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard', 'RequestHandler');
-    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal');
+    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation');
 
 
     
@@ -127,7 +127,10 @@ class WizController extends AppController {
 
         return false;
     }
-
+    function _prepareReaction () {
+        $citations = $this->Reaction->Citation->find('list');
+		$this->set(compact('citations'));
+    }
 
     /**
      * Site input handler
@@ -140,6 +143,10 @@ class WizController extends AppController {
         }
 
         return false;
+    }
+    function _prepareSite () {
+        $citations = $this->Site->Citation->find('list');
+		$this->set(compact('citations'));
     }
 
 

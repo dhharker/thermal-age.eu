@@ -1,34 +1,40 @@
 <h1 class="sbHeading ui-corner-tl">
-    Reaction to Model
+    Chemical Reaction
 </h1>
 <?php echo $this->Form->create('Reaction', array('id' => 'ReactionForm', 'url' => $this->here)); ?>
 	<fieldset>
 		
 		<?// $this->Form->input('Reaction.id'); ?>
-        <div class="grid_5 alpha">
-            <?= $this->Form->input('Reaction.molecule_name'); ?>
+        <div class="grid_3 alpha">
+            <?= $this->Form->input('Reaction.molecule_name', array (
+                'label' => 'Molecule Name'
+            )); ?>
         </div>
-        <div class="grid_6 omega">
+        <div class="grid_4">
             <?= $this->Form->input('Reaction.reaction_name'); ?>
         </div>
-        <div class="grid_11 alpha">
+        <div class="grid_4 omega">
+            <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
+                'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
+            )); ?>
+        </div>
+        <div class="grid_7 alpha">
             <?= $this->Form->input('Reaction.name', array (
                 'disabled' => 'disabled',
                 'style' => 'text-align: center'
             )); ?>
         </div>
-        <div class="grid_4 alpha">
-            <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
-                'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
-            )); ?>
-        </div>
-        <div class="grid_4">
+        
+        <div class="grid_4 omega">
             <?= $this->Form->input('Reaction.f_sec', array (
                 'label' => 'Pre-exponential Factor (sec.)'
             )); ?>
         </div>
-        <div class="grid_3 omega">
-            <?= $this->Form->input('Reaction.citation_id'); ?>
+        <div class="grid_11 alpha">
+            <?= $this->Form->input('Reaction.citation_id', array (
+                'style' => 'width: 100%',
+                
+            )); ?>
         </div>
 	</fieldset>
 
