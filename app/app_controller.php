@@ -46,6 +46,7 @@ class AppController extends Controller {
             'js/config.js',
             //prod:'js/ui.js', // basic interaction stuffs
             'js/jqf/jquery.form.js',
+            'js/jquery.titlecase2.js',
             'js/pageslide/jquery.pageslide.min.js',
             'js/adapt/adapt.min.js',
         )));

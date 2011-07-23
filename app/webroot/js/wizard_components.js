@@ -19,7 +19,7 @@ var wc = {
         var ni = $('.mapContainer').length + 1;
         var mcid = 'mapContainer_' + (ni);
         $mc.attr ('id', mcid).addClass ('mapContainer');
-        wc.maps[ni] = $mc;
+        wc.local.maps[ni] = $mc;
         var map = new google.maps.Map(document.getElementById (mcid), myOptions);
         
         var marker = new google.maps.Marker({
@@ -30,26 +30,21 @@ var wc = {
         });
     },
     initSiteForm: function (ele) {
-        ele = ele || 'form#SiteForm';
-        var $form = $(ele);
-        
         wc.initMap ('#gMapContainer');
-        
+
     },
     initReactionForm: function (ele) {
         ele = ele || 'form#ReactionForm';
         var $form = $(ele);
-        var urn = function () {
-            $('input[name=Reaction.name]', $form).value (
-                $('input[name=Reaction.molecule_name]', $form).value () + 
+        $('input[name$="_name\]"]').keyup (function () {
+            $('input#ReactionMoleculeName').toTitleCase();
+            $('input#ReactionReactionName').toTitleCase();
+            $('input#ReactionName').val (
+                $('input#ReactionMoleculeName').val () + 
                     ' ' + 
-                    $('input[name=Reaction.reaction_name]', $form).value ()
+                    $('input#ReactionReactionName').val ()
             );
-        };
-        $('input[name$=_name]', $form).change (function () {
-            console.log ($(this).value());
-            
-        }).trigger ('change');
+        }).trigger ('keyup');
         
     }
 }

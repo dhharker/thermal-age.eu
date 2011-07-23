@@ -10,8 +10,8 @@
             <?= $this->Form->input('Site.lon_dec'); ?>
         </div>
 
-        <div class="grid_11 alpha ui-corner-all" style="overflow: hidden; clear: both;">
-            <div id="gMapContainer" class="smartbox" style="height: 300px; margin: 0px 0px 0px 5px;"></div>
+        <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 2px;">
+            <div id="gMapContainer" class="" style="height: 300px; margin: 0px; clear: both;"></div>
         </div>
         <div class="grid_11 alpha">
             <?= $this->Form->input('Site.name'); ?>
@@ -51,3 +51,5 @@ $(document).ready (function () {
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
 	</ul>
 </div>-->
+
+
