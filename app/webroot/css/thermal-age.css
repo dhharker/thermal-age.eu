@@ -337,7 +337,7 @@ header nav .fg-buttonset {
 }
 
 
-/* home page and other */
+/* home page and other one-off items */
 .lead-image-small {
     float: left;
     margin: 25px 10px 5px 20px;
@@ -370,6 +370,8 @@ header nav .fg-buttonset {
     
 }
 
+
+/* ui gradiwent bg used extensively */
 .ui-ish {
     color: #505451;
     background-image: -webkit-gradient(
