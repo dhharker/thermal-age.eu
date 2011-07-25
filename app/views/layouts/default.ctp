@@ -102,13 +102,13 @@
             <?php } ?>
         </div>
 
-        <footer>
-            <div class="grid_12 smartbox">
-                <div class="grid_6 alpha clearfix no-v-margin">
+        <footer class="grid_12">
+            <div class="smartbox">
+                <div class="grid_6 alpha clearfix no-v-margin" style="margin: 0px;">
                     &copy; Copyright 2009&ndash;<?= date ('Y') ?>
 
                 </div>
-                <div class="grid_6 omega clearfix no-v-margin">
+                <div class="grid_6 omega clearfix no-v-margin" style="margin: 0px;">
                     <?php
                         echo $this->Html->link('T&C', array ('controller' => '', 'action' => ''), array(
                             'class' => 'fg-button ui-state-default  ',
