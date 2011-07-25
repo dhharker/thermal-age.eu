@@ -105,13 +105,12 @@
         <footer>
             <div class="grid_12 smartbox">
                 <div class="grid_6 alpha clearfix no-v-margin">
-                    &copy; Copyright 2009&ndash;<?= date ('Y') ?> Contributors. Some Rights Reserved.
+                    &copy; Copyright 2009&ndash;<?= date ('Y') ?>
 
                 </div>
                 <div class="grid_6 omega clearfix no-v-margin">
-
                     <?php
-                        echo $this->Html->link('Copyright & Licensing', array ('controller' => '', 'action' => ''), array(
+                        echo $this->Html->link('T&C', array ('controller' => '', 'action' => ''), array(
                             'class' => 'fg-button ui-state-default  ',
                             'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
                         ));
@@ -123,12 +122,11 @@
                         ));
                     ?>
                     <?php
-                        echo $this->Html->link('T&C', array ('controller' => '', 'action' => ''), array(
+                        echo $this->Html->link('Copyright & Licensing', array ('controller' => '', 'action' => ''), array(
                             'class' => 'fg-button ui-state-default  ',
                             'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
                         ));
                     ?>
-
                 </div>
             </div>
         </footer>
