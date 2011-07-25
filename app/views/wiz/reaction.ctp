@@ -15,10 +15,7 @@
                 <?= $this->Form->input('Reaction.reaction_name'); ?>
             </div>
             <div class="grid_7 alpha">
-                <?= $this->Form->input('Reaction.name', array (
-                    'disabled' => 'disabled',
-                    'style' => 'text-align: center'
-                )); ?>
+                <?= $this->Form->input('Reaction.name'); ?>
             </div>
         </div>
         <div class="grid_4 omega">
