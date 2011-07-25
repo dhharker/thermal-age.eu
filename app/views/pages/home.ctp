@@ -64,7 +64,14 @@
                     $this->Html->image("synthlogo_274_trans.png", array("alt" => "SYNTHESYS logo")) .
                     "<br />Funding under SYNTHESYS",
                     'http://www.synthesys.info/',
-                    array('escape' => false, 'target' => '_blank', 'class' => 'imagey-link ui-corner-all', 'style' => 'min-width: 257px; max-width: 274px;')//, 'class' => 'fg-button ui-state-default ui-corner-all cta-button')
+                    array('escape' => false, 'target' => '_blank', 'class' => 'imagey-link ui-corner-all', 'style' => 'min-width: 257px; max-width: 274px;')
+            );?>
+
+            <?php echo $this->Html->link(
+                    $this->Html->image("bioarch_200_trans.png", array("alt" => "BioArch logo")) .
+                    "<br />Developed at BioArch",
+                    'https://sites.google.com/a/palaeo.eu/xtnl-bioarch/Home',
+                    array('escape' => false, 'target' => '_blank', 'class' => 'imagey-link ui-corner-all', 'style' => 'min-width: 257px; max-width: 274px;')
             );?>
 
             <div class="smartHr">&nbsp;</div>
