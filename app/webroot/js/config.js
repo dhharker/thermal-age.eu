@@ -12,6 +12,7 @@ var ADAPT_CONFIG = {
   // First range entry is the minimum.
   // Last range entry is the maximum.
   // Separate ranges by "to" keyword.
+  /*
   range: [
     '0px    to 760px  = mobile.css',
     '760px  to 980px  = 720.css',
@@ -20,4 +21,11 @@ var ADAPT_CONFIG = {
     '1600px to 1920px = 1560.css',
     '1920px           = fluid.css'
   ]
+*/
+  range: [
+    '0px    to 760px  = mobile.css',
+    '760px  to 980px  = 720.css',
+    '980px            = 960.css'
+  ]
+  
 };
