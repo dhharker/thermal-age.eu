@@ -4,10 +4,14 @@
 <?php echo $this->Form->create('Site', array('id' => 'SiteForm', 'url' => $this->here)); ?>
 	<fieldset>
         <div class="grid_5 alpha">
-            <?= $this->Form->input('Site.lat_dec'); ?>
+            <?= $this->Form->input('Site.lat_dec', array (
+                'label' => 'Latitude (decimal °N)'
+            )); ?>
         </div>
         <div class="grid_6 omega">
-            <?= $this->Form->input('Site.lon_dec'); ?>
+            <?= $this->Form->input('Site.lon_dec', array (
+                'label' => 'Longitude (decimal °E)'
+            )); ?>
         </div>
 
         <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 2px;">
