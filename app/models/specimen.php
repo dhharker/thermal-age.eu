@@ -18,4 +18,5 @@ class Specimen extends AppModel {
         
     }
 }
+
 ?>
