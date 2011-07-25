@@ -7,7 +7,7 @@ class Site extends AppModel {
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
+				'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
@@ -15,9 +15,9 @@ class Site extends AppModel {
 		),
 		'lat_dec' => array(
 			'range' => array(
-				'rule' => array('range'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
+				'rule' => array('range', -90, 90),
+				'message' => 'Must be from -90.0°(S) to 90.0°(N)',
+				'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
@@ -25,9 +25,9 @@ class Site extends AppModel {
 		),
 		'lon_dec' => array(
 			'range' => array(
-				'rule' => array('range'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
+				'rule' => array('range', -180, 180),
+				'message' => 'Must be from -180.0°(W) to 180.0°(E)',
+				'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
