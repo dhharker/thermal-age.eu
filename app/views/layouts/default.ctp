@@ -116,7 +116,7 @@
                         ));
                     ?>
                     <?php
-                        echo $this->Html->link('Privacy', array ('controller' => '', 'action' => ''), array(
+                        echo $this->Html->link('Privacy', array ('controller' => 'pages', 'action' => 'legal', 'privacy'), array(
                             'class' => 'fg-button ui-state-default  ',
                             'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
                         ));
