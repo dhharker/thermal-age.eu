@@ -104,27 +104,26 @@
 
         <footer class="grid_12">
             <div class="smartbox">
-                <div class="grid_6 alpha clearfix no-v-margin" style="margin: 0px;">
-                    &copy; Copyright 2009&ndash;<?= date ('Y') ?>
+                <div class="grid_6 alpha clearfix no-v-margin">
+                    <div class="paddedCell_10_h">
+                        &copy; Copyright 2009&ndash;<?= date ('Y') ?>
+                    </div>
 
                 </div>
-                <div class="grid_6 omega clearfix no-v-margin" style="margin: 0px;">
+                <div class="grid_6 omega clearfix no-v-margin">
                     <?php
                         echo $this->Html->link('T&C', array ('controller' => '', 'action' => ''), array(
-                            'class' => 'fg-button ui-state-default  ',
-                            'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
+                            'class' => 'ui-state-default fg-button',
                         ));
                     ?>
                     <?php
                         echo $this->Html->link('Privacy', array ('controller' => 'pages', 'action' => 'legal', 'privacy'), array(
-                            'class' => 'fg-button ui-state-default  ',
-                            'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
+                            'class' => 'ui-state-default fg-button',
                         ));
                     ?>
                     <?php
                         echo $this->Html->link('Copyright & Licensing', array ('controller' => '', 'action' => ''), array(
-                            'class' => 'fg-button ui-state-default  ',
-                            'style' => 'margin: -1px 0.2em -5px 0.2em; display: inline; float: right;'
+                            'class' => 'ui-state-default fg-button',
                         ));
                     ?>
                 </div>

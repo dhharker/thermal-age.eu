@@ -134,6 +134,22 @@ li {
 footer {
     margin-top: 20px;
     font-variant: small-caps !important;
+    padding: 2px;
+}
+footer .smartbox {
+    margin: 0px 2px 0px -2px;
+    padding: 0px;
+}
+footer .smartbox  div {
+    margin: 0px;
+    padding: 0px;
+}
+footer .fg-button {
+    margin: -1px 4px;
+    padding: 3px .6em;
+    line-height: inherit;
+    display: inline;
+    float: right !important;
 }
 header {
 
@@ -608,4 +624,13 @@ form div.error-message {
 }
 .cake-sql-log caption {
 	color:#fff;
+}
+
+
+/* padding (more in ..._wizard.css */
+.paddedCell_10_h {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
