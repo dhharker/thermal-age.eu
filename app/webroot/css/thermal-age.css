@@ -320,7 +320,7 @@ header nav .fg-buttonset {
 /* Call To Action stuffs*/
 
 .cta-button {
-    margin: .5em 1em .5em 1em;
+    margin: 20px;
     font-size: 1em;
     font-weight: bold;
     display: block;
@@ -462,7 +462,8 @@ form .required label:after {
 label {
 	display: block;
 	font-size: 110%;
-	margin-bottom:3px;
+	margin: 10px 0px 0px .1em;
+	
 }
 input, textarea {
 	clear: both;
@@ -470,6 +471,10 @@ input, textarea {
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
 	padding: 5px 1%;
 	width:98%;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 }
 select {
 	clear: both;
@@ -478,6 +483,16 @@ select {
 }
 select[multiple=multiple] {
 	width: 100%;
+}
+input:focus, textarea:focus, select:focus {
+    background: #fcfcfc; /* Old browsers */
+    background: -moz-linear-gradient(top, #fcfcfc 0%, #ede9ce 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#ede9ce)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #fcfcfc 0%,#ede9ce 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #fcfcfc 0%,#ede9ce 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #fcfcfc 0%,#ede9ce 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ede9ce',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, #fcfcfc 0%,#ede9ce 100%); /* W3C */
 }
 option {
 	font-size: 120%;
@@ -607,8 +622,8 @@ form div.error-message {
     -webkit-border-bottom-right-radius:5px;
 	-moz-border-radius-bottomleft:5px;
 	-moz-border-radius-bottomright:5px;
-	padding: 2px 10px;
-    margin: -1px 5px 5px 1em;
+	padding: 1px 9px;
+    margin: -2px 5px 5px 1em;
     float: right;
 }
 
@@ -629,8 +644,6 @@ form div.error-message {
 
 /* padding (more in ..._wizard.css */
 .paddedCell_10_h {
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
