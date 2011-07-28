@@ -37,7 +37,7 @@
 <?php echo $this->Form->end(); ?>
 
 <script type="text/javascript">
-$(document).ready (function () {
+$(function () {
     wc.initSiteForm ();
 });
 </script>

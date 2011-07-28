@@ -5,7 +5,15 @@ var wc = {
         maps: {}
         
     },
-    lockHeightToParent: function (ele) {
+    loadGmapsAsync: function (callback) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=" + callback;
+        document.body.appendChild(script);
+        wc.loadGmapsAsync = function (callback) { return false; };
+        return true;
+    },
+    lockHeightToParent: function (ele) {                    // <-- not sure if this method works at all *shrug*
         $('window').resize (ele, function () {
             $me = $(ele);
             $me.css ('height', $me.parent().css ('height'));
@@ -17,7 +25,7 @@ var wc = {
         wc.lockHeightToParent ($('#wizardDetailColumn', $me));
     },
     initMap: function (ele) {
-        ele = ele || '#mapContainer';
+        ele = ele || '#gMapContainer';
         var $mc = $(ele);
         latlng = new google.maps.LatLng(20, 0);
         myOptions = {
@@ -28,7 +36,7 @@ var wc = {
         var ni = $('.mapContainer').length + 1;
         var mcid = 'mapContainer_' + (ni);
         $mc.attr ('id', mcid).addClass ('mapContainer');
-        wc.local.maps[ni] = $mc;
+        
         var map = new google.maps.Map(document.getElementById (mcid), myOptions);
         
         var marker = new google.maps.Marker({
@@ -37,9 +45,16 @@ var wc = {
             draggable: true,
             title:""
         });
+        
+        wc.local.map = {
+            mapContainer: $mc,
+            map: map,
+            marker: marker
+        };
+        
     },
     initSiteForm: function (ele) {
-        wc.initMap ('#gMapContainer');
+        wc.loadGmapsAsync ("wc.initMap")
         
     },
     initReactionForm: function (ele) {
