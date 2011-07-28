@@ -34,11 +34,13 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 
 <script type="text/javascript">
 $(document).ready (function () {
-    $('#wizardProgressBar').pageSlide ({
-        width: '350px',
-        direction: 'left'
-    }).find ('#wpbContainer').progressbar ({
-        value: <?=$progress?>,
+    $('#wizardProgressBar').once ('widgetInited', function () {
+        $(this).pageSlide ({
+            width: '350px',
+            direction: 'left'
+        }).find ('#wpbContainer').progressbar ({
+            value: <?=$progress?>,
+        });
     });
 });
 </script>

@@ -5,7 +5,17 @@ var wc = {
         maps: {}
         
     },
-
+    lockHeightToParent: function (ele) {
+        $('window').resize (ele, function () {
+            $me = $(ele);
+            $me.css ('height', $me.parent().css ('height'));
+        });
+    },
+    init: function (ele) {
+        ele = ele || '#SiteForm';
+        var $me = $(ele);
+        wc.lockHeightToParent ($('#wizardDetailColumn', $me));
+    },
     initMap: function (ele) {
         ele = ele || '#mapContainer';
         var $mc = $(ele);
@@ -30,11 +40,10 @@ var wc = {
     },
     initSiteForm: function (ele) {
         wc.initMap ('#gMapContainer');
-
+        
     },
     initReactionForm: function (ele) {
-        ele = ele || 'form#ReactionForm';
-        var $form = $(ele);
+
         $('input[name$="_name\]"]')
             .keyup (function () {
                 $(this).toTitleCase();
@@ -64,57 +73,8 @@ var wc = {
                             .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
                             .data ('lastSet', combinedName);
                     }
-                }
-            );
-        
-        /*$('label[for="ReactionName"]').once ('widgetInited', function () { $(this).before ( 
-            $('<div></div>')
-                .addClass ('fg-buttonset fg-buttonset-single')
-                .css ({
-                        'float': 'right',
-                        'margin': '0.2em'
-                })
-                .html (
-                $('<a>&dArr; Copy Above</a>')
-                    .attr ('id', 'copyNamesDownButton')
-                    .addClass ('fg-button ui-state-default ui-priority-secondary ui-corner-all')
-                    .click (function () {
-                        var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
-                        combinedName = jQuery.trim (combinedName);
-                        var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
-                        if (subs.length > 0)
-                            combinedName += ' (' + subs + ')';
-
-                        if (combinedName.length > 0 && (
-                            jQuery.trim ($('input#ReactionName').val ()).length == 0
-                            || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
-                        )) {
-                                                console.log (1);
-                            $('input#ReactionName')
-                                .val (combinedName)
-                                .data ('lastSet', combinedName);
-                        }
-                        else if (
-                            $('input#ReactionName').data ('lastSet') && $('input#ReactionName').data ('lastSet').length > 0
-                        ) {
-                                                console.log (2);
-                            $('input#ReactionName')
-                                .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
-                                .data ('lastSet', combinedName);
-                        }
-                        else {
-                                                console.log (3);
-                            $('input#ReactionName')
-                                .val (combinedName)
-                                .data ('lastSet', combinedName);
-                        }
-                        
-                        
-                    })
-                )
-            )
-        });*/
-        
+            });
+            
         $('select#ReactionSelect').once ('widgetInited', function () {
             $(this).change (function () {
                 if ($(this).val () == '-1') {
@@ -136,12 +96,7 @@ var wc = {
     }
 }
 
-
-
-
-
-
-
+wc.init();
 
 
 

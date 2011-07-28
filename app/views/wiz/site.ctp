@@ -1,3 +1,5 @@
+<?=$this->element('wiz/wizardDetailColumn', $wizard);?>
+
 <h1 class="sbHeading ui-corner-tl">
     Site Info
 </h1>
@@ -30,9 +32,7 @@
 
 	</fieldset>
 
-<?
-
-echo $this->element('wiz/wizardControlBar', $wizard);?>
+<?=$this->element('wiz/wizardControlBar', $wizard);?>
 
 <?php echo $this->Form->end(); ?>
 

@@ -6,7 +6,7 @@
 		
 
         <div class="grid_11 alpha">
-            <?= $this->Form->input('Reaction.Reaction_id', array (
+            <?= $this->Form->input('Reaction.reaction_id', array (
                 'style' => 'width: 100%',
                 'id' => 'ReactionSelect',
             )); ?>

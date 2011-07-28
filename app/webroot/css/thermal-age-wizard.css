@@ -67,3 +67,11 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+/* this thing pops in from the right of the wizard when the progress bar is clicked */
+#wizardDetailColumn {
+    float: right;
+    margin: 0px;
+    color: rgba(240,240,240,.9);
+    background: rgba(12,12,12,.9);
+}

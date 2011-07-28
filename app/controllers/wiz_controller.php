@@ -118,13 +118,18 @@ class WizController extends AppController {
      * Reaction input handler
      */
     function _processReaction () {
-        $this->Reaction->set ($this->data);
-
-        if ($this->Reaction->validates() == true) {
+        
+        if ($this->data['Reaction']['reaction_id'] == -1) {
+            $this->Reaction->set ($this->data);
+            return ($this->Reaction->validates() == true) ? TRUE : FALSE;
+        }
+        elseif ($this->Reaction->idExists ($this->data['Reaction']['reaction_id'])) {
             return true;
         }
+        else {
+            $this->set(array ('validationErrors'));
+        }
         
-
         return false;
     }
     function _prepareReaction () {
