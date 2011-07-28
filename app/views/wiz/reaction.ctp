@@ -4,7 +4,6 @@
 <?php echo $this->Form->create('Reaction', array('id' => 'ReactionForm', 'url' => $this->here)); ?>
 	<fieldset>
 		
-		<?// $this->Form->input('Reaction.id'); ?>
 
         <div class="grid_11 alpha">
             <?= $this->Form->input('Reaction.Reaction_id', array (
@@ -15,26 +14,33 @@
 
         <fieldset id="ReactionDetails" style="display: none;">
             
-            <div class="grid_7 alpha">
-                <div class="grid_3 alpha">
+            <div class="grid_11 alpha">
+                <div class="grid_4 alpha">
                     <?= $this->Form->input('Reaction.molecule_name', array (
-                        'label' => 'Molecule Name'
+                        'label' => 'Molecule'
                     )); ?>
                 </div>
-                <div class="grid_4 omega">
-                    <?= $this->Form->input('Reaction.reaction_name'); ?>
+                <div class="grid_4">
+                    <?= $this->Form->input('Reaction.reaction_name', array (
+                        'label' => 'Reaction'
+                    )); ?>
                 </div>
-                <div class="grid_7 alpha">
+                <div class="grid_3 omega">
+                    <?= $this->Form->input('Reaction.reaction_substrate', array (
+                        'label' => 'Substrate'
+                    )); ?>
+                </div>
+                <div class="grid_11 alpha">
                     <?= $this->Form->input('Reaction.name'); ?>
                 </div>
             </div>
-            <div class="grid_4 omega">
-                <div class="grid_4 alpha">
+            <div class="grid_11 alpha">
+                <div class="grid_5 alpha">
                     <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
                         'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
                     )); ?>
                 </div>
-                <div class="grid_4 alpha">
+                <div class="grid_6 omega">
                     <?= $this->Form->input('Reaction.f_sec', array (
                         'label' => 'Pre-exponential Factor (sec.)'
                     )); ?>
