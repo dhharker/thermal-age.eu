@@ -1,4 +1,6 @@
 $(document).ready (function () {
+
+    
     $('.fg-button,.hover').hover(
         function(){
             $(this).addClass("ui-state-hover");
@@ -14,7 +16,23 @@ $(document).ready (function () {
             'overflow': 'hidden',
             'clear': 'both',
             'margin': '0px 0px 2em 0px'
-        }).after ($('<a style="margin: -1.5em 20px .5em 20px; display: block; float: right;" href="#" onclick="$(this).prev(\'.spoiler\').find(\'*\').unwrap (); $(this).remove(); return false;">read more...</a>'));
+        }).after (
+            $('<a>read more...</a>')
+                .css ({
+                    'margin': '-1.5em 20px .5em 20px',
+                    'display': 'block',
+                    'float': 'right'
+                })
+                .attr ('href', '#')
+                .click (function () {
+                    $(this)
+                        .prev('.spoiler')
+                        .find('*')
+                        .unwrap ();
+                    $(this).remove();
+                    return false;
+                })
+        );
     });
 });
 

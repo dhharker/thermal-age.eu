@@ -1,12 +1,15 @@
+String.prototype.startsWith = function(str){
+    return (this.indexOf(str) === 0);
+}
+
+
 // hat, cloak etc.
 var wc = {
     local: {
         maps: {}
         
     },
-    init: function (sel) {
-        var context = $(sel || '#wizardControlBox');
-    },
+
     initMap: function (ele) {
         ele = ele || '#mapContainer';
         var $mc = $(ele);
@@ -39,16 +42,38 @@ var wc = {
         $('input[name$="_name\]"]').keyup (function () {
             $('input#ReactionMoleculeName').toTitleCase();
             $('input#ReactionReactionName').toTitleCase();
-            $('input#ReactionName').val (
-                $('input#ReactionMoleculeName').val () + 
-                    ' ' + 
-                    $('input#ReactionReactionName').val ()
-            );
         }).trigger ('keyup');
+        
+        $('label[for="ReactionName"]').once ('widgetInited', function () { $(this).before ( 
+            $('<div></div>')
+                .addClass ('fg-buttonset fg-buttonset-single')
+                .css ({
+                        'float': 'right',
+                        'margin': '0.2em'
+                    })
+                .html (
+                $('<a>&dArr; Copy Above</a>')
+                        .addClass ('fg-button ui-state-default ui-priority-secondary ui-corner-all')
+                        .click (function () {
+                            var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
+                            combinedName = jQuery.trim (combinedName);
+                            $('input#ReactionName').val (combinedName);
+                        }
+                    )
+                )
+            )
+        });
         
     }
 }
 
-$(document).ready (function () {
-    wc.init ();
-});
+
+
+
+
+
+
+
+
+
+
