@@ -34,5 +34,7 @@ $(document).ready (function () {
                 })
         );
     });
+    
+    $('.watermark-title').watermark ('watermark');
 });
 

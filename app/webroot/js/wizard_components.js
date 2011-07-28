@@ -50,13 +50,18 @@ var wc = {
             })
             .trigger ('keyup')
             //.filter ('#ReactionReactionName, #ReactionSubstrateName')
-            .blur(function () {
+            .keyup(function () {
                     var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
                     combinedName = jQuery.trim (combinedName);
                     var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
                     if (subs.length > 0)
                         combinedName += ' (' + subs + ')';
-                    
+
+                    // takes care of editing not working on reload
+                    if (!$('input#ReactionName').data ('lastSet') && $('input#ReactionName').val ().indexOf (combinedName) != -1) {
+                        $('input#ReactionName').data ('lastSet', combinedName);
+                    }
+                        
                     if (combinedName.length > 0 && (
                         jQuery.trim ($('input#ReactionName').val ()).length == 0
                         || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
@@ -73,7 +78,7 @@ var wc = {
                             .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
                             .data ('lastSet', combinedName);
                     }
-            });
+            }).trigger ('keyup');
             
         $('select#ReactionSelect').once ('widgetInited', function () {
             $(this).change (function () {

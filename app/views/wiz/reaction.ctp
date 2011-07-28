@@ -19,7 +19,8 @@
             <div class="grid_11 alpha">
                 <div class="grid_4 alpha">
                     <?= $this->Form->input('Reaction.molecule_name', array (
-                        'label' => 'Molecule'
+                        'label' => 'Molecule',
+                        
                     )); ?>
                 </div>
                 <div class="grid_4">
@@ -33,7 +34,10 @@
                     )); ?>
                 </div>
                 <div class="grid_11 alpha">
-                    <?= $this->Form->input('Reaction.name'); ?>
+                    <?= $this->Form->input('Reaction.name', array (
+                        'label' => 'Name',
+                        
+                    )); ?>
                 </div>
             </div>
             <div class="grid_11 alpha">
