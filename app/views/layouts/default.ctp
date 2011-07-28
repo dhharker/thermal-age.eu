@@ -47,13 +47,13 @@
         //when debugging: (prod add to minify)
         //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
 
-        echo $this->Javascript->link('ui.js');
 
         // @todo move this to $minified_javascript via wizController::_initialiseWizardEnvironment()
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Javascript->link('wizard_components.js');
         }
-        
+
+        echo $this->Javascript->link('ui.js');
 
 	?>
 </head>
