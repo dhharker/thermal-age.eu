@@ -20,7 +20,6 @@
                 <div class="grid_4 alpha">
                     <?= $this->Form->input('Reaction.molecule_name', array (
                         'label' => 'Molecule',
-                        
                     )); ?>
                 </div>
                 <div class="grid_4">
