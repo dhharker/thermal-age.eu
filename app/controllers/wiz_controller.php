@@ -129,7 +129,8 @@ class WizController extends AppController {
     }
     function _prepareReaction () {
         $citations = $this->Reaction->Citation->find('list');
-		$this->set(compact('citations'));
+        $reactions = $this->Reaction->find('list');
+		$this->set(compact('reactions', 'citations'));
     }
 
     /**

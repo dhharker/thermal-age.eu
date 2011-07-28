@@ -5,39 +5,50 @@
 	<fieldset>
 		
 		<?// $this->Form->input('Reaction.id'); ?>
-        <div class="grid_7 alpha">
-            <div class="grid_3 alpha">
-                <?= $this->Form->input('Reaction.molecule_name', array (
-                    'label' => 'Molecule Name'
-                )); ?>
-            </div>
-            <div class="grid_4 omega">
-                <?= $this->Form->input('Reaction.reaction_name'); ?>
-            </div>
-            <div class="grid_7 alpha">
-                <?= $this->Form->input('Reaction.name'); ?>
-            </div>
-        </div>
-        <div class="grid_4 omega">
-            <div class="grid_4 alpha">
-                <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
-                    'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
-                )); ?>
-            </div>
-            <div class="grid_4 alpha">
-                <?= $this->Form->input('Reaction.f_sec', array (
-                    'label' => 'Pre-exponential Factor (sec.)'
-                )); ?>
-                </div>
-        </div>
-        
-        
+
         <div class="grid_11 alpha">
-            <?= $this->Form->input('Reaction.citation_id', array (
+            <?= $this->Form->input('Reaction.Reaction_id', array (
                 'style' => 'width: 100%',
-                
+                'id' => 'ReactionSelect'
             )); ?>
         </div>
+
+        <fieldset id="ReactionDetails">
+            
+            <div class="grid_7 alpha">
+                <div class="grid_3 alpha">
+                    <?= $this->Form->input('Reaction.molecule_name', array (
+                        'label' => 'Molecule Name'
+                    )); ?>
+                </div>
+                <div class="grid_4 omega">
+                    <?= $this->Form->input('Reaction.reaction_name'); ?>
+                </div>
+                <div class="grid_7 alpha">
+                    <?= $this->Form->input('Reaction.name'); ?>
+                </div>
+            </div>
+            <div class="grid_4 omega">
+                <div class="grid_4 alpha">
+                    <?= $this->Form->input('Reaction.ea_kj_per_mol', array (
+                        'label' => 'Energy of Activation (kJ·mol<sup>-1</sup>)'
+                    )); ?>
+                </div>
+                <div class="grid_4 alpha">
+                    <?= $this->Form->input('Reaction.f_sec', array (
+                        'label' => 'Pre-exponential Factor (sec.)'
+                    )); ?>
+                    </div>
+            </div>
+
+
+            <div class="grid_11 alpha">
+                <?= $this->Form->input('Reaction.citation_id', array (
+                    'style' => 'width: 100%',
+
+                )); ?>
+            </div>
+        </fieldset>
 	</fieldset>
 
 <?
