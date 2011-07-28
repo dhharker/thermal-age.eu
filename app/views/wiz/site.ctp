@@ -5,6 +5,17 @@
 </h1>
 <?php echo $this->Form->create('Site', array('id' => 'SiteForm', 'url' => $this->here)); ?>
 	<fieldset>
+        <div class="grid_8 alpha">
+            <?= $this->Form->input('Site.name'); ?>
+        </div>
+        <div class="grid_3 omega">
+            <?= $this->Form->button ('Find Location From Name', array (
+                'id' => 'FindLatLonBySiteNameButton',
+                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all',
+                'style' => 'margin-top: 2.8em; width: 100%;'
+            )); ?>
+        </div>
+
         <div class="grid_5 alpha">
             <?= $this->Form->input('Site.lat_dec', array (
                 'label' => 'Latitude (decimal °N)'
@@ -18,9 +29,6 @@
 
         <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 2px;">
             <div id="gMapContainer" class="" style="height: 300px; margin: 0px; clear: both;"></div>
-        </div>
-        <div class="grid_11 alpha">
-            <?= $this->Form->input('Site.name'); ?>
         </div>
 
         <div class="grid_11 alpha">

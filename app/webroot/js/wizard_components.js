@@ -2,10 +2,11 @@
 // hat, cloak etc.
 var wc = {
     local: {
-        maps: {}
+        map: {}
         
     },
     loadGmapsAsync: function (callback) {
+    return false; // debug
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=" + callback;
@@ -49,13 +50,17 @@ var wc = {
         wc.local.map = {
             mapContainer: $mc,
             map: map,
-            marker: marker
+            marker: marker,
+            resized: function () { wc.local.map.map.checkResize(); }
         };
         
     },
     initSiteForm: function (ele) {
-        wc.loadGmapsAsync ("wc.initMap")
-        
+        wc.loadGmapsAsync ("wc.initMap");
+        wc.initLocationLookupButton ();
+    },
+    initLocationLookupButton: function () {
+        $me = $("#FindLatLonBySiteNameButton");
     },
     initReactionForm: function (ele) {
 
@@ -76,7 +81,8 @@ var wc = {
                     if (!$('input#ReactionName').data ('lastSet') && $('input#ReactionName').val ().indexOf (combinedName) != -1) {
                         $('input#ReactionName').data ('lastSet', combinedName);
                     }
-                        
+                    
+                    // try and overwrite/replace/populate with a degree of sensitivity
                     if (combinedName.length > 0 && (
                         jQuery.trim ($('input#ReactionName').val ()).length == 0
                         || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
