@@ -42,6 +42,7 @@ class AppController extends Controller {
         $this->set('global_minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/
             'js/jquery-1.5.1.min.js',
+            'js/jquery.once.js',
             'js/jquery-ui-1.8.14.custom.min.js',
             'js/config.js',
             //prod:'js/ui.js', // basic interaction stuffs
@@ -49,6 +50,7 @@ class AppController extends Controller {
             'js/jquery.titlecase2.js',
             'js/pageslide/jquery.pageslide.min.js',
             'js/adapt/adapt.min.js',
+            
         )));
 
         // The minify controller needs a blank layout otherwise it'll inherit from $layout above
