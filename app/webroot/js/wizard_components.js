@@ -64,6 +64,17 @@ var wc = {
             )
         });
         
+        $('select#ReactionSelect').once ('widgetInited', function () {
+            $(this).change (function () {
+                if ($(this).val () == '-1') {
+                    $('#ReactionDetails').show ('slideDown');
+                }
+                else {
+                    $('#ReactionDetails').hide ('slideUp');
+                }
+            })
+            .trigger ('change');
+        });
     }
 }
 

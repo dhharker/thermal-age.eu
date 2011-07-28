@@ -9,11 +9,11 @@
         <div class="grid_11 alpha">
             <?= $this->Form->input('Reaction.Reaction_id', array (
                 'style' => 'width: 100%',
-                'id' => 'ReactionSelect'
+                'id' => 'ReactionSelect',
             )); ?>
         </div>
 
-        <fieldset id="ReactionDetails">
+        <fieldset id="ReactionDetails" style="display: none;">
             
             <div class="grid_7 alpha">
                 <div class="grid_3 alpha">
