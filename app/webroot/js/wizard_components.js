@@ -1,7 +1,3 @@
-String.prototype.startsWith = function(str){
-    return (this.indexOf(str) === 0);
-}
-
 
 // hat, cloak etc.
 var wc = {
@@ -39,30 +35,85 @@ var wc = {
     initReactionForm: function (ele) {
         ele = ele || 'form#ReactionForm';
         var $form = $(ele);
-        $('input[name$="_name\]"]').keyup (function () {
-            $('input#ReactionMoleculeName').toTitleCase();
-            $('input#ReactionReactionName').toTitleCase();
-        }).trigger ('keyup');
+        $('input[name$="_name\]"]')
+            .keyup (function () {
+                $(this).toTitleCase();
+            })
+            .trigger ('keyup')
+            //.filter ('#ReactionReactionName, #ReactionSubstrateName')
+            .blur(function () {
+                    var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
+                    combinedName = jQuery.trim (combinedName);
+                    var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
+                    if (subs.length > 0)
+                        combinedName += ' (' + subs + ')';
+                    
+                    if (combinedName.length > 0 && (
+                        jQuery.trim ($('input#ReactionName').val ()).length == 0
+                        || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
+                    )) {
+                        $('input#ReactionName')
+                            .val (combinedName)
+                            .data ('lastSet', combinedName);
+                    }
+                    else if (
+                        $('input#ReactionName').data ('lastSet') && 
+                        $('input#ReactionName').data ('lastSet').length > 0
+                    ) {
+                        $('input#ReactionName')
+                            .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
+                            .data ('lastSet', combinedName);
+                    }
+                }
+            );
         
-        $('label[for="ReactionName"]').once ('widgetInited', function () { $(this).before ( 
+        /*$('label[for="ReactionName"]').once ('widgetInited', function () { $(this).before ( 
             $('<div></div>')
                 .addClass ('fg-buttonset fg-buttonset-single')
                 .css ({
                         'float': 'right',
                         'margin': '0.2em'
-                    })
+                })
                 .html (
                 $('<a>&dArr; Copy Above</a>')
-                        .addClass ('fg-button ui-state-default ui-priority-secondary ui-corner-all')
-                        .click (function () {
-                            var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
-                            combinedName = jQuery.trim (combinedName);
-                            $('input#ReactionName').val (combinedName);
+                    .attr ('id', 'copyNamesDownButton')
+                    .addClass ('fg-button ui-state-default ui-priority-secondary ui-corner-all')
+                    .click (function () {
+                        var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
+                        combinedName = jQuery.trim (combinedName);
+                        var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
+                        if (subs.length > 0)
+                            combinedName += ' (' + subs + ')';
+
+                        if (combinedName.length > 0 && (
+                            jQuery.trim ($('input#ReactionName').val ()).length == 0
+                            || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
+                        )) {
+                                                console.log (1);
+                            $('input#ReactionName')
+                                .val (combinedName)
+                                .data ('lastSet', combinedName);
                         }
-                    )
+                        else if (
+                            $('input#ReactionName').data ('lastSet') && $('input#ReactionName').data ('lastSet').length > 0
+                        ) {
+                                                console.log (2);
+                            $('input#ReactionName')
+                                .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
+                                .data ('lastSet', combinedName);
+                        }
+                        else {
+                                                console.log (3);
+                            $('input#ReactionName')
+                                .val (combinedName)
+                                .data ('lastSet', combinedName);
+                        }
+                        
+                        
+                    })
                 )
             )
-        });
+        });*/
         
         $('select#ReactionSelect').once ('widgetInited', function () {
             $(this).change (function () {

@@ -26,7 +26,7 @@
                     )); ?>
                 </div>
                 <div class="grid_3 omega">
-                    <?= $this->Form->input('Reaction.reaction_substrate', array (
+                    <?= $this->Form->input('Reaction.substrate_name', array (
                         'label' => 'Substrate'
                     )); ?>
                 </div>
