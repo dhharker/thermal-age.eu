@@ -39,10 +39,10 @@
 }
 
 #wizardContainer fieldset {
-    margin: 35px 4%;
+    margin: 0px 4%;
 }
 #wizardContainer fieldset fieldset {
-    margin: 2em 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
     padding: 0px;
 }
 #wizardContainer fieldset legend {

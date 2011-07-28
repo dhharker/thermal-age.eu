@@ -120,15 +120,18 @@ var wc = {
                 if ($(this).val () == '-1') {
                     $('#ReactionDetails:hidden').show ('blind', {
                         direction: 'vertical'
-                    });
+                    }, 1000);
                 }
                 else {
                     $('#ReactionDetails:visible').hide ('blind', {
                         direction: 'vertical'
-                    });
+                    }, 1000);
                 }
             })
-            .trigger ('change');
+
+            if ($(this).val () == '-1') {
+                $('#ReactionDetails:hidden').show ();
+            }
         });
     }
 }
