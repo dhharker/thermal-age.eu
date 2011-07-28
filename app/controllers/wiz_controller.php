@@ -123,14 +123,14 @@ class WizController extends AppController {
             $this->Reaction->set ($this->data);
             return ($this->Reaction->validates() == true) ? TRUE : FALSE;
         }
-        elseif ($this->Reaction->idExists ($this->data['Reaction']['reaction_id'])) {
-            return true;
+        elseif (!$this->Reaction->idExists ($this->data['Reaction']['reaction_id'])) {
+            //$this->Reaction->validationErrors['Reaction.reaction_id'] = __("Invalid reaction ID.");
+            $this->Reaction->invalidate('Reaction', __("Invalid reaction ID."));
+            $this->Session->setFlash(__('Invalid Reaction ID!', true));
+            return false;
         }
-        else {
-            $this->set(array ('validationErrors'));
-        }
+        return true;
         
-        return false;
     }
     function _prepareReaction () {
         $citations = $this->Reaction->Citation->find('list');
