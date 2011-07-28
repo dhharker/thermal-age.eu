@@ -15,10 +15,11 @@ var wc = {
         return true;
     },
     lockHeightToParent: function (ele) {                    // <-- not sure if this method works at all *shrug*
-        $('window').resize (ele, function () {
+        $('window').resize (ele, function (ele) {
             $me = $(ele);
-            $me.css ('height', $me.parent().css ('height'));
-        });
+            console.log ($me.parent().height());
+            $me.height ($me.parent().height());
+        }).resize();
     },
     init: function (ele) {
         ele = ele || '#SiteForm';
@@ -122,7 +123,7 @@ var wc = {
     }
 }
 
-wc.init();
+$(wc.init());
 
 
 
