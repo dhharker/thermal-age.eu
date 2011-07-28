@@ -1,3 +1,5 @@
+<?=$this->element('wiz/wizardDetailColumn', $wizard);?>
+
 <h1 class="sbHeading ui-corner-tl">
     Chemical Reaction
 </h1>
