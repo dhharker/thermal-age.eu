@@ -35,7 +35,12 @@ class AppModel extends Model {
 
 
     function idExists ($id) {
-        return ($this->find ('count', array ('conditions' => array ($this->name . "." . strtolower ($this->name) . '_id', $id))) > 0) ? TRUE : FALSE;
+        return ($this->find ('count', array (
+            'conditions' => array (
+                $this->name . "." . strtolower ($this->name) . '_id', $id
+            ),
+            'recursive' => false
+        )) > 0) ? TRUE : FALSE;
     }
 
 
