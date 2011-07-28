@@ -43,7 +43,7 @@ class Reaction extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'numeric' => array(
-				'rule' => array('decimal'),
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				'allowEmpty' => false,
 				//'required' => false,
@@ -65,7 +65,7 @@ class Reaction extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 			'numeric' => array(
-				'rule' => array('decimal'),
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
