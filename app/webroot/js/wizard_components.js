@@ -67,10 +67,14 @@ var wc = {
         $('select#ReactionSelect').once ('widgetInited', function () {
             $(this).change (function () {
                 if ($(this).val () == '-1') {
-                    $('#ReactionDetails').show ('slideDown');
+                    $('#ReactionDetails:hidden').show ('blind', {
+                        direction: 'vertical'
+                    });
                 }
                 else {
-                    $('#ReactionDetails').hide ('slideUp');
+                    $('#ReactionDetails:visible').hide ('blind', {
+                        direction: 'vertical'
+                    });
                 }
             })
             .trigger ('change');
