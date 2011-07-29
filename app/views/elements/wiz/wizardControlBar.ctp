@@ -36,10 +36,7 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 
 
 $('#wizardProgressBar').once ('widgetInited', function () {
-    $(this).pageSlide ({
-        width: '350px',
-        direction: 'left'
-    }).find ('#wpbContainer').progressbar ({
+    $(this).find ('#wpbContainer').progressbar ({
         value: <?=$progress?>,
     });
 });
