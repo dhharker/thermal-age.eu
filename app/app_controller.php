@@ -29,6 +29,7 @@ class AppController extends Controller {
             'js/jquery.titlecase2.js',
             //'js/pageslide/jquery.pageslide.min.js',
             'js/adapt/adapt.min.js',
+            'js/jquery.ba-resize.min.js',
             
         )));
 

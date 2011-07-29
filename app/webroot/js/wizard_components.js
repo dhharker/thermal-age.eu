@@ -6,7 +6,7 @@ var wc = {
         
     },
     loadGmapsAsync: function (callback) {
-    return false; // debug
+//    return false; // debug
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=" + callback;
