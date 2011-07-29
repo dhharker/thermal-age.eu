@@ -38,21 +38,23 @@ var wc = {
         var mcid = 'mapContainer_' + (ni);
         $mc.attr ('id', mcid).addClass ('mapContainer');
         
-        var map = new google.maps.Map(document.getElementById (mcid), myOptions);
+        var gmap = new google.maps.Map(document.getElementById (mcid), myOptions);
         
         var marker = new google.maps.Marker({
             position: latlng, 
-            map: map,
+            map: gmap,
             draggable: true,
             title:""
         });
         
         wc.local.map = {
             mapContainer: $mc,
-            map: map,
+            map: gmap,
             marker: marker,
-            resized: function () { wc.local.map.map.checkResize(); }
+            resized: function () { wc.local.map.checkResize(); }
         };
+        
+        $mc.resize (gmap.checkResize);
         
     },
     initSiteForm: function (ele) {
