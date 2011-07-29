@@ -1,4 +1,4 @@
-
+console.log ("start of wc code");
 // hat, cloak etc.
 var wc = {
     local: {
@@ -14,17 +14,16 @@ var wc = {
         wc.loadGmapsAsync = function (callback) { return false; };
         return true;
     },
-    lockHeightToParent: function (ele) {                    // <-- not sure if this method works at all *shrug*
-        $('window').resize (ele, function (ele) {
-            $me = $(ele);
-            console.log ($me.parent().height());
-            $me.height ($me.parent().height());
-        }).resize();
+    initProgressColumn: function (ele) {                    // <-- not sure if this method works at all *shrug*
+        var $me = $(ele);
+        $me.click (function () {
+            $(this).height ($(this).parent().height());
+        });
     },
     init: function (ele) {
-        ele = ele || '#SiteForm';
+        ele = ele || '#wizardContainer';
         var $me = $(ele);
-        wc.lockHeightToParent ($('#wizardDetailColumn', $me));
+        wc.initProgressColumn ($('#wizardDetailColumn', $me));
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
@@ -61,7 +60,12 @@ var wc = {
         wc.initLocationLookupButton ();
     },
     initLocationLookupButton: function () {
-        $me = $("#FindLatLonBySiteNameButton");
+        var $me = $("#FindLatLonBySiteNameButton");
+        console.log (this);
+        $me.click (function () {
+            console.log ("this button doesn't work yet, make it work.");
+            return false;
+        });
     },
     initReactionForm: function (ele) {
 
@@ -121,10 +125,11 @@ var wc = {
             }
         });
     }
-}
+};
 
-$(wc.init());
+console.log ("wc.init():");
+wc.init();
 
-
+console.log ("end of wc code");
 
 

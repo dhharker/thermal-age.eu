@@ -33,7 +33,8 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 </div>
 
 <script type="text/javascript">
-$(document).ready (function () {
+console.log ("start of site code");
+$(function () {
     $('#wizardProgressBar').once ('widgetInited', function () {
         $(this).pageSlide ({
             width: '350px',
@@ -43,6 +44,7 @@ $(document).ready (function () {
         });
     });
 });
+console.log ("end of site code");
 </script>
 
 <!-- end wizard control bar -->

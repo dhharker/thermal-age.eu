@@ -45,9 +45,8 @@
 <?php echo $this->Form->end(); ?>
 
 <script type="text/javascript">
-$(function () {
+
     wc.initSiteForm ();
-});
 </script>
 
 <!--

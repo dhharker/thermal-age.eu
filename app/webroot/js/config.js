@@ -7,7 +7,10 @@ var ADAPT_CONFIG = {
   dynamic: true,
 
   // Optional callback... myCallback(i, width)
-  //callback: myCallback,
+  callback: function (i, width) {
+    if (i == 0) $('body').addClass ("mobile-layout");
+    else $('body').removeClass ("mobile-layout");
+  },
 
   // First range entry is the minimum.
   // Last range entry is the maximum.

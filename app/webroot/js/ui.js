@@ -1,3 +1,5 @@
+console.log ("start of ui code");
+
 $(function () {
 
     
@@ -37,3 +39,4 @@ $(function () {
     
 });
 
+console.log ("end of ui code");
