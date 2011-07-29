@@ -51,10 +51,21 @@ var wc = {
             mapContainer: $mc,
             map: gmap,
             marker: marker,
-            resized: function () { wc.local.map.checkResize(); }
         };
         
-        $mc.resize (gmap.checkResize);
+        google.maps.event.addListener (marker, 'dragend', function (event) {
+            marker.setPosition (event.latLng);
+            gmap.panTo (event.latLng);
+        });
+        google.maps.event.addListener (gmap, 'resize', function () {
+            gmap.setCenter (marker.getPosition());
+        });
+        var mapResizeHandler = function () {
+            google.maps.event.trigger(gmap, 'resize');
+        };
+
+        $mc.resize (mapResizeHandler);
+        $(window).resize (mapResizeHandler);
         
     },
     initSiteForm: function (ele) {
