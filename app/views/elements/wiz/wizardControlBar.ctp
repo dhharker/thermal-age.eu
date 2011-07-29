@@ -23,6 +23,9 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 
     <a id="wizardProgressBar" class="clearfix grid_4 omega no-v-margin ui-corner-br"
        href="<?=$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>">
+
+        <?=$this->element('wiz/wizardDetailColumn', $wizard);?>
+
         <div class="progressbarPadding ui-state-default hover ui-corner-br">
             <div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
                 <?=$progress?>%

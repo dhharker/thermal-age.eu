@@ -1,4 +1,4 @@
-<?=$this->element('wiz/wizardDetailColumn', $wizard);?>
+
 
 <h1 class="sbHeading ui-corner-tl">
     Site Info
