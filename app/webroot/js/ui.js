@@ -1,5 +1,4 @@
 $(function () {
-
     
     $('.fg-button,.hover').hover(
         function(){

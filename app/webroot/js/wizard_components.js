@@ -1,4 +1,4 @@
-
+var ADAPT_CALLBACK_2;
 // hat, cloak etc.
 var wc = {
     local: {
@@ -63,7 +63,15 @@ var wc = {
         var mapResizeHandler = function () {
             google.maps.event.trigger(gmap, 'resize');
         };
-
+        ADAPT_CALLBACK_2 = function (i, width) {
+            if (i == 0)
+                $('body').addClass ("mobile-layout");
+            else
+                $('body').removeClass ("mobile-layout");
+            
+            google.maps.event.trigger(gmap, 'resize');
+        };
+        
         $mc.resize (mapResizeHandler);
         $(window).resize (mapResizeHandler);
         

@@ -1,10 +1,3 @@
-var ADAPT_CALLBACK = function (i, width) {
-    if (i == 0)
-            $('body').addClass ("mobile-layout");
-        else
-            $('body').removeClass ("mobile-layout");
-};
-
 var ADAPT_CONFIG = {
   // Where is your CSS?
   path: '/css/adapt/',
@@ -14,7 +7,13 @@ var ADAPT_CONFIG = {
   dynamic: true,
 
   // Optional callback... myCallback(i, width)
-  callback: ADAPT_CALLBACK,
+  callback: function (i, width) {
+        if (i == 0)
+            $('body').addClass ("mobile-layout");
+        else
+            $('body').removeClass ("mobile-layout");
+        
+    },
 
   // First range entry is the minimum.
   // Last range entry is the maximum.
