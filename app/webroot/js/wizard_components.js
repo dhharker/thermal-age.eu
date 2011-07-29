@@ -60,20 +60,14 @@ var wc = {
         google.maps.event.addListener (gmap, 'resize', function () {
             gmap.setCenter (marker.getPosition());
         });
-        var mapResizeHandler = function () {
-            google.maps.event.trigger(gmap, 'resize');
+        var mapResizeHandler = function (i, width) {
+            console.log ("map resize handler", i, width);
+            setTimeout ("google.maps.event.trigger(wc.local.map.map, 'resize');", 500);
         };
-        ADAPT_CALLBACK_2 = function (i, width) {
-            if (i == 0)
-                $('body').addClass ("mobile-layout");
-            else
-                $('body').removeClass ("mobile-layout");
-            
-            google.maps.event.trigger(gmap, 'resize');
-        };
+        $('body').data ('resizeHandler', mapResizeHandler);
         
         $mc.resize (mapResizeHandler);
-        $(window).resize (mapResizeHandler);
+        //$(window).resize (mapResizeHandler);
         
     },
     initSiteForm: function (ele) {
