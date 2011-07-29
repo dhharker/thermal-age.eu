@@ -67,7 +67,7 @@ var wc = {
         $('body').data ('resizeHandler', mapResizeHandler);
         
         $mc.resize (mapResizeHandler);
-        //$(window).resize (mapResizeHandler);
+
         
     },
     initSiteForm: function (ele) {
