@@ -1,4 +1,4 @@
-console.log ("start of wc code");
+
 // hat, cloak etc.
 var wc = {
     local: {
@@ -60,9 +60,7 @@ var wc = {
         wc.initLocationLookupButton ();
     },
     initLocationLookupButton: function () {
-        var $me = $("#FindLatLonBySiteNameButton");
-        console.log (this);
-        $me.click (function () {
+        $("#FindLatLonBySiteNameButton").click (function () {
             console.log ("this button doesn't work yet, make it work.");
             return false;
         });
@@ -127,9 +125,7 @@ var wc = {
     }
 };
 
-console.log ("wc.init():");
-wc.init();
 
-console.log ("end of wc code");
+wc.init();
 
 

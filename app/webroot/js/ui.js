@@ -1,8 +1,4 @@
-console.log ("start of ui code");
-
-
-
-$(function () {
+(function () {
 
     
     $('.fg-button,.hover').hover(
@@ -41,4 +37,3 @@ $(function () {
     
 });
 
-console.log ("end of ui code");
