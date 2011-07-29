@@ -8,9 +8,11 @@ var ADAPT_CONFIG = {
 
   // Optional callback... myCallback(i, width)
   callback: function (i, width) {
-    if (i == 0) $('body').addClass ("mobile-layout");
-    else $('body').removeClass ("mobile-layout");
-  },
+        if (i == 0)
+            $('body').addClass ("mobile-layout");
+        else
+            $('body').removeClass ("mobile-layout");
+    },
 
   // First range entry is the minimum.
   // Last range entry is the maximum.

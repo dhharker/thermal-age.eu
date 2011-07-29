@@ -72,18 +72,30 @@
 #wizardDetailColumn {
 
     display: block !important;
-    position: relative;
+
     z-index: 200 !important;
     float: right;
 
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-    height: 100%;
+    
     margin: 0px;
     
     color: rgba(240,240,240,.9);
     background-color: rgba(12,12,12,.9);
-    
-    
+       
+}
+
+.mobile-layout #wizardDetailColumn {
+    width: 15em;
+    float: right;
+    display: block !important;
+}
+
+
+#FindLatLonBySiteNameButton {
+    margin-top: 2.8em;
+    width: 100%;
+}
+.mobile-layout #FindLatLonBySiteNameButton {
+    margin-top: .2em !important;
+    margin-bottom: .8em;
 }

@@ -11,8 +11,7 @@
         <div class="grid_3 omega">
             <?= $this->Form->button ('Find Location From Name', array (
                 'id' => 'FindLatLonBySiteNameButton',
-                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all',
-                'style' => 'margin-top: 2.8em; width: 100%;'
+                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all'
             )); ?>
         </div>
 
