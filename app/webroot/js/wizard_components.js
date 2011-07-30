@@ -48,7 +48,6 @@ var wc = {
         // this has to be loaded last of all otherwise its callbacks won't play nice save much more code right now
         jQuery.getScript ('/js/adapt/adapt.js');
         
-        $(window).trigger('resize');
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';

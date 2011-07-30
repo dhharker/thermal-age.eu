@@ -1,5 +1,3 @@
-
-
 <h1 class="sbHeading ui-corner-tl">
     Site Info
 </h1>
