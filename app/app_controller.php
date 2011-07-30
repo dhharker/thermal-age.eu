@@ -29,7 +29,7 @@ class AppController extends Controller {
             'js/jqf/jquery.form.js',
             'js/jquery.titlecase2.js',
             //'js/pageslide/jquery.pageslide.min.js',
-            'js/adapt/adapt.min.js',
+            //'js/adapt/adapt.js',
             
             
         )));

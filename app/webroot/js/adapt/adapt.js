@@ -96,6 +96,7 @@
     }
     else if (url_old !== url) {
       // Apply changes.
+
       change(i, width);
     }
   }

@@ -33,17 +33,22 @@ var wc = {
     },
     initProgressColumn: function (url) {
         var ele = '#wizardDetailColumn';
-        console.log (url);
         $(ele)
             .resize (wc.damocles(ele))
+            .trigger('resize')
             .hide()
-            .load (url)
+            .load (url, {}, function () { $(window).trigger('resize'); })
         ;
 
     },
     init: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
+        
+        // this has to be loaded last of all otherwise its callbacks won't place nice save much more code right now
+        jQuery.getScript ('/js/adapt/adapt.js');
+        
+        $(window).trigger('resize');
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';

@@ -55,6 +55,11 @@
 
         echo $this->Javascript->link('ui.js');
 
+        // looks like this might have to be loaded last of all to make the callbacks work nicely
+        //echo $this->Javascript->link('adapt/adapt.js');
+
+
+
 	?>
 </head>
 
