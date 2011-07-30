@@ -20,12 +20,13 @@ var wc = {
         });
     },
     initProgressColumn: function (ele) {
+        ele = ele || '#wizardDetailColumn';
         $(ele).resize (wc.pullUp(ele));
+
     },
     init: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
-        wc.initProgressColumn ('#wizardDetailColumn');
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
