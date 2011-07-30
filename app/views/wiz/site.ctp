@@ -37,7 +37,7 @@
 
 	</fieldset>
 
-<?=$this->element('wiz/wizardControlBar', $wizard);?>
+<?=$this->element('wiz/wizardControlBar',  array ('wizardInfos' => $wizardInfos));?>
 
 <?php echo $this->Form->end(); ?>
 

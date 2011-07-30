@@ -33,11 +33,9 @@ var wc = {
     },
     initProgressColumn: function (url) {
         var ele = '#wizardDetailColumn';
-        $(window).resize (function (ele) {
-            $(ele).resize();
-        } (ele));
+        // @todo when in mobile layout, the col does not resize with the window unless the progress bar is clicked
         $(ele)
-            .resize (wc.damocles(ele))
+            .resize (function () {wc.damocles ($('#wizardDetailColumn'));})
             .trigger('resize')
             .load (url, {}, function () { $('#wizardDetailColumn').resize(); })
             .hide()

@@ -1,7 +1,7 @@
 <!-- start wizard control bar -->
 <?php
 
-$progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
+$wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardInfos) : 0;
 
 ?>
 <div id="wizardBottomBar" class="ui-corner-bottom ui-state-default clearfix">
@@ -23,13 +23,13 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 
     
     <div id="wizardProgressBarContainer" class="clearfix grid_4 omega no-v-margin">
-        <?=$this->element('wiz/wizardDetailColumn', $wizard);?>
+        <?=$this->element('wiz/wizardDetailColumn', array ('wizardInfos' => $wizardInfos));?>
         <a id="wizardProgressBar" class="ui-corner-br"
            href="#<?$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>">
 
             <div class="progressbarPadding ui-state-default hover ui-corner-br">
                 <div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
-                    <?=$progress?>%
+                    <?=$wizardInfos['progress']?>%
                 </div>
                 <div id="wpbContainer" class=""></div>
             </div>
@@ -52,7 +52,7 @@ $('a#wizardProgressBar').once ('widgetInited', function () {
             return false;
         })
         .find ('#wpbContainer').progressbar ({
-            value: <?=$progress?>,
+            value: <?=$wizardInfos['progress']?>,
         })
     ;
 });

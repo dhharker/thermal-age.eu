@@ -7,16 +7,23 @@ class WizController extends AppController {
 
     var $amWizard = ''; // contains the name of the current wizard
     var $wizardInfos = array (
-        'dna_survival_screening_tool' => array (
-            'specimen' => array (),
-            'reaction' => array (),
-            'site' => array (),
-            'temporothermal' => array (
-                'title' => 'Environment',
+        'steps' => array (
+            'dna_survival_screening_tool' => array (
+                'specimen' => array (),
+                'reaction' => array (),
+                'site' => array (),
+                'temporothermal' => array (
+                    'title' => 'Environment',
+                ),
             ),
-
-        )
+        ),
+        "wizardname" => '',
+        "wizardtitle" => '',
+        "progress" => 0,
+        "stepname" => '',
+        "steptitle" => '',
     );
+    
 
 
 
@@ -32,13 +39,16 @@ class WizController extends AppController {
         // is it a real wizard?
         $wizardAction = strtolower (trim($wizardAction));
         if (strlen ($wizardAction) == 0) return false;
-        if (in_array ($wizardAction, array_keys ($this->wizardInfos))) {
+        if (in_array ($wizardAction, array_keys ($this->wizardInfos['steps']))) {
             // yes
             $this->amWizard = $wizardAction;
+            $this->wizardInfos['wizardname'] = $wizardAction;
+            $this->wizardInfos['wizardname'] = inflector::humanize ($wizardAction);
+            
         }
         else return false;
 
-        foreach ($this->wizardInfos as $wizName => &$steps) {
+        foreach ($this->wizardInfos['steps'] as $wizName => &$steps) {
             foreach ($steps as $stepName => &$stepInfo) {
                 if (!is_array ($stepInfo)) $stepInfo = array ();
                 if (!isset ($stepInfo['title']) || strlen ($stepInfo['title']) == 0) {
@@ -58,6 +68,7 @@ class WizController extends AppController {
                     }
                     elseif ($lastWasComplete) {
                         $stepInfo['class'] = "current";
+                        $this->wizardInfos['stepname'] = $stepName;
                         $lastWasComplete = false;
                     }
                     else {
@@ -69,10 +80,18 @@ class WizController extends AppController {
             }
         }
 
+        $this->wizardInfos['progress'] = 43;
+
         return true;
 
     }
-
+    /**
+     * To fill in some wizard-wide stuff for use by the various views/elements. Run once we're sure
+     * everything is ok.
+     */
+    function _initWizardInfo () {
+        
+    }
 
 
     /**
@@ -102,13 +121,7 @@ class WizController extends AppController {
         $wizName = Sanitize::paranoid ($wizName, array ('-', '_'));
         $environmentGood = $this->_initWizardEnvironment($wizName);
         if (!$environmentGood) die ("Env bad $wizName");
-        $this->set ('wizard', array (
-            "wizardname" => $this->amWizard,
-            "wizardtitle" => inflector::humanize ($this->amWizard),
-            "progress" => 42,
-            "stepname" => "!UNKNOWN!",
-            "steps" => $this->wizardInfos[$this->amWizard],
-        ));
+        $this->set ('wizardInfos',$this->wizardInfos);
     }
 
     /**
@@ -144,13 +157,9 @@ class WizController extends AppController {
                 return false;
             }
             
-            $this->Wizard->steps = array_keys ($this->wizardInfos[$this->amWizard]);
-            $this->set ('wizard', array (
-                "name" => inflector::humanize ($this->amWizard),
-                "progress" => 42,
-                "stepname" => "!UNKNOWN!",
-                "steps" => $this->wizardInfos[$this->amWizard],
-            ));
+            $this->Wizard->steps = array_keys ($this->wizardInfos['steps'][$this->amWizard]);
+            $this->set ('wizardInfos', $this->wizardInfos);
+            
             
             // validates against models automatically if no cb
             $this->Wizard->autoValidate = true;

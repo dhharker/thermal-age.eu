@@ -62,7 +62,7 @@
 
 <?
 
-echo $this->element('wiz/wizardControlBar', $wizard);?>
+echo $this->element('wiz/wizardControlBar',  array ('wizardInfos' => $wizardInfos));?>
 
 <?php echo $this->Form->end(); ?>
 
