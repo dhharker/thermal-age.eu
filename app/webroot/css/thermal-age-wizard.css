@@ -79,7 +79,7 @@
     padding-right: 3px;
     padding-left: 1px;
     margin-left: -1px;
-    margin-bottom: 0px;
+    margin-bottom: 0px !important;
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     overflow: hidden;
@@ -102,6 +102,28 @@
     margin: 0px;
     padding: 0px;
 }
+#wizardDetailColumnInner ol {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+#wizardDetailColumnInner ol li {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+#wizardDetailColumnInner ol li a.progressStepLink {
+    display: block;
+    margin: 0px -3px -1px -1px;
+    border: 1px solid #ccc;
+}
+#wizardDetailColumnInner ol li a.progressStepLink:hover {
+    
+}
+#wizardDetailColumnInner ol li a.progressStepLink img {
+    margin: 0px 0px 2px 3px;
+}
+
 
 
 #FindLatLonBySiteNameButton {

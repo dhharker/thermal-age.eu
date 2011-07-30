@@ -104,7 +104,7 @@ class WizController extends AppController {
         if (!$environmentGood) die ("Env bad $wizName");
         $this->set ('wizard', array (
             "wizardname" => $this->amWizard,
-            "name" => inflector::humanize ($this->amWizard),
+            "wizardtitle" => inflector::humanize ($this->amWizard),
             "progress" => 42,
             "stepname" => "!UNKNOWN!",
             "steps" => $this->wizardInfos[$this->amWizard],
