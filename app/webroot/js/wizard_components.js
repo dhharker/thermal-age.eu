@@ -45,7 +45,7 @@ var wc = {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
         
-        // this has to be loaded last of all otherwise its callbacks won't place nice save much more code right now
+        // this has to be loaded last of all otherwise its callbacks won't play nice save much more code right now
         jQuery.getScript ('/js/adapt/adapt.js');
         
         $(window).trigger('resize');
