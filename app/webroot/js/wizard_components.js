@@ -33,11 +33,14 @@ var wc = {
     },
     initProgressColumn: function (url) {
         var ele = '#wizardDetailColumn';
+        $(window).resize (function (ele) {
+            $(ele).resize();
+        } (ele));
         $(ele)
             .resize (wc.damocles(ele))
             .trigger('resize')
+            .load (url, {}, function () { $('#wizardDetailColumn').resize(); })
             .hide()
-            .load (url, {}, function () { $(window).trigger('resize'); })
         ;
 
     },
@@ -84,7 +87,6 @@ var wc = {
             gmap.setCenter (marker.getPosition());
         });
         var mapResizeHandler = function (i, width) {
-            console.log ("map resize handler", i, width);
             setTimeout ("google.maps.event.trigger(wc.local.map.map, 'resize');", 500);
         };
         $('body').data ('resizeHandler', mapResizeHandler);

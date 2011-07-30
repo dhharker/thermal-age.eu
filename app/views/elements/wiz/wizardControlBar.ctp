@@ -25,7 +25,7 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
     <div id="wizardProgressBarContainer" class="clearfix grid_4 omega no-v-margin">
         <?=$this->element('wiz/wizardDetailColumn', $wizard);?>
         <a id="wizardProgressBar" class="ui-corner-br"
-           href="<?=$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>">
+           href="#<?$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>">
 
             <div class="progressbarPadding ui-state-default hover ui-corner-br">
                 <div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
@@ -43,7 +43,11 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 $('a#wizardProgressBar').once ('widgetInited', function () {
     $(this)
         .click (function () {
-            $('#wizardDetailColumn').trigger('resize').slideToggle(250);
+            wc.damocles ($('#wizardDetailColumn'));
+            $('#wizardDetailColumn').toggle().resize().toggle().slideToggle(250, function () {
+                $(this).resize();
+                wc.damocles ($(this));
+            });
             $(this).blur();
             return false;
         })

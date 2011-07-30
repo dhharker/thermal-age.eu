@@ -5,8 +5,75 @@ class WizController extends AppController {
     var $components = array ('Wizard.Wizard', 'RequestHandler');
     var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation');
 
+    var $amWizard = ''; // contains the name of the current wizard
+    var $wizardInfos = array (
+        'dna_survival_screening_tool' => array (
+            'specimen' => array (),
+            'reaction' => array (),
+            'site' => array (),
+            'temporothermal' => array (
+                'title' => 'Environment',
+            ),
 
-    
+        )
+    );
+
+
+
+    /**
+     * This is called towards the end of _initWizardEnvironment and pads out $this->wizardInfos with
+     * all the stuff needed by the wizard progress column (showing previous and next steps), as well
+     * as the control bar (previous step etc.)
+     * @param string $wizardAction
+     * @return bool success
+     * @todo take into account validation success when assigning css classes
+     */
+    function _initWizardInfos ($wizardAction) {
+        // is it a real wizard?
+        $wizardAction = strtolower (trim($wizardAction));
+        if (strlen ($wizardAction) == 0) return false;
+        if (in_array ($wizardAction, array_keys ($this->wizardInfos))) {
+            // yes
+            $this->amWizard = $wizardAction;
+        }
+        else return false;
+
+        foreach ($this->wizardInfos as $wizName => &$steps) {
+            foreach ($steps as $stepName => &$stepInfo) {
+                if (!is_array ($stepInfo)) $stepInfo = array ();
+                if (!isset ($stepInfo['title']) || strlen ($stepInfo['title']) == 0) {
+                    $stepInfo['title'] = inflector::humanize ($stepName);
+                }
+                if (!isset ($stepInfo['showfield']) || strlen ($stepInfo['showfield']) == 0) {
+                    $stepInfo['showfield'] = 'name';
+                }
+            }
+            if ($wizName == $this->amWizard) {
+                $lastWasComplete = true;
+                foreach ($steps as $stepName => &$stepInfo) {
+                    $sd = $this->Wizard->read($stepName);
+                    if (is_array($sd)) { // there are some data set in this step
+                        $stepInfo['class'] = "complete";
+                        $lastWasComplete = true;
+                    }
+                    elseif ($lastWasComplete) {
+                        $stepInfo['class'] = "current";
+                        $lastWasComplete = false;
+                    }
+                    else {
+                        $stepInfo['class'] = "future";
+                    }
+
+                    //$stepInfo['class'];
+                }
+            }
+        }
+
+        return true;
+
+    }
+
+
 
     /**
      * The index action...
@@ -31,8 +98,17 @@ class WizController extends AppController {
      * state of the Wizard component, populates a view for display down the rhs of the wizard in
      * progress or stand-alone as the wizard re-entry start page (possibly).
      */
-    function progress () {
-        
+    function progress ($wizName = null) {
+        $wizName = Sanitize::paranoid ($wizName, array ('-', '_'));
+        $environmentGood = $this->_initWizardEnvironment($wizName);
+        if (!$environmentGood) die ("Env bad $wizName");
+        $this->set ('wizard', array (
+            "wizardname" => $this->amWizard,
+            "name" => inflector::humanize ($this->amWizard),
+            "progress" => 42,
+            "stepname" => "!UNKNOWN!",
+            "steps" => $this->wizardInfos[$this->amWizard],
+        ));
     }
 
     /**
@@ -51,24 +127,31 @@ class WizController extends AppController {
      * true if the environment is successfully initialised or false if there are errors.
      */
     function _initWizardEnvironment ($wizardAction = null) {
+        
+        
         if ($this->_checkEnvironment () == true) {
             $success = true;
 
             $this->set ('isWizard', true);
             $this->set ('content_for_layout', 'I am a wizard!');
-            $this->set ('wizard', array (
-                "progress" => 42,
-                "stepname" => "!UNKNOWN!",
-                "steps" => array  (),
-            ));
+            
             if ($wizardAction !== null)
                 $this->Wizard->initialize ($this, array (
                     'wizardAction' => $wizardAction
                 ));
 
-            /** @todo this must change with action once more than one wizard is >0% written */
-            $this->Wizard->steps = array('specimen', 'reaction', 'site', 'temporothermal');
-
+            if (!$this->_initWizardInfos($wizardAction)) {
+                return false;
+            }
+            
+            $this->Wizard->steps = array_keys ($this->wizardInfos[$this->amWizard]);
+            $this->set ('wizard', array (
+                "name" => inflector::humanize ($this->amWizard),
+                "progress" => 42,
+                "stepname" => "!UNKNOWN!",
+                "steps" => $this->wizardInfos[$this->amWizard],
+            ));
+            
             // validates against models automatically if no cb
             $this->Wizard->autoValidate = true;
 

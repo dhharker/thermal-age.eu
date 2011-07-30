@@ -79,7 +79,7 @@
     padding-right: 3px;
     padding-left: 1px;
     margin-left: -1px;
-
+    margin-bottom: 0px;
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     overflow: hidden;
@@ -95,8 +95,12 @@
 .mobile-layout #wizardDetailColumn {
     position: absolute;
     display: block;
-    float: none;
-    
+    float: right;
+}
+
+#wizardDetailColumnInner {
+    margin: 0px;
+    padding: 0px;
 }
 
 

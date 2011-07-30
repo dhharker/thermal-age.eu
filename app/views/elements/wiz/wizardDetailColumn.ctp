@@ -3,5 +3,5 @@
 </div>
 
 <script type="text/javascript">
-    wc.initProgressColumn ("<?=$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress')) ?>");
+    wc.initProgressColumn ("<?=$this->Html->url (array ('controller' => 'wiz', 'action' => 'progress', $this->action)) ?>");
 </script>
