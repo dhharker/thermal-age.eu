@@ -14,16 +14,18 @@ var wc = {
         wc.loadGmapsAsync = function (callback) { return false; };
         return true;
     },
-    initProgressColumn: function (ele) {                    // <-- not sure if this method works at all *shrug*
-        var $me = $(ele);
-        $me.click (function () {
-            $(this).height ($(this).parent().height());
+    pullUp: function (ele) {
+        $(ele).css ({
+            'margin-top': (($(ele).height() * -1) - 2) + 'px'
         });
+    },
+    initProgressColumn: function (ele) {
+        $(ele).resize (wc.pullUp(ele));
     },
     init: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
-        wc.initProgressColumn ($('#wizardDetailColumn', $me));
+        wc.initProgressColumn ('#wizardDetailColumn');
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
@@ -140,7 +142,8 @@ var wc = {
     }
 };
 
-
+($(document).ready(function () {
 wc.init();
+}));
 
 
