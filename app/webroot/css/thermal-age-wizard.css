@@ -74,8 +74,6 @@
     display: block;
 
     z-index: 200 !important;
-
-    
     margin: 0px;
     padding: 0px;
     padding-right: 3px;
@@ -95,8 +93,9 @@
 }
 
 .mobile-layout #wizardDetailColumn {
+    position: absolute;
+    float: none;
     
-    display: block;
 }
 
 

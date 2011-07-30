@@ -14,14 +14,31 @@ var wc = {
         wc.loadGmapsAsync = function (callback) { return false; };
         return true;
     },
+    damocles: function (ele) {
+        wc.pullUp (ele);
+        if ($('body').hasClass ('mobile-layout')) {
+            wc.pullOut (ele);
+        }
+    },
     pullUp: function (ele) {
         $(ele).css ({
             'margin-top': (($(ele).height() * -1) - 2) + 'px'
         });
     },
-    initProgressColumn: function (ele) {
-        ele = ele || '#wizardDetailColumn';
-        $(ele).resize (wc.pullUp(ele));
+    pullOut: function (ele) {
+        $(ele).css ({
+            'width': $(ele).parent().width() + 'px',
+            'float': 'none'
+        });
+    },
+    initProgressColumn: function (url) {
+        var ele = '#wizardDetailColumn';
+        console.log (url);
+        $(ele)
+            .resize (wc.damocles(ele))
+            .hide()
+            .load (url)
+        ;
 
     },
     init: function (ele) {

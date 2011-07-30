@@ -40,10 +40,17 @@ $progress = (isset ($progress)) ? sprintf ('%01.0f', $progress) : 0;
 <script type="text/javascript">
 
 
-$('#wizardProgressBar').once ('widgetInited', function () {
-    $(this).find ('#wpbContainer').progressbar ({
-        value: <?=$progress?>,
-    });
+$('a#wizardProgressBar').once ('widgetInited', function () {
+    $(this)
+        .click (function () {
+            $('#wizardDetailColumn').trigger('resize').slideToggle(250);
+            $(this).blur();
+            return false;
+        })
+        .find ('#wpbContainer').progressbar ({
+            value: <?=$progress?>,
+        })
+    ;
 });
 
 
