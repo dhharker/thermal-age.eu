@@ -44,7 +44,7 @@ $('a#wizardProgressBar').once ('widgetInited', function () {
     $(this)
         .click (function () {
             wc.damocles ($('#wizardDetailColumn'));
-            $('#wizardDetailColumn').toggle().resize().toggle().slideToggle(250, function () {
+            $('#wizardDetailColumn').slideToggle(250, function () {
                 $(this).resize();
                 wc.damocles ($(this));
             });
