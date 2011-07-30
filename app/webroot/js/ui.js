@@ -36,3 +36,19 @@ $(function () {
     
 });
 
+// thanks to http://jamiethompson.co.uk/web/2008/07/21/jquerygetscript-does-not-cache/
+$.getScript = function(url, callback, cache){
+	$.ajax({
+			type: "GET",
+			url: url,
+			success: callback,
+			dataType: "script",
+			cache: cache
+	});
+};
+
+
+// this has to be loaded after wc exists. note this allows cacheing
+$.getScript ('/js/adapt/adapt.js', function () {}, 0);
+
+

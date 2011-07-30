@@ -45,8 +45,7 @@ var wc = {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
         
-        // this has to be loaded last of all otherwise its callbacks won't play nice save much more code right now
-        jQuery.getScript ('/js/adapt/adapt.js');
+
         
     },
     initMap: function (ele) {
@@ -163,6 +162,7 @@ var wc = {
         });
     }
 };
+
 
 ($(document).ready(function () {
 wc.init();
