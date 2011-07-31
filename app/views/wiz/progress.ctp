@@ -9,19 +9,19 @@
         <li>
             <div class="progressStep ui-ish <?=$stepInfo['class']?>">
                 <a href="<?=$this->Html->url (array ('controller'=>'wiz', 'action' => $wizardInfos['wizardname'], $stepName))?>"
-                   class="<?=$firstCorner?> <?=$stepInfo['class']?>">
+                   class="clearfix <?=$firstCorner?> <?=$stepInfo['class']?>">
                     <img src="/img/wiz_step_<?=$stepInfo['class']?>.png" alt="complete" />
                     <span class="stepName"><?=$stepInfo['title']?></span>
                     <div class="stepDetail">
                         <?php
-                        if (isset ($stepInfo['sfval'])) {
+                        if (isset ($stepInfo['sfval']) && strlen (trim($stepInfo['sfval'])) > 0) {
                             echo strip_tags ($stepInfo['sfval']);
                         }
                         elseif ($stepInfo['class'] == 'current') {
                             echo "&laquo; you are here";
                         }
                         elseif ($stepInfo['class'] == 'future') {
-                            echo "up next";
+                            echo "pending";
                         }
                         else echo "?";
 

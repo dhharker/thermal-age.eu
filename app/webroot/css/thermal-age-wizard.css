@@ -147,6 +147,7 @@
     overflow: hidden;
     padding: 1px !important;
     text-align: left;
+    clear: right;
 }
 .progressStep.complete .stepDetail {
     display: block;
@@ -160,15 +161,18 @@
     color: #c22;
     font-weight: bold;
     margin-left: 0px !important;
+    margin-right: .5em;
 }
 
 .progressStep.future .stepDetail {
     display: block;
     margin: .3em;
     float: right;
-    color: #ccc;
+    color: #aaa;
     font-weight: lighter;
     margin-left: 0px !important;
+    margin-right: .5em;
+    
 }
 
 
