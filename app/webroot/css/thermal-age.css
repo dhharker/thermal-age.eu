@@ -89,18 +89,14 @@ li {
     width: 100%;
     height: 100%;
     
-    background-image: -webkit-gradient(
-        linear,
-        right top,
-        right bottom,
-        color-stop(0, rgb(182,212,176)),
-        color-stop(1, rgb(173,179,194))
-    );
-    background-image: -moz-linear-gradient(
-        center top,
-        rgb(182,212,176) 0%,
-        rgb(173,179,194) 100%
-    );
+    background: #b6d4b0; /* Old browsers */
+    background: -moz-linear-gradient(top, #b6d4b0 0%, #a0aac1 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b6d4b0), color-stop(100%,#a0aac1)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* IE10+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b6d4b0', endColorstr='#a0aac1',GradientType=0 ); /* IE6-9 */
+    background: linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* W3C */
 }
 #bg2 {
     position: fixed;

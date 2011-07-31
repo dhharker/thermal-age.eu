@@ -55,7 +55,7 @@ class WizController extends AppController {
                     $stepInfo['title'] = inflector::humanize ($stepName);
                 }
                 if (!isset ($stepInfo['showfield']) || strlen ($stepInfo['showfield']) == 0) {
-                    $stepInfo['showfield'] = inflector::camelize ($stepName) . 'name';
+                    $stepInfo['showfield'] = inflector::camelize ($stepName) . '.name';
                     $stepInfo['sfval'] = false;
                 }
             }
@@ -228,6 +228,7 @@ class WizController extends AppController {
     }
     function _prepareReaction () {
         $citations = $this->Reaction->Citation->find('list');
+        $citations[0] = " ";
         $reactions = $this->Reaction->find('list');
         $reactions[-1] = "Custom";
 		$this->set(compact('reactions', 'citations'));
@@ -247,6 +248,7 @@ class WizController extends AppController {
     }
     function _prepareSite () {
         $citations = $this->Site->Citation->find('list');
+        $citations[0] = " ";
 		$this->set(compact('citations'));
     }
 

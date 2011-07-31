@@ -48,7 +48,8 @@ var wc = {
         progress = progress || 42;
         $(ele).once ('widgetInited', function () {
             $(this)
-                .click (function () {
+                .click (function () { return false; })
+                .mousedown (function () {
                     wc.damocles ($('#wizardDetailColumn'));
                     $('#wizardDetailColumn')
                         .slideToggle(250, function () {
@@ -56,7 +57,7 @@ var wc = {
                             wc.damocles ($(this));
                         })
                         .mouseleave (function (e) {
-                            $('#wizardDetailColumn').not(':animated').hide('fade', 250);
+                            $('#wizardDetailColumn').not(':animated').hide('fade', 500);
                         })
                     ;
                     $(this).blur();
