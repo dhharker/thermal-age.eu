@@ -43,7 +43,7 @@ class WizController extends AppController {
             // yes
             $this->amWizard = $wizardAction;
             $this->wizardInfos['wizardname'] = $wizardAction;
-            $this->wizardInfos['wizardname'] = inflector::humanize ($wizardAction);
+            $this->wizardInfos['wizardtitle'] = inflector::humanize ($wizardAction);
             
         }
         else return false;

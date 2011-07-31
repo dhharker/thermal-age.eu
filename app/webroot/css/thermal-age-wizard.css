@@ -79,6 +79,7 @@
     padding-right: 3px;
     padding-left: 1px;
     margin-left: -1px;
+    
     margin-bottom: 0px !important;
     background-color: rgba(255,255,255,0.5);
     border: none;/*1px solid #8a9881;*/
@@ -114,7 +115,7 @@
 }
 #wizardDetailColumnInner ol li a.progressStepLink {
     display: block;
-    margin: 0px -3px -1px -1px;
+    margin: 0px -4px -1px -1px;
     border: 1px solid #8a9881;
 }
 #wizardDetailColumnInner ol li a.progressStepLink:hover {
