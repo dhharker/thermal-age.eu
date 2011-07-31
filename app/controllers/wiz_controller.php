@@ -55,7 +55,8 @@ class WizController extends AppController {
                     $stepInfo['title'] = inflector::humanize ($stepName);
                 }
                 if (!isset ($stepInfo['showfield']) || strlen ($stepInfo['showfield']) == 0) {
-                    $stepInfo['showfield'] = 'name';
+                    $stepInfo['showfield'] = inflector::camelize ($stepName) . 'name';
+                    $stepInfo['sfval'] = false;
                 }
             }
             if ($wizName == $this->amWizard) {
@@ -64,6 +65,7 @@ class WizController extends AppController {
                     $sd = $this->Wizard->read($stepName);
                     if (is_array($sd)) { // there are some data set in this step
                         $stepInfo['class'] = "complete";
+                        $stepInfo['sfval'] = $this->Wizard->read($stepName .".". $stepInfo['showfield']);
                         $lastWasComplete = true;
                     }
                     elseif ($lastWasComplete) {

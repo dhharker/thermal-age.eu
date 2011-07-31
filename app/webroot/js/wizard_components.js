@@ -50,10 +50,15 @@ var wc = {
             $(this)
                 .click (function () {
                     wc.damocles ($('#wizardDetailColumn'));
-                    $('#wizardDetailColumn').slideToggle(250, function () {
-                        $(this).resize();
-                        wc.damocles ($(this));
-                    });
+                    $('#wizardDetailColumn')
+                        .slideToggle(250, function () {
+                            $(this).resize();
+                            wc.damocles ($(this));
+                        })
+                        .mouseleave (function (e) {
+                            $('#wizardDetailColumn').not(':animated').hide('fade', 250);
+                        })
+                    ;
                     $(this).blur();
                     return false;
                 })
@@ -62,6 +67,7 @@ var wc = {
                 })
             ;
         });
+
     },
     init: function (ele) {
         ele = ele || '#wizardContainer';
