@@ -168,7 +168,7 @@ var wc = {
                             .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
                             .data ('lastSet', combinedName);
                     }
-                    $('input#ReactionShowname').val ($('input#ReactionName'));
+                    $('input#ReactionShowname').val ($('input#ReactionName').val());
             }).trigger ('keyup');
             
         $('select#ReactionSelect').once ('widgetInited', function () {
