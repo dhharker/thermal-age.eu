@@ -10,7 +10,9 @@ class WizController extends AppController {
         'steps' => array (
             'dna_survival_screening_tool' => array (
                 'specimen' => array (),
-                'reaction' => array (),
+                'reaction' => array (
+                    'showfield' => 'Reaction.showname'
+                ),
                 'site' => array (),
                 'temporothermal' => array (
                     'title' => 'Environment',
@@ -65,7 +67,7 @@ class WizController extends AppController {
                     $sd = $this->Wizard->read($stepName);
                     if (is_array($sd)) { // there are some data set in this step
                         $stepInfo['class'] = "complete";
-                        $stepInfo['sfval'] = $this->Wizard->read($stepName .".". $stepInfo['showfield']);
+                        $stepInfo['sfval'] = print_r ($this->Wizard->read($stepName .".". $stepInfo['showfield']), true);
                         $lastWasComplete = true;
                     }
                     elseif ($lastWasComplete) {

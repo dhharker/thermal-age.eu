@@ -113,15 +113,20 @@
     padding: 0px;
     list-style-type: none;
 }
-#wizardDetailColumnInner ol li a.progressStepLink {
+#wizardDetailColumnInner ol li .progressStep {
     display: block;
     margin: 0px -4px -1px -1px;
-    border: 1px solid #8a9881;
-}
-#wizardDetailColumnInner ol li a.progressStepLink:hover {
     
 }
-#wizardDetailColumnInner ol li a.progressStepLink img {
+#wizardDetailColumnInner ol li .progressStep a {
+    display: block;
+    margin: 0px;
+    border: 1px solid #8a9881;
+}
+#wizardDetailColumnInner ol li .progressStep a:hover {
+
+}
+#wizardDetailColumnInner ol li .progressStep img {
     margin: 0px 0px 2px 3px;
 }
 

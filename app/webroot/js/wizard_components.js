@@ -6,7 +6,7 @@ var wc = {
         
     },
     loadGmapsAsync: function (callback) {
-//    return false; // debug
+    return false; // debug
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=" + callback;
@@ -168,6 +168,7 @@ var wc = {
                             .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
                             .data ('lastSet', combinedName);
                     }
+                    $('input#ReactionShowname').val ($('input#ReactionName'));
             }).trigger ('keyup');
             
         $('select#ReactionSelect').once ('widgetInited', function () {
@@ -181,8 +182,9 @@ var wc = {
                     $('#ReactionDetails:visible').hide ('blind', {
                         direction: 'vertical'
                     }, 1000);
+                    $('#ReactionShowname').val ($('option:selected', this).text());
                 }
-            })
+            }).change();
 
             if ($(this).val () == '-1') {
                 $('#ReactionDetails:hidden').show ();

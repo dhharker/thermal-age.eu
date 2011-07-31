@@ -4,7 +4,9 @@
 <?php echo $this->Form->create('Reaction', array('id' => 'ReactionForm', 'url' => $this->here)); ?>
 	<fieldset>
 		
-
+        <?=$this->Form->hidden ('Reaction.showname', array (
+            'id' => "ReactionShowname",
+        ));?>
         <div class="grid_11 alpha">
             <?= $this->Form->input('Reaction.reaction_id', array (
                 'style' => 'width: 100%',
