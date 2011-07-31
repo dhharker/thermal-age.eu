@@ -7,14 +7,26 @@
             foreach ($wizardInfos['steps'][$wizardInfos['wizardname']] as $stepName => $stepInfo) {
         ?>
         <li>
-            <div class="progressStep">
+            <div class="progressStep ui-ish <?=$stepInfo['class']?>">
                 <a href="<?=$this->Html->url (array ('controller'=>'wiz', 'action' => $wizardInfos['wizardname'], $stepName))?>"
-                   class="ui-ish<?=$firstCorner?> <?=$stepInfo['class']?>">
+                   class="<?=$firstCorner?> <?=$stepInfo['class']?>">
                     <img src="/img/wiz_step_<?=$stepInfo['class']?>.png" alt="complete" />
                     <span class="stepName"><?=$stepInfo['title']?></span>
-                    <?php if ($stepInfo['sfval']) { ?>
-                    <span class="stepDetail"><?=print_r ($stepInfo['sfval'], TRUE)?></span>
-                    <?php } ?>
+                    <div class="stepDetail">
+                        <?php
+                        if (isset ($stepInfo['sfval'])) {
+                            echo strip_tags ($stepInfo['sfval']);
+                        }
+                        elseif ($stepInfo['class'] == 'current') {
+                            echo "&laquo; you are here";
+                        }
+                        elseif ($stepInfo['class'] == 'future') {
+                            echo "up next";
+                        }
+                        else echo "?";
+
+                        ?>
+                    </div>
                 </a>
             </div>
         </li>

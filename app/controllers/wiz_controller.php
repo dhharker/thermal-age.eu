@@ -70,7 +70,7 @@ class WizController extends AppController {
                         $stepInfo['sfval'] = print_r ($this->Wizard->read($stepName .".". $stepInfo['showfield']), true);
                         $lastWasComplete = true;
                     }
-                    elseif ($lastWasComplete) {
+                    elseif ($lastWasComplete == true) {
                         $stepInfo['class'] = "current";
                         $this->wizardInfos['stepname'] = $stepName;
                         $lastWasComplete = false;

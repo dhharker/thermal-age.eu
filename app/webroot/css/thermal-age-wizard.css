@@ -120,6 +120,7 @@
 }
 #wizardDetailColumnInner ol li .progressStep a {
     display: block;
+    width: 100%;
     margin: 0px;
     border: 1px solid #8a9881;
 }
@@ -127,7 +128,47 @@
 
 }
 #wizardDetailColumnInner ol li .progressStep img {
-    margin: 0px 0px 2px 3px;
+    margin: 5px;
+    float: left;
+}
+
+.progressStep .stepName {
+    color: #333;
+}
+.progressStep .stepDetail:before {
+    content: '\2002'; /*ensp*/
+}
+.progressStep .stepDetail {
+    display: inline;
+    color: #555;
+    font-size: 0.8em;
+    line-height: 1.3em;
+    max-height: 1.3em;
+    overflow: hidden;
+    padding: 1px !important;
+    text-align: left;
+}
+.progressStep.complete .stepDetail {
+    display: block;
+    margin: -.2em 0px 0.2em .2em;
+    
+}
+.progressStep.current .stepDetail {
+    display: block;
+    margin: .3em;
+    float: right;
+    color: #c22;
+    font-weight: bold;
+    margin-left: 0px !important;
+}
+
+.progressStep.future .stepDetail {
+    display: block;
+    margin: .3em;
+    float: right;
+    color: #ccc;
+    font-weight: lighter;
+    margin-left: 0px !important;
 }
 
 
