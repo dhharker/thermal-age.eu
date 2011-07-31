@@ -39,24 +39,7 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
 
 <script type="text/javascript">
 
-
-$('a#wizardProgressBar').once ('widgetInited', function () {
-    $(this)
-        .click (function () {
-            wc.damocles ($('#wizardDetailColumn'));
-            $('#wizardDetailColumn').slideToggle(250, function () {
-                $(this).resize();
-                wc.damocles ($(this));
-            });
-            $(this).blur();
-            return false;
-        })
-        .find ('#wpbContainer').progressbar ({
-            value: <?=$wizardInfos['progress']?>,
-        })
-    ;
-});
-
+    wc.initWizardProgressBar ('a#wizardProgressBar', <?=$wizardInfos['progress']?>);
 
 </script>
 

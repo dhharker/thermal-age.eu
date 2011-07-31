@@ -40,7 +40,28 @@ var wc = {
             .load (url, {}, function () { $('#wizardDetailColumn').resize(); })
             .hide()
         ;
+        
 
+    },
+    initWizardProgressBar: function (ele, progress) {
+        ele = ele || 'a#wizardProgressBar';
+        progress = progress || 42;
+        $(ele).once ('widgetInited', function () {
+            $(this)
+                .click (function () {
+                    wc.damocles ($('#wizardDetailColumn'));
+                    $('#wizardDetailColumn').slideToggle(250, function () {
+                        $(this).resize();
+                        wc.damocles ($(this));
+                    });
+                    $(this).blur();
+                    return false;
+                })
+                .find ('#wpbContainer').progressbar ({
+                    value: progress,
+                })
+            ;
+        });
     },
     init: function (ele) {
         ele = ele || '#wizardContainer';
