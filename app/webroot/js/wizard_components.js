@@ -77,6 +77,9 @@ var wc = {
 
         
     },
+    initTemporothermalForm: function (ele) {
+    
+    },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
         var $mc = $(ele);

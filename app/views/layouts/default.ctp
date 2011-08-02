@@ -84,13 +84,13 @@
 
                         <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => 'index'), array('class' => 'fg-button ui-state-default')); ?>
 
-                        <?php echo $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php  $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php echo $this->Html->link('Data', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php  $this->Html->link('Data', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php echo $this->Html->link('Help', array ('controller' => 'pages', 'action' => 'help'), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php  $this->Html->link('Help', array ('controller' => 'pages', 'action' => 'help'), array('class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php echo $this->Html->link('Login', array ('controller' => 'users', 'action' => 'login'), array('class' => 'fg-button ui-state-default  ui-corner-right')); ?>
+                        <?php  $this->Html->link('Login', array ('controller' => 'users', 'action' => 'login'), array('class' => 'fg-button ui-state-default  ui-corner-right')); ?>
 
                     </div>
                 </div>

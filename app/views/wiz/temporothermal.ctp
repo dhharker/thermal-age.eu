@@ -1,22 +1,59 @@
-<div class="temporothermals form">
+<h1 class="sbHeading ui-corner-tl">
+    Thermal Environment
+</h1>
 <?php echo $this->Form->create('Temporothermal', array('id' => 'TemporothermalForm', 'url' => $this->here)); ?>
 	<fieldset>
- 		<legend><?php __('Edit Temporothermal'); ?></legend>
-	<?php
-		echo $this->Form->input('Temporothermal.id');
-		echo $this->Form->input('Temporothermal.name');
-		echo $this->Form->input('Temporothermal.temp_mean_c');
-		echo $this->Form->input('Temporothermal.temp_pp_amp_c');
-		echo $this->Form->input('Temporothermal.upload_id');
-		echo $this->Form->input('Temporothermal.startdate_ybp');
-		echo $this->Form->input('Temporothermal.stopdate_ybp');
-		echo $this->Form->input('Temporothermal.range_years');
-		echo $this->Form->input('Temporothermal.user_id');
-		echo $this->Form->input('Temporothermal.description');
-	?>
+        <div class="grid_11 alpha">
+            <?=$this->Form->input('Temporothermal.name');?>
+        </div>
+        <div class="grid_11 alpha">
+            <div class="grid_2 alpha">
+                <?=$this->Form->input('Temporothermal.temp_mean_c', array (
+                'label' => 'T<sub>mean</sub> (°C)'
+            ));?>
+            </div>
+            <div class="grid_2">
+                <?=$this->Form->input('Temporothermal.temp_pp_amp_c', array (
+                'label' => 'T<sub>max</sub> ─ T<sub>min</sub> (°C)'
+            ));?>
+            </div>
+            <!-- not yet <div class="grid_2 omega">
+                <?=$this->Form->input('Temporothermal.upload_id');?>
+            </div>-->
+        
+            <div class="grid_2">
+                <?=$this->Form->input('Temporothermal.startdate_ybp', array (
+                    'label' => 'Recent Date'
+                ));?>
+            </div>
+            <div class="grid_2">
+                <?=$this->Form->input('Temporothermal.range_years');?>
+            </div>
+            <div class="grid_2 omega">
+                <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
+                    'label' => 'Ancient Date'
+                ));?>
+            </div>
+        </div>
+        <div class="grid_11 alpha">
+            
+            <?=$this->Form->input('Temporothermal.description');?>
+        </div>
+
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
-</div>
+
+<?=$this->element('wiz/wizardControlBar',  array ('wizardInfos' => $wizardInfos));?>
+
+<?php echo $this->Form->end(); ?>
+
+<script type="text/javascript">
+$(document).ready (function () {
+    wc.initTemporothermalForm ();
+});
+</script>
+
+
+<!--
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
@@ -29,3 +66,4 @@
 		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
+    -->
