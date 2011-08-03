@@ -1,9 +1,18 @@
 
 <div id="wizardDetailColumnInner" style="clear: both;">
     <ol>
+
+
+        <li>
+            <div class=" ui-corner-tl progressStep ui-ish">
+                <h2 class="sbHeading"><?=@$wizardInfos['wizardtitle'];?></h2>
+            </div>
+        </li>
+
+
         <?php
         if (isset ($wizardInfos) && is_array ($wizardInfos) && isset ($wizardInfos['steps']))
-            $firstCorner = " ui-corner-tl";
+            $firstCorner = "";
             foreach ($wizardInfos['steps'][$wizardInfos['wizardname']] as $stepName => $stepInfo) {
         ?>
         <li>
@@ -27,6 +36,7 @@
 
                         ?>
                     </div>
+                    <div style="clear: both"></div>
                 </a>
             </div>
         </li>

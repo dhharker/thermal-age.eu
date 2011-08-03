@@ -132,6 +132,11 @@
     float: left;
 }
 
+.progressStep .sbHeading {
+    font-size: 1em;
+    margin-bottom: 0px;
+    border: 1px solid #8a9881;
+}
 .progressStep .stepName {
     color: #333;
 }
