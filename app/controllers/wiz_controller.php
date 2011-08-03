@@ -19,6 +19,9 @@ class WizController extends AppController {
                 ),
             ),
         ),
+        'titles' => array (
+            'dna_survival_screening_tool' => 'DNA Survival Tool'
+        ),
         "wizardname" => '',
         "wizardtitle" => '',
         "progress" => 0,
@@ -45,7 +48,8 @@ class WizController extends AppController {
             // yes
             $this->amWizard = $wizardAction;
             $this->wizardInfos['wizardname'] = $wizardAction;
-            $this->wizardInfos['wizardtitle'] = inflector::humanize ($wizardAction);
+            $this->wizardInfos['wizardtitle'] = 
+                (isset ($this->wizardInfos['titles'][$wizardAction])) ? $this->wizardInfos['titles'][$wizardAction] : inflector::humanize ($wizardAction);
             
         }
         else return false;

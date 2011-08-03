@@ -4,7 +4,7 @@
 
 
         <li>
-            <div class=" ui-corner-tl progressStep ui-ish">
+            <div class="ui-corner-tl progressStep ui-ish">
                 <h2 class="sbHeading"><?=@$wizardInfos['wizardtitle'];?></h2>
             </div>
         </li>
