@@ -1,7 +1,7 @@
 <!-- start wizard control bar -->
 <?php
 
-$wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardInfos) : 0;
+$wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardInfos['progress']) : 0;
 
 ?>
 <div id="wizardBottomBar" class="ui-corner-bottom ui-state-default clearfix">

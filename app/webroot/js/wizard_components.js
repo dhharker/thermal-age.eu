@@ -45,7 +45,7 @@ var wc = {
     },
     initWizardProgressBar: function (ele, progress) {
         ele = ele || 'a#wizardProgressBar';
-        progress = progress || 42;
+        progress = (progress == undefined) ? 0 : progress;
         $(ele).once ('widgetInited', function () {
             $(this)
                 .click (function () { return false; })

@@ -54,6 +54,8 @@ class WizController extends AppController {
         }
         else return false;
 
+        $num = array ('steps' => 0, 'complete' => 0);
+
         foreach ($this->wizardInfos['steps'] as $wizName => &$steps) {
             foreach ($steps as $stepName => &$stepInfo) {
                 if (!is_array ($stepInfo)) $stepInfo = array ();
@@ -68,8 +70,10 @@ class WizController extends AppController {
             if ($wizName == $this->amWizard) {
                 $lastWasComplete = true;
                 foreach ($steps as $stepName => &$stepInfo) {
+                    $num['steps']++;
                     $sd = $this->Wizard->read($stepName);
                     if (is_array($sd)) { // there are some data set in this step
+                        $num['complete']++;
                         $stepInfo['class'] = "complete";
                         $stepInfo['sfval'] = print_r ($this->Wizard->read($stepName .".". $stepInfo['showfield']), true);
                         $lastWasComplete = true;
@@ -88,7 +92,11 @@ class WizController extends AppController {
             }
         }
 
-        $this->wizardInfos['progress'] = 43;
+        if ($num['steps'] > 0)
+            $this->wizardInfos['progress'] = round (($num['complete'] / $num['steps']) * 100, 2);
+        else
+            $this->wizardInfos['progress'] = 3;
+
 
         return true;
 
