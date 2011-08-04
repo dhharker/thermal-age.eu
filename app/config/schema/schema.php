@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* App schema generated on: 2011-07-17 13:07:31 : 1310906131*/
+/* App schema generated on: 2011-08-04 01:08:23 : 1312416083*/
 class AppSchema extends CakeSchema {
 	var $name = 'App';
 
@@ -27,6 +27,7 @@ class AppSchema extends CakeSchema {
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL),
 		'molecule_name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 120),
 		'reaction_name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
+		'substrate_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 100),
 		'ea_kj_per_mol' => array('type' => 'float', 'null' => false, 'default' => NULL),
 		'f_sec' => array('type' => 'float', 'null' => false, 'default' => NULL),
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
@@ -42,6 +43,17 @@ class AppSchema extends CakeSchema {
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
 		'citation_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+	);
+	var $soils = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+		'name' => array('type' => 'string', 'null' => false, 'default' => NULL),
+		'thermal_diffusivity_m2_sec' => array('type' => 'float', 'null' => false, 'default' => NULL),
+		'particle_size' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 7),
+		'water_content' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 6),
+		'citation_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
+		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
@@ -71,6 +83,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
 		'title' => array('type' => 'string', 'null' => false, 'default' => NULL),
+		'size' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 12),
 		'mime_type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
 		'description' => array('type' => 'text', 'null' => false, 'default' => NULL),
 		'citation_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
