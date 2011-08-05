@@ -48,7 +48,9 @@
 #wizardContainer fieldset legend {
 
 }
-
+#wizardContainer fieldset .smartHr {
+    margin: 0px -4% 10px -4% !important;
+}
 /* specific form element fixen */
 
 #wizardContainer form select {
