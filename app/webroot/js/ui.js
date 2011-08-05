@@ -26,7 +26,7 @@ $(function () {
                 .click (function () {
                     $(this)
                         .prev('.spoiler')
-                        .find('*')
+                        .children()
                         .unwrap ();
                     $(this).remove();
                     return false;
