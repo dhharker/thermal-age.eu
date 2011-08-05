@@ -27,8 +27,11 @@
 
         </div>
         <div class="grid_12 alpha smartHr"></div>
-
         <div class="grid_11 alpha">
+
+        </div>
+        <div class="grid_12 alpha smartHr"></div>
+        <div class="grid_11 alpha" style="display: none">
 
             <div class="grid_2 alpha">
                 <?=$this->Form->input('Temporothermal.temp_mean_c', array (
@@ -46,7 +49,7 @@
         </div>
         <div class="grid_11 alpha">
             
-            <?=$this->Form->input('Temporothermal.description');?>
+            <?=$this->Form->input('Temporothermal.description', array ('rows' => 3));?>
         </div>
 
 	</fieldset>
