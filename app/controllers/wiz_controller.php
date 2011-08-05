@@ -14,9 +14,8 @@ class WizController extends AppController {
                     'showfield' => 'Reaction.showname'
                 ),
                 'site' => array (),
-                'temporothermal' => array (
-                    'title' => 'Environment',
-                ),
+                'burial' => array (),
+                'storage' => array (),
             ),
         ),
         'titles' => array (

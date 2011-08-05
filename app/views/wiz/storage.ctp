@@ -1,5 +1,5 @@
 <h1 class="sbHeading ui-corner-tl">
-    Thermal Environment
+    Storage
 </h1>
 <?php echo $this->Form->create('Temporothermal', array('id' => 'TemporothermalForm', 'url' => $this->here)); ?>
 	<fieldset>
