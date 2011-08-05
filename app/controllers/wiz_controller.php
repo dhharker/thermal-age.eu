@@ -212,8 +212,10 @@ class WizController extends AppController {
      */
     function _processSpecimen () {
         $this->Specimen->set ($this->data);
+        $this->loadModel('Temporothermal');
+        $this->Temporothermal->set ($this->data);
         
-        if ($this->Specimen->validates() == true) {
+        if ($this->Specimen->validates() == true && $this->Temporothermal->validates(array('fieldList' => array('stopdate_ybp'))) == true) {
             return true;
         }
         
@@ -265,6 +267,11 @@ class WizController extends AppController {
 		$this->set(compact('citations'));
     }
 
+
+    function _prepareBurial () {
+        $ssd = $this->Wizard->read('specimen.Temporothermal.stopdate_ybp');
+        $this->set ('agebp', $ssd);
+    }
 
     /**
      * [Wizard Completion Callback]
