@@ -23,7 +23,7 @@
 <?php echo $this->Form->create  ('Specimen', array('id' => 'SpecimenForm', 'url' => $this->here, 'class' => 'ui-corner-all')); ?>
 	<fieldset>
         <div class="grid_11 alpha">
-            <?= $this->Form->input('Specimen.name', array('label' => 'Name:'));?>
+            <?= $this->Form->input('Specimen.name', array('label' => 'Specimen Name:'));?>
         </div>
 
         <div class="grid_6 alpha">
