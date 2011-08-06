@@ -108,6 +108,11 @@
                     <?= $content_for_layout ?>
                 </div>
             </div>
+            <script type="text/javascript">
+            ($(document).ready(function () {
+                wc.init();
+            }));
+            </script>
             <?php } else { ?>
             <?= $content_for_layout ?>
             <?php } ?>

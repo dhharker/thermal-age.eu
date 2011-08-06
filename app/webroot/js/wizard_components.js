@@ -76,18 +76,21 @@ var wc = {
         var ajaxTarget = '#wizardAjaxTarget';
         var afOpts = {
             beforeSubmit: function () {
-                $(ajaxTarget).not(':animated').hide ('fast');
+                //$(ajaxTarget).not(':animated').hide ('fast');
+                return true;
             },
             complete: function (a, b) {
                 $(ajaxTarget).show ();
                 initialiseTAUI (ajaxTarget);
+                wc.init (ajaxTarget);
             },
             target: ajaxTarget
         };
-        $me.find ('form:first').ajaxForm ().submit (function () {
-            $(this).ajaxSubmit (afOpts);
+        $('form:first', $me).not('.axfInited').ajaxForm (afOpts).submit (function () {
+            console.log ("onsub");
+
             return false;
-        });
+        }).addClass ('axfInited');
     },
     initBurialForm: function (ele) {
         ele = ele || '#wizardContainer';
@@ -196,15 +199,24 @@ var wc = {
             
         $('select#ReactionSelect').once ('widgetInited', function () {
             $(this).change (function () {
+                var delay = 500;
+                if (!$(this).hasClass ('notOnLoad')) {
+                    delay = 0;
+                    $(this).addClass ('notOnLoad');
+                }
+                
                 if ($(this).val () == '-1') {
-                    $('#ReactionDetails:hidden').show ('blind', {
-                        direction: 'vertical'
-                    }, 1000);
+                    if (delay == 0)
+                        $('#ReactionDetails:hidden').show ();
+                    else
+                        $('#ReactionDetails:hidden').show ('blind', {
+                            direction: 'vertical'
+                        }, delay);
                 }
                 else {
                     $('#ReactionDetails:visible').hide ('blind', {
                         direction: 'vertical'
-                    }, 1000);
+                    }, delay);
                     $('#ReactionShowname').val ($('option:selected', this).text());
                 }
             }).change();
@@ -217,8 +229,5 @@ var wc = {
 };
 
 
-($(document).ready(function () {
-wc.init();
-}));
 
 
