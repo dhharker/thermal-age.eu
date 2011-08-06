@@ -3,40 +3,52 @@
 </h1>
 <?php echo $this->Form->create('Storage', array('id' => 'StorageForm', 'url' => $this->here)); ?>
 	<fieldset>
-        <div class="grid_11 alpha">
-            <?=$this->Form->input('Temporothermal.name');?>
+        <!-- burials need not be named <div class="grid_11 alpha">
+            <?=$this->Form->input('.name');?>
+        </div> -->
+        <div class="grid_5 alpha">
+            <p>
+                Enter the temperature of storage, and optionally how much this temperature varies
+                throughout the year.
+            </p>
         </div>
-        <div class="grid_11 alpha">
-            <div class="grid_2 alpha">
+        <div class="grid_6 omega">
+            
+            <div class="grid_3 alpha">
+                <?=$this->Form->input('Temporothermal.startdate_ybp', array (
+                    'label' => 'Analysed (AD)',
+                    'default' => date ('Y')
+                ));?>
+            </div>
+            <div class="grid_3 omega">
+                <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
+                    'label' => 'Excavated (AD)',
+                    'default' => $excavatedad,
+                    'disabled' => 'disabled'
+                ));?>
+            </div>
+
+            <div class="grid_3 alpha">
                 <?=$this->Form->input('Temporothermal.temp_mean_c', array (
-                'label' => 'T<sub>mean</sub> (°C)'
-            ));?>
+                    'label' => 'T<sub>mean</sub> (°C)',
+                    'div' => 'required'
+                ));?>
             </div>
-            <div class="grid_2">
+            <div class="grid_3 omega">
                 <?=$this->Form->input('Temporothermal.temp_pp_amp_c', array (
-                'label' => 'T<sub>max</sub> ─ T<sub>min</sub> (°C)'
-            ));?>
+                    'label' => 'T<sub>max</sub> ─ T<sub>min</sub> (°C)'
+                ));?>
             </div>
+        </div>
+        
+        <div class="grid_11 alpha" style="">
+
             <!-- not yet <div class="grid_2 omega">
                 <?=$this->Form->input('Temporothermal.upload_id');?>
             </div>-->
-        
-            <div class="grid_2">
-                <?=$this->Form->input('Temporothermal.startdate_ybp', array (
-                    'label' => 'Recent Date'
-                ));?>
-            </div>
-            <div class="grid_2">
-                <?=$this->Form->input('Temporothermal.range_years');?>
-            </div>
-            <div class="grid_2 omega">
-                <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
-                    'label' => 'Ancient Date'
-                ));?>
-            </div>
         </div>
         <div class="grid_11 alpha">
-            
+
             <?=$this->Form->input('Temporothermal.description', array ('rows' => 3));?>
         </div>
 
@@ -48,7 +60,7 @@
 
 <script type="text/javascript">
 $(document).ready (function () {
-    wc.initTemporothermalForm ();
+    wc.initStorageForm ();
 });
 </script>
 

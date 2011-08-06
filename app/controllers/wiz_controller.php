@@ -273,6 +273,12 @@ class WizController extends AppController {
         $this->set ('agebp', $ssd);
     }
 
+
+    function _prepareStorage () {
+        $ssd = $this->Wizard->read('burial.Temporothermal.startdate_ybp');
+        $this->set ('excavatedad', $ssd);
+    }
+
     /**
      * [Wizard Completion Callback]
      */
