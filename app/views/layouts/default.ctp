@@ -104,7 +104,7 @@
         <div id="pageContent" style="clear: both;">
             <? if (isset ($isWizard) && $isWizard == TRUE) { ?>
             <div class="grid_12" id="wizardContainer">
-                <div class="smartbox clearfix ui-ish">
+                <div id="wizardAjaxTarget" class="smartbox clearfix ui-ish">
                     <?= $content_for_layout ?>
                 </div>
             </div>

@@ -73,9 +73,17 @@ var wc = {
     init: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
-        
-
-        
+        var afOpts = {
+            complete: function (a, b) {
+                alert ("omgz");
+                console.log (a,b);
+            },
+            target: '#wizardAjaxTarget'
+        };
+        $me.find ('form:first').ajaxForm ().submit (function () {
+            $(this).ajaxSubmit (afOpts);
+            return false;
+        });
     },
     initBurialForm: function (ele) {
         ele = ele || '#wizardContainer';

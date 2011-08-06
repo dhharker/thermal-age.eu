@@ -1,5 +1,5 @@
-$(function () {
-    
+var initialiseTAUI = function () {
+
     $('.fg-button,.hover').hover(
         function(){
             $(this).addClass("ui-state-hover");
@@ -33,7 +33,10 @@ $(function () {
                 })
         );
     });
-    
+};
+
+$(function () {
+    initialiseTAUI();
 });
 
 // thanks to http://jamiethompson.co.uk/web/2008/07/21/jquerygetscript-does-not-cache/
