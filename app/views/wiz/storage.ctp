@@ -37,7 +37,7 @@
         </div>
         <div class="grid_11 alpha">
             
-            <?=$this->Form->input('Temporothermal.description');?>
+            <?=$this->Form->input('Temporothermal.description', array ('rows' => 3));?>
         </div>
 
 	</fieldset>

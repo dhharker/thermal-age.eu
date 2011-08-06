@@ -28,7 +28,23 @@
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha">
-
+            <div class="spoiler">
+                <p>
+                    The sediments overlaying a specimen will reduce the magnitude of seasonal temperature
+                    variation depending on the type of soil, moisture content and thickness of the layer.
+                </p>
+                <p>
+                    The simple model below lets you describe the layers the sample was found under.
+                    The model assumes that the layers build up consecutively and at a constant speed.
+                    The &quot;Sudden&quot; checkbox makes the layer "appear all at once" and is used
+                    to model landslides or other sudden burials.
+                </p>
+            </div>
+            <ul class="boxy">
+                <li>
+                    blxy
+                </li>
+            </ul>
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha" style="display: none">
