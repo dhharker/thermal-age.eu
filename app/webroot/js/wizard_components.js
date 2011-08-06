@@ -87,8 +87,6 @@ var wc = {
             target: ajaxTarget
         };
         $('form:first', $me).not('.axfInited').ajaxForm (afOpts).submit (function () {
-            console.log ("onsub");
-
             return false;
         }).addClass ('axfInited');
     },

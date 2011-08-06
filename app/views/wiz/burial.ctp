@@ -21,7 +21,8 @@
             <div class="grid_3 omega">
                 <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
                     'label' => 'Deposited (b.p.)',
-                    'default' => $agebp
+                    'default' => $agebp,
+                    'disabled' => 'disabled'
                 ));?>
             </div>
 
