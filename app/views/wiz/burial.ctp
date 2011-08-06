@@ -76,7 +76,7 @@
 
 <script type="text/javascript">
 $(document).ready (function () {
-    wc.initTemporothermalForm ();
+    wc.initBurialForm ();
 });
 </script>
 

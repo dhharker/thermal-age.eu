@@ -7,19 +7,20 @@ $(document).ready(function() {
                 $(this).data ('boxyOptions', options);
             },
             init: function (options) {
-                
+                options = options || {};
                 var settings = {
                     initBoxen: 0,
                     minBoxen: 0,
                     maxBoxen: 10,
-                    filter: '*'
+                    filter: '*',
+                    title: 'untitled :-('
                 };
                 
                 if (options) { 
                     $.extend(settings, options);
                 }
                 
-                var filter = options.filter || settings.filter;
+                var filter =/* options.filter ||*/ settings.filter;
                 
                 $('ul.boxy', this.parent()).filter (filter).each (function () {
                     $this = $(this);
@@ -58,7 +59,7 @@ $(document).ready(function() {
                                 $(this).blur();
                                 return false;
                             })
-                            .text ('Add')
+                            .text ('Add ' + data.title)
                             .attr ('href', '#')
                             .addClass ('addBox'));
 //                     .append (
@@ -143,7 +144,7 @@ $(document).ready(function() {
                     this.data ('boxy', data);
                     newBox.boxy (data.settings);
                     $.smoothScroll ({
-                        /*scrollElement: $('#innerWindow'),*/
+                        scrollElement: $('#bg2'),
                         scrollTarget: newBox,
                         offset: -50
                     });

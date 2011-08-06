@@ -77,8 +77,16 @@ var wc = {
 
         
     },
-    initTemporothermalForm: function (ele) {
-    
+    initBurialForm: function (ele) {
+        ele = ele || '#wizardContainer';
+        var $me = $(ele);
+        $('ul.boxy', $me).boxy({
+            title: 'Sediment Layer'
+        });
+    },
+    initStorageForm: function (ele) {
+        ele = ele || '#wizardContainer';
+        var $me = $(ele);
     },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
