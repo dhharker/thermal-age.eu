@@ -146,7 +146,7 @@ $(document).ready(function() {
                     $.smoothScroll ({
                         scrollElement: $('#bg2'),
                         scrollTarget: newBox,
-                        offset: -50
+                        offset: -1 * ($(window).height () / 2 - $(this).height () / 2)
                     });
                     if (data.settings.onUpdate)
                             data.settings.onUpdate.apply ();
@@ -166,6 +166,12 @@ $(document).ready(function() {
                         this.hide("fast", function () {
                             $(this).remove ();
                         });
+                        var prevBox = $(this).prev('li.boxyCtl');
+                        $.smoothScroll ({
+                                scrollElement: $('#bg2'),
+                                scrollTarget: prevBox,
+                                offset: -1 * ($(window).height () / 2 - $(prevBox).height () / 2)
+                            });
                     return true;
                 }
                 return false;
