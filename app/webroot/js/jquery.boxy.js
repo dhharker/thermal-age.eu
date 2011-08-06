@@ -168,10 +168,10 @@ $(document).ready(function() {
                         });
                         var prevBox = $(this).prev('li.boxyCtl');
                         $.smoothScroll ({
-                                scrollElement: $('#bg2'),
-                                scrollTarget: prevBox,
-                                offset: -1 * ($(window).height () / 2 - $(prevBox).height () / 2)
-                            });
+                            scrollElement: $('#bg2'),
+                            scrollTarget: prevBox,
+                            offset: -1 * ($(window).height () / 2 - $(prevBox).height () / 2)
+                        });
                     return true;
                 }
                 return false;

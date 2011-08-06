@@ -7,14 +7,11 @@ class AppController extends Controller {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
     
     function __construct () {
-
         parent::__construct();
         
     }
 
-    /**
-     * Global stuff goes here
-     */
+
     function beforeFilter () {
         parent::beforeFilter();
 
@@ -34,19 +31,29 @@ class AppController extends Controller {
             
             
         )));
+    }
 
-        // The minify controller needs a blank layout otherwise it'll inherit from $layout above
+    function redirect ($url, $status = null, $exit = true) {
+        if ($this->RequestHandler->isAjax ()) {
 
-        
+            if ($url !== null) {
+                $goto = Router::url($url, true);
+                echo <<<OMG
+                <script type="text/javascript">alert ("wait!"); window.location='$goto';</script>
+OMG;
+            }
+
+            if ($exit) {
+                $this->_stop();
+            }
+        }
+        else
+            return parent::redirect ($url, $status, $exit);
     }
 
     function  beforeRender() {
         parent::beforeRender();
-        //die ("<pre>".print_r ($this, TRUE));
 
-        if ($this->name) {
-            //$this->layout = '960';
-        }
     }
 
 }

@@ -76,10 +76,10 @@ var wc = {
         var ajaxTarget = '#wizardAjaxTarget';
         var afOpts = {
             beforeSubmit: function () {
-                //$(ajaxTarget).not(':animated').hide ('fade','250');
+                $(ajaxTarget).not(':animated').hide ('fast');
             },
             complete: function (a, b) {
-                $(ajaxTarget).show ('fade','250');
+                $(ajaxTarget).show ();
                 initialiseTAUI (ajaxTarget);
             },
             target: ajaxTarget
