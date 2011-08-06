@@ -73,12 +73,16 @@ var wc = {
     init: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
+        var ajaxTarget = '#wizardAjaxTarget';
         var afOpts = {
-            complete: function (a, b) {
-                alert ("omgz");
-                console.log (a,b);
+            beforeSubmit: function () {
+                //$(ajaxTarget).not(':animated').hide ('fade','250');
             },
-            target: '#wizardAjaxTarget'
+            complete: function (a, b) {
+                $(ajaxTarget).show ('fade','250');
+                initialiseTAUI (ajaxTarget);
+            },
+            target: ajaxTarget
         };
         $me.find ('form:first').ajaxForm ().submit (function () {
             $(this).ajaxSubmit (afOpts);

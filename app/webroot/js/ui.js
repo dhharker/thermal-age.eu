@@ -1,6 +1,6 @@
-var initialiseTAUI = function () {
-
-    $('.fg-button,.hover').hover(
+var initialiseTAUI = function (scope) {
+    scope = scope || 'body';
+    $('.fg-button,.hover', scope).hover(
         function(){
             $(this).addClass("ui-state-hover");
         },
@@ -9,7 +9,7 @@ var initialiseTAUI = function () {
         }
     );
     
-    $('div.spoiler').each (function () {
+    $('div.spoiler', scope).each (function () {
         $(this).css ({
             'height': '4.2em',
             'overflow': 'hidden',
