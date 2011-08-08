@@ -40,7 +40,6 @@ class AppController extends Controller {
                 $goto = Router::url($url, true);
                 echo <<<OMG
                 <script type="text/javascript">
-                    console.log ("hai2u");
                     window.location='$goto';
                 </script>
 OMG;

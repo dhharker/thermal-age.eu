@@ -146,6 +146,9 @@ class WizController extends AppController {
      *  Cookie set, env. bad or crawler     ->      show description of wizard & browser reqs.
      */
     function _checkEnvironment () {
+
+        // if session isn't set, set session check var, remember url and forward to check action
+        
         $environmentGood = true;
         return $environmentGood;
     }
