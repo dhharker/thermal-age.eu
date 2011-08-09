@@ -24,16 +24,17 @@
             echo $this->Html->css('thermal-age-wizard.css') . "\n";
         }
 
-        if (isset ($isMobile))
-            $cssSize = ($isMobile) ? 'mobile' : '720';
-        else
-            $cssSize = '960'; // This should never happen.
+        // this is only the default for when js is disabled, sizes otherwise in config.js
+        $cssSize = (isset ($isMobile) && $isMobile) ? 'mobile' : '960';
+            
     ?>
 
 
-        <noscript>
-            <?= $this->Html->css('adapt/' . $cssSize . '.min.css') . "\n"; ?>
-        </noscript>
+    <noscript>
+        <?= $this->Html->css('adapt/' . $cssSize . '.min.css') . "\n"; ?>
+    </noscript>
+            
+        
 
     <?php
         echo $this->Minify->js_link($global_minified_javascript) . "\n";

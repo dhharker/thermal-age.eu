@@ -2,7 +2,7 @@
 
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
-    var $components = array ('Wizard.Wizard', 'RequestHandler');
+    var $components = array ('Wizard.Wizard');
     var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation');
 
     var $amWizard = ''; // contains the name of the current wizard
@@ -163,8 +163,11 @@ class WizController extends AppController {
      * @param string $forwardAction the action to jump back to after checking browser etc. not shit.
      */
     function env_check ($forwardAction = null) {
-        $this->set ('cookies', (!$this->Session->check ('wizenv')) ? false : true);
+        $this->Session->write ('wizenv', 'CHECKED');
+        $this->set ('cookie', (!$this->Session->check ('wizenv')) ? false : true);
         $this->set ('redirectTo', (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '');
+
+        
     }
 
     /**

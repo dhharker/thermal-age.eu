@@ -3,7 +3,7 @@
 App::import('Sanitize');
 
 class AppController extends Controller {
-    var $components = array('Minify.Minify', 'Session');
+    var $components = array('Minify.Minify', 'Session', 'RequestHandler');
     var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
     
     function __construct () {
@@ -14,8 +14,9 @@ class AppController extends Controller {
 
     function beforeFilter () {
         parent::beforeFilter();
-        
-        $this->set('global_minified_javascript',$this->Minify->js(array(
+        $this->set ('isMobile', $this->RequestHandler->isMobile());
+
+        $this->set ('global_minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/
             'js/jquery-1.5.1.min.js',
             'js/jquery.once.js',
@@ -55,7 +56,7 @@ OMG;
 
     function  beforeRender() {
         parent::beforeRender();
-
+        
     }
 
 }
