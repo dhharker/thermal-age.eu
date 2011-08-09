@@ -163,17 +163,8 @@ class WizController extends AppController {
      * @param string $forwardAction the action to jump back to after checking browser etc. not shit.
      */
     function env_check ($forwardAction = null) {
-        // This is set by _checkEnvironment before redirecting to this action
-        if (!$this->Session->check ('wizenv')) {
-            $cookies = false;
-        }
-        else {
-            $this->Session->write ('wizenv', 'COOKIES_OK');
-            $cookies = true;
-        }
-        $this->set ('cookies', $cookies);
-        $wiz = (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '';
-        $this->set ('redirectTo', $wiz);
+        $this->set ('cookies', (!$this->Session->check ('wizenv')) ? false : true);
+        $this->set ('redirectTo', (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '');
     }
 
     /**
