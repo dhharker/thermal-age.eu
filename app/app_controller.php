@@ -14,7 +14,7 @@ class AppController extends Controller {
 
     function beforeFilter () {
         parent::beforeFilter();
-
+        
         $this->set('global_minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/
             'js/jquery-1.5.1.min.js',

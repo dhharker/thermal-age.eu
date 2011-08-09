@@ -146,11 +146,33 @@ class WizController extends AppController {
      *  Cookie set, env. bad or crawler     ->      show description of wizard & browser reqs.
      */
     function _checkEnvironment () {
-
-        // if session isn't set, set session check var, remember url and forward to check action
         
         $environmentGood = true;
+
+        if (!$this->Session->check ('wizenv')) {
+            $environmentGood = false;
+            $this->Session->write ('wizenv', 'CHECK');
+            $this->redirect(array ('action' => 'env_check', $this->action), null, false);
+
+        }
+
         return $environmentGood;
+    }
+    /**
+     *
+     * @param string $forwardAction the action to jump back to after checking browser etc. not shit.
+     */
+    function env_check ($forwardAction = null) {
+        // This is set by _checkEnvironment before redirecting to this action
+        if (!$this->Session->check ('wizenv')) {
+            // This person should not be here without this set - probably means all cookies are off.
+            $cookies = false;
+        }
+        else {
+            $this->Session->write ('wizenv', 'COOKIES_OK');
+            $cookies = true;
+        }
+        $this->set ('cookies', $cookies);
     }
 
     /**
