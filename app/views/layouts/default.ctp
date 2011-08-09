@@ -24,17 +24,15 @@
             echo $this->Html->css('thermal-age-wizard.css') . "\n";
         }
 
-        /*
-         *
-        <script type="text/javascript"
-            src="http://maps.google.com/maps/api/js?sensor=false">
-        </script> 
-         */
+        if (isset ($isMobile))
+            $cssSize = ($isMobile) ? 'mobile' : '720';
+        else
+            $cssSize = '960'; // This should never happen.
     ?>
 
 
         <noscript>
-            <?= $this->Html->css('adapt/mobile.css') . "\n"; ?>
+            <?= $this->Html->css('adapt/' . $cssSize . '.min.css') . "\n"; ?>
         </noscript>
 
     <?php
@@ -105,6 +103,13 @@
             <? if (isset ($isWizard) && $isWizard == TRUE) { ?>
             <div class="grid_12" id="wizardContainer">
                 <div id="wizardAjaxTarget" class="smartbox clearfix ui-ish">
+                    <noscript>
+                        <div>
+                            <p class="error ui-corner-all">
+                                You need javascript enabled to use this tool.
+                            </p>
+                        </div>
+                    </noscript>
                     <?= $content_for_layout ?>
                 </div>
             </div>

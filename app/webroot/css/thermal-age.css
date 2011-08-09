@@ -539,13 +539,15 @@ div.error-message {
 	background: #c73e14;
 }
 p.error {
-	background-color: #e32;
 	color: #fff;
-	font-family: Courier, monospace;
+	background: url('/img/sadface_white_trans.png') left center no-repeat #e32;
+    background-position: 10px;
+    padding: 0.8em;
+    padding-left: 100px;
 	font-size: 120%;
 	line-height: 140%;
-	padding: 0.8em;
-	margin: 1em 0;
+	
+	margin: 1em;
 }
 p.error em {
 	color: #000;
