@@ -152,7 +152,7 @@ class WizController extends AppController {
         if (!$this->Session->check ('wizenv')) {
             $environmentGood = false;
             $this->Session->write ('wizenv', 'CHECK');
-            $this->redirect(array ('action' => 'env_check', $this->action), null, false);
+            $this->redirect(array ('action' => 'env_check', $this->action));
 
         }
 
@@ -165,7 +165,6 @@ class WizController extends AppController {
     function env_check ($forwardAction = null) {
         // This is set by _checkEnvironment before redirecting to this action
         if (!$this->Session->check ('wizenv')) {
-            // This person should not be here without this set - probably means all cookies are off.
             $cookies = false;
         }
         else {
@@ -173,6 +172,8 @@ class WizController extends AppController {
             $cookies = true;
         }
         $this->set ('cookies', $cookies);
+        $wiz = (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '';
+        $this->set ('redirectTo', $wiz);
     }
 
     /**
@@ -180,7 +181,9 @@ class WizController extends AppController {
      * true if the environment is successfully initialised or false if there are errors.
      */
     function _initWizardEnvironment ($wizardAction = null) {
-        
+
+        // <hax /> this is here to force session to init before writing in initial env check
+        $this->Session->write ('wizards.lasttime', time());
         
         if ($this->_checkEnvironment () == true) {
             $success = true;
