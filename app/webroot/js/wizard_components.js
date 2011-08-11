@@ -101,64 +101,67 @@ var wc = {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
     },
-    initMapLoadButton: function (ele) {
-        ele = ele || '#gMapContainer';
-        var $mc = $(ele);
-        $mc.append ($('<div></div>').append ($('<a>Find Location From Map</a>')
+    initMapLoadButton: function () {
+        $('#FindLatLonByMapButton')
             .attr ('href','')
             .click (function () {
-                wc.initMap (ele);
+                wc.loadGmapsAsync ("wc.initMap");
+                $(this).hide ('fade', function () {
+                    $(this).remove();
+                }, 250);
                 return false;
             })
-            .addClass ('fg-button ui-state-default ui-corner-all middle')
-        ));
+        ;
     },
     initMap: function (ele) {
-        ele = ele || '#gMapContainer';
-        var $mc = $(ele);
-        latlng = new google.maps.LatLng(20, 0);
-        myOptions = {
-            zoom: 2,
-            center: latlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var ni = $('.mapContainer').length + 1;
-        var mcid = 'mapContainer_' + (ni);
-        $mc.attr ('id', mcid).addClass ('mapContainer');
-        
-        var gmap = new google.maps.Map(document.getElementById (mcid), myOptions);
-        
-        var marker = new google.maps.Marker({
-            position: latlng, 
-            map: gmap,
-            draggable: true,
-            title:""
-        });
-        
-        wc.local.map = {
-            mapContainer: $mc,
-            map: gmap,
-            marker: marker,
-        };
-        
-        google.maps.event.addListener (marker, 'dragend', function (event) {
-            marker.setPosition (event.latLng);
-            gmap.panTo (event.latLng);
-        });
-        google.maps.event.addListener (gmap, 'resize', function () {
-            gmap.setCenter (marker.getPosition());
-        });
-        var mapResizeHandler = function (i, width) {
-            setTimeout ("google.maps.event.trigger(wc.local.map.map, 'resize');", 500);
-        };
-        $('body').data ('resizeHandler', mapResizeHandler);
-        
-        $mc.resize (mapResizeHandler);
-
-        
+        $('#gMapGridBox').show ('slide', function () {
+            ele = ele || '#gMapContainer';
+            var $mc = $(ele);
+            latlng = new google.maps.LatLng($('#SiteLatDec').val() || 0, $('#SiteLonDec').val() || 0);
+            myOptions = {
+                zoom: 2,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var ni = $('.mapContainer').length + 1;
+            var mcid = 'mapContainer_' + (ni);
+            $mc.attr ('id', mcid).addClass ('mapContainer');
+            
+            var gmap = new google.maps.Map(document.getElementById (mcid), myOptions);
+            
+            var marker = new google.maps.Marker({
+                position: latlng, 
+                map: gmap,
+                draggable: true,
+                title:"Site Location",
+                animation: google.maps.Animation.DROP
+            });
+            
+            wc.local.map = {
+                mapContainer: $mc,
+                map: gmap,
+                marker: marker,
+            };
+            
+            google.maps.event.addListener (marker, 'dragend', function (event) {
+                marker.setPosition (event.latLng);
+                $('#SiteLatDec').val(event.latLng.lat())
+                $('#SiteLonDec').val(event.latLng.lng())
+                gmap.panTo (event.latLng);
+            });
+            google.maps.event.addListener (gmap, 'resize', function () {
+                gmap.setCenter (marker.getPosition());
+            });
+            var mapResizeHandler = function (i, width) {
+                setTimeout ("google.maps.event.trigger(wc.local.map.map, 'resize');", 150);
+            };
+            $('body').data ('resizeHandler', mapResizeHandler);
+            
+            $mc.resize (mapResizeHandler);
+        }, 500);
     },
     initSiteForm: function (ele) {
-        wc.loadGmapsAsync ("wc.initMapLoadButton");
+        wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
     },
     initLocationLookupButton: function () {

@@ -30,7 +30,7 @@
             )); ?>
         </div>
 
-        <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px;">
+        <div id="gMapGridBox" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
             <div id="gMapContainer" class="mapContainer"></div>
         </div>
         <!-- pointless at this time

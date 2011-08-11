@@ -469,8 +469,7 @@ input, textarea {
 	clear: both;
 	font-size: 140%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 5px 0px;
-    
+	padding: 5px 5px;
 	width:98%;
     border: 1px solid #ccc;
     -webkit-border-radius: 4px;
