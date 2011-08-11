@@ -115,7 +115,7 @@ var wc = {
         $('#gMapGridBox').show ('blind', function () {
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
-            latlng = new google.maps.LatLng($('#SiteLatDec').val() || 0, $('#SiteLonDec').val() || 0);
+            latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
             myOptions = {
                 zoom: 2,
                 center: latlng,
