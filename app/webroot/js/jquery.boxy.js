@@ -137,7 +137,15 @@ $(document).ready(function() {
                     $(':input', newBox).each (function () {
                         $(this).attr ('name', $(this).attr ('name') + nofis)
                     });
-                    
+                    $('div', newBox).each (function () {
+                        if ($(this).attr ('id'))
+                            $(this).attr ('id', $(this).attr ('id') + newInd)
+                    });
+                    $('label', newBox).each (function () {
+                        if ($(this).attr ('for'))
+                            $(this).attr ('for', $(this).attr ('for') + newInd)
+                    });
+                        
                     newBox.hide();
                     this.append (newBox);
                     newBox.show ("fast");
