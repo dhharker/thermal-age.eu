@@ -93,9 +93,7 @@ var wc = {
     initBurialForm: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
-        $('ul.boxy', $me).boxy({
-            title: 'Sediment Layer'
-        });
+
     },
     initStorageForm: function (ele) {
         ele = ele || '#wizardContainer';

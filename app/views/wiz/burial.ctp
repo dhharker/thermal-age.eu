@@ -41,23 +41,7 @@
                     to model landslides or other sudden burials.
                 </p>
             </div>
-            <ul class="boxy">
-                <li>
-                    <fieldset>
-
-                        <div class="grid_3 alpha">
-                            <?=$this->Form->input('soil_id');?>
-                        </div>
-                        <div class="grid_3">
-                            <?=$this->Form->input('thickness_m');?>
-                        </div>
-                        <div class="grid_3 omega">
-                            <?=$this->Form->input('sudden');?>
-                        </div>
-                      
-                    </fieldset>
-                </li>
-            </ul>
+            
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha" style="display: none">
