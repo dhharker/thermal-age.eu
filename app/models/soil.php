@@ -13,7 +13,7 @@ class Soil extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'thermal_diffusivity_m2_sec' => array(
+		'thermal_diffusivity_m2_day' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
@@ -32,8 +32,8 @@ class Soil extends AppModel {
 			),
 		),
 		'particle_size' => array(
-			'inlist' => array(
-				'rule' => array('inlist'),
+			'notempty' => array(
+				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -42,8 +42,8 @@ class Soil extends AppModel {
 			),
 		),
 		'water_content' => array(
-			'inlist' => array(
-				'rule' => array('inlist'),
+			'notempty' => array(
+				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -70,5 +70,22 @@ class Soil extends AppModel {
 			'order' => ''
 		)
 	);
+
+	var $hasMany = array(
+		'Layer' => array(
+			'className' => 'Layer',
+			'foreignKey' => 'soil_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
+	);
+
 }
 ?>

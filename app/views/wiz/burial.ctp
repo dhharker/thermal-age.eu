@@ -45,13 +45,13 @@
                 <li>
                     <fieldset>
 
-                        <div class="grid_2 alpha">
+                        <div class="grid_3 alpha">
                             <?=$this->Form->input('soil_id');?>
                         </div>
-                        <div class="grid_2">
+                        <div class="grid_3">
                             <?=$this->Form->input('thickness_m');?>
                         </div>
-                        <div class="grid_2 omega">
+                        <div class="grid_3 omega">
                             <?=$this->Form->input('sudden');?>
                         </div>
                       

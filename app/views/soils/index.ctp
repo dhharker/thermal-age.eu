@@ -4,7 +4,7 @@
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
 			<th><?php echo $this->Paginator->sort('name');?></th>
-			<th><?php echo $this->Paginator->sort('thermal_diffusivity_m2_sec');?></th>
+			<th><?php echo $this->Paginator->sort('thermal_diffusivity_m2_day');?></th>
 			<th><?php echo $this->Paginator->sort('particle_size');?></th>
 			<th><?php echo $this->Paginator->sort('water_content');?></th>
 			<th><?php echo $this->Paginator->sort('citation_id');?></th>
@@ -22,7 +22,7 @@
 	<tr<?php echo $class;?>>
 		<td><?php echo $soil['Soil']['id']; ?>&nbsp;</td>
 		<td><?php echo $soil['Soil']['name']; ?>&nbsp;</td>
-		<td><?php echo $soil['Soil']['thermal_diffusivity_m2_sec']; ?>&nbsp;</td>
+		<td><?php echo $soil['Soil']['thermal_diffusivity_m2_day']; ?>&nbsp;</td>
 		<td><?php echo $soil['Soil']['particle_size']; ?>&nbsp;</td>
 		<td><?php echo $soil['Soil']['water_content']; ?>&nbsp;</td>
 		<td>
@@ -61,5 +61,7 @@
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Layers', true), array('controller' => 'layers', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Layer', true), array('controller' => 'layers', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

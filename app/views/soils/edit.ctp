@@ -5,7 +5,7 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');
-		echo $this->Form->input('thermal_diffusivity_m2_sec');
+		echo $this->Form->input('thermal_diffusivity_m2_day');
 		echo $this->Form->input('particle_size');
 		echo $this->Form->input('water_content');
 		echo $this->Form->input('citation_id');
@@ -24,5 +24,7 @@
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Layers', true), array('controller' => 'layers', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Layer', true), array('controller' => 'layers', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
