@@ -18,13 +18,13 @@
                 'label' => 'Latitude (decimal °N)'
             )); ?>
         </div>
-        <div class="grid_4">
+        <div class="grid_5">
             <?= $this->Form->input('Site.lon_dec', array (
                 'label' => 'Longitude (decimal °E)'
             )); ?>
         </div>
-        <div class="grid_3 omega">
-            <?= $this->Form->button ('Find Location on Map', array (
+        <div class="grid_2 omega">
+            <?= $this->Form->button ('Find on Map', array (
                 'id' => 'FindLatLonByMapButton',
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
