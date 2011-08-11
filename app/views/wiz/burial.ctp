@@ -43,7 +43,19 @@
             </div>
             <ul class="boxy">
                 <li>
-                    blxy
+                    <fieldset>
+
+                        <div class="grid_2 alpha">
+                            <?=$this->Form->input('soil_id');?>
+                        </div>
+                        <div class="grid_2">
+                            <?=$this->Form->input('thickness_m');?>
+                        </div>
+                        <div class="grid_2 omega">
+                            <?=$this->Form->input('sudden');?>
+                        </div>
+                      
+                    </fieldset>
                 </li>
             </ul>
         </div>
