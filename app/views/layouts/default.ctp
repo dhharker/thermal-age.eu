@@ -50,7 +50,6 @@
         // @todo move this to $minified_javascript via wizController::_initialiseWizardEnvironment()
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Javascript->link('wizard_components.js');
-            echo $this->Javascript->link('jquery.boxy.js');
         }
 
         echo $this->Javascript->link('ui.js');
