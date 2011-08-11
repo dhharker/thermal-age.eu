@@ -112,7 +112,7 @@ var wc = {
         ;
     },
     initMap: function (ele) {
-        $('#gMapGridBox').show ('slide', function () {
+        $('#gMapGridBox').show ('blind', function () {
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
             latlng = new google.maps.LatLng($('#SiteLatDec').val() || 0, $('#SiteLonDec').val() || 0);
@@ -140,23 +140,26 @@ var wc = {
                 map: gmap,
                 marker: marker,
             };
-            
-            google.maps.event.addListener (marker, 'dragend', function (event) {
+            var udm = function (event) {
                 marker.setPosition (event.latLng);
                 $('#SiteLatDec').val(event.latLng.lat())
                 $('#SiteLonDec').val(event.latLng.lng())
                 gmap.panTo (event.latLng);
-            });
+            };
+            google.maps.event.addListener (marker, 'dragend', udm);
+            google.maps.event.addListener (gmap, 'click', udm);
+            
             google.maps.event.addListener (gmap, 'resize', function () {
                 gmap.setCenter (marker.getPosition());
             });
+
             var mapResizeHandler = function (i, width) {
                 setTimeout ("google.maps.event.trigger(wc.local.map.map, 'resize');", 150);
             };
             $('body').data ('resizeHandler', mapResizeHandler);
             
             $mc.resize (mapResizeHandler);
-        }, 500);
+        }, 150);
     },
     initSiteForm: function (ele) {
         wc.initMapLoadButton ();
