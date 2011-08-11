@@ -1,7 +1,7 @@
 <h1 class="sbHeading ui-corner-tl">
     Specimen Info
 </h1>
-<div class="grid_11 alpha paddedCell_10_h">
+<div class="grid_11 omega paddedCell_10_h">
     <div class="spoiler">
         <p>
             Welcome to the DNA survival screening tool. This wizard will guide you through the process of
@@ -35,7 +35,7 @@
             <?= $this->Form->input('Specimen.code', array('label' => 'Your Reference:'));?>
         </div>
 
-        <div class="grid_11 alpha">
+        <div class="grid_11">
             <?= $this->Form->input('Specimen.description', array('label' => 'Description:', 'rows' => 3));?>
         </div>
     </fieldset>

@@ -6,12 +6,12 @@ var wc = {
         
     },
     loadGmapsAsync: function (callback) {
-    return false; // debug
+//    return false; // debug
         var script = document.createElement("script");
         script.type = "text/javascript";
         script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=" + callback;
         document.body.appendChild(script);
-        wc.loadGmapsAsync = function (callback) { return false; };
+        //wc.loadGmapsAsync = function (callback) { return false; };
         return true;
     },
     damocles: function (ele) {
@@ -101,6 +101,18 @@ var wc = {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
     },
+    initMapLoadButton: function (ele) {
+        ele = ele || '#gMapContainer';
+        var $mc = $(ele);
+        $mc.append ($('<div></div>').append ($('<a>Find Location From Map</a>')
+            .attr ('href','')
+            .click (function () {
+                wc.initMap (ele);
+                return false;
+            })
+            .addClass ('fg-button ui-state-default ui-corner-all middle')
+        ));
+    },
     initMap: function (ele) {
         ele = ele || '#gMapContainer';
         var $mc = $(ele);
@@ -146,12 +158,12 @@ var wc = {
         
     },
     initSiteForm: function (ele) {
-        wc.loadGmapsAsync ("wc.initMap");
+        wc.loadGmapsAsync ("wc.initMapLoadButton");
         wc.initLocationLookupButton ();
     },
     initLocationLookupButton: function () {
         $("#FindLatLonBySiteNameButton").click (function () {
-            console.log ("this button doesn't work yet, make it work.");
+            alert ("this button doesn't work yet, sorry.");
             return false;
         });
     },

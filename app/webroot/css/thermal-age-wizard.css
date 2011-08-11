@@ -182,14 +182,31 @@
     margin-right: .5em;
     
 }
+/* these were hovering /over/ the progress col for some godunknown reason (maybe <label> has an odd character?): */
+#wizardContainer form label sup, label sub {
+    position: relative;
+}
 
 
-
-#FindLatLonBySiteNameButton {
+.griddedButton {
     margin-top: 2.8em;
     width: 100%;
 }
-.mobile-layout #FindLatLonBySiteNameButton {
+.mobile-layout .griddedButton {
     margin-top: .2em !important;
     margin-bottom: .8em;
+}
+
+
+
+/* map container (in site form, but generic) */
+div.mapContainer {
+    height: 300px;
+    margin: 0px;
+    clear: both;
+}
+div.mapContainer a.middle {
+    display: block;
+    float: none;
+    margin: 1em;
 }

@@ -7,32 +7,39 @@
             <?= $this->Form->input('Site.name'); ?>
         </div>
         <div class="grid_3 omega">
-            <?= $this->Form->button ('Find Location From Name', array (
+            <?= $this->Form->button ('Find Location from Name', array (
                 'id' => 'FindLatLonBySiteNameButton',
-                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all'
+                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
         </div>
 
-        <div class="grid_5 alpha">
+        <div class="grid_4 alpha">
             <?= $this->Form->input('Site.lat_dec', array (
                 'label' => 'Latitude (decimal °N)'
             )); ?>
         </div>
-        <div class="grid_6 omega">
+        <div class="grid_4">
             <?= $this->Form->input('Site.lon_dec', array (
                 'label' => 'Longitude (decimal °E)'
             )); ?>
         </div>
-
-        <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 2px;">
-            <div id="gMapContainer" class="" style="height: 300px; margin: 0px; clear: both;"></div>
+        <div class="grid_3 omega">
+            <?= $this->Form->button ('Find Location on Map', array (
+                'id' => 'FindLatLonByMapButton',
+                'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
+            )); ?>
         </div>
 
+        <div class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px;">
+            <div id="gMapContainer" class="mapContainer"></div>
+        </div>
+        <!-- pointless at this time
         <div class="grid_11 alpha">
             <?= $this->Form->input('Site.citation_id'); ?>
         </div>
-        <div class="grid_11 alpha">
-            <?= $this->Form->input('Site.description'); ?>
+        -->
+        <div class="grid_11 ">
+            <?= $this->Form->input('Site.description', array ('rows' => 3)); ?>
         </div>
 
 	</fieldset>
