@@ -41,7 +41,28 @@
                     to model landslides or other sudden burials.
                 </p>
             </div>
-            
+            <ul id="burialLayersList">
+                <?php
+                for ($i = 0; $i < 3; $i++) {
+                ?>
+                <li>
+                    <fieldset style="clear: both">
+                        <div class="grid_3 alpha">
+                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.soil_id');?>
+                        </div>
+                        <div class="grid_3">
+                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.thickness_m');?>
+                        </div>
+                        <div class="grid_3 omega">
+                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
+                        </div>
+                      
+                    </fieldset>
+                </li>
+                <?php
+                }
+                ?>
+            </ul>
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha" style="display: none">
