@@ -208,12 +208,17 @@ class WizController extends AppController {
 
 
     function beforeFilter() {
-
  
         parent::beforeFilter();
         
 		
 	}
+
+    function beforeRender () {
+        parent::beforeRender ();
+       //die (print_r ($this, true));
+
+    }
 
     /**
      * The curator wizard is for estimating k*t for a geolocated sample with a single burial context
@@ -298,7 +303,26 @@ class WizController extends AppController {
         $soils = $this->Soil->find('list');
         $this->set(compact('soils'));
     }
-
+    function _processBurial () {
+        $this->loadModel('SoilTemporothermal');
+        $ok = TRUE;
+        if (!$this->Temporothermal->validates(array('fieldList' => array('startdate_ybp')))) {
+            $ok = false;
+        }
+        $invalid = array ();
+        foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
+            $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
+            $this->SoilTemporothermal->set ($soiltemporothermal);
+            if (!$this->SoilTemporothermal->validates()) {
+                $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
+            }
+        }
+        if (!empty ($invalid)) {
+            $ok = false;
+            $this->SoilTemporothermal->validationErrors = $invalid;
+            $this->set ('invalidSoilTemporothermalFields', $invalid);
+        }
+    }
 
     function _prepareStorage () {
         $ssd = $this->Wizard->read('burial.Temporothermal.startdate_ybp');

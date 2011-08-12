@@ -1,6 +1,6 @@
 <?php
-class SoilsTemporothermal extends AppModel {
-	var $name = 'SoilsTemporothermal';
+class SoilTemporothermal extends AppModel {
+	var $name = 'SoilTemporothermal';
 	var $displayField = 'thickness_m';
 	var $validate = array(
 		'sudden' => array(

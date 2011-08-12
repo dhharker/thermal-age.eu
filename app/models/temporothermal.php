@@ -92,7 +92,13 @@ class Temporothermal extends AppModel {
 	);
 
     var $hasMany = array(
-        'SoilTemporothermal'
+        'SoilTemporothermal' => array(
+			'className' => 'SoilTemporothermal',
+			'foreignKey' => 'temporothermal_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
     );
 }
 ?>
