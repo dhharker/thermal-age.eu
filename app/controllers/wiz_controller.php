@@ -293,6 +293,10 @@ class WizController extends AppController {
     function _prepareBurial () {
         $ssd = $this->Wizard->read('specimen.Temporothermal.stopdate_ybp');
         $this->set ('agebp', $ssd);
+
+        $this->loadModel('Soil');
+        $soils = $this->Soil->find('list');
+        $this->set(compact('soils'));
     }
 
 
