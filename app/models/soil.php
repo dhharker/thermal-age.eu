@@ -71,21 +71,10 @@ class Soil extends AppModel {
 		)
 	);
 
-	var $hasMany = array(
-		'Layer' => array(
-			'className' => 'Layer',
-			'foreignKey' => 'soil_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		)
-	);
+    var $hasMany = array(
+        'SoilTemporothermal'
+    );
+	
 
 }
 ?>
