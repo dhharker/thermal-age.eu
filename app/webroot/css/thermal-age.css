@@ -156,6 +156,10 @@ header, footer, .no-v-margin {
     margin-top: 0px !important;
 }
 
+.mobile-layout header nav div {
+    margin-bottom: 10px;
+}
+
 /* smartboxes are smart */
 .smartbox {
     -moz-border-radius: 5px;
