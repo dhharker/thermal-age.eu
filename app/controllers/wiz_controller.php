@@ -300,28 +300,33 @@ class WizController extends AppController {
         $this->set ('agebp', $ssd);
 
         $this->loadModel('Soil');
-        $soils = $this->Soil->find('list');
+        $soils = array_merge (array (null => null), $this->Soil->find('list'));
+        
         $this->set(compact('soils'));
     }
     function _processBurial () {
         $this->loadModel('SoilTemporothermal');
+        $this->Temporothermal->set ($this->data);
         $ok = TRUE;
-        if (!$this->Temporothermal->validates(array('fieldList' => array('startdate_ybp')))) {
+        if (!$this->Temporothermal->validates()) {
             $ok = false;
         }
         $invalid = array ();
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
-            $this->SoilTemporothermal->set ($soiltemporothermal);
-            if (!$this->SoilTemporothermal->validates()) {
-                $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
+            if ($soiltemporothermal['soil_id'] > 0) {
+                $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
+                $this->SoilTemporothermal->set ($soiltemporothermal);
+                if (!$this->SoilTemporothermal->validates()) {
+                    $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
+                }
             }
         }
         if (!empty ($invalid)) {
             $ok = false;
             $this->SoilTemporothermal->validationErrors = $invalid;
-            $this->set ('invalidSoilTemporothermalFields', $invalid);
+            //$this->set ('invalidSoilTemporothermalFields', $invalid);
         }
+        return $ok;
     }
 
     function _prepareStorage () {
