@@ -113,6 +113,11 @@ var wc = {
     },
     initMap: function (ele) {
         $('#gMapGridBox').show ('blind', function () {
+            $.smoothScroll ({
+                scrollElement: $('#bg2'),
+                scrollTarget: $('#gMapGridBox'),
+                offset: -85
+            });
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
             latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
@@ -160,6 +165,7 @@ var wc = {
             
             $mc.resize (mapResizeHandler);
         }, 150);
+        
     },
     initSiteForm: function (ele) {
         wc.initMapLoadButton ();
