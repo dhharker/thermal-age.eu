@@ -210,3 +210,17 @@ div.mapContainer a.middle {
     float: none;
     margin: 1em;
 }
+
+
+
+/* burial layers, soils, all that malarkey */
+ul#burialLayersList {
+    display: inline;
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+ul#burialLayersList li {
+    margin: 0px;
+    padding: 0px;
+}
