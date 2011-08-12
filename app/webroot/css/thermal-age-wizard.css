@@ -215,12 +215,16 @@ div.mapContainer a.middle {
 
 /* burial layers, soils, all that malarkey */
 ul#burialLayersList {
-    display: inline;
+    display: block;
     margin: 0px;
     padding: 0px;
     list-style-type: none;
+    border-bottom: 5px solid #fff;
 }
 ul#burialLayersList li {
+    display: block;
     margin: 0px;
     padding: 0px;
+    border: 5px solid #fff;
+    border-bottom-width: 0px;
 }
