@@ -51,7 +51,9 @@
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.soil_id');?>
                         </div>
                         <div class="grid_3">
-                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.thickness_m');?>
+                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.thickness_m', array (
+                                'label' => 'Thickness (m)'
+                            ));?>
                         </div>
                         <div class="grid_3 omega">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
