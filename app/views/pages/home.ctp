@@ -68,8 +68,8 @@
             );?>
 
             <?php echo $this->Html->link(
-                    $this->Html->image("bioarch_200_trans.png", array("alt" => "BioArch logo")) .
-                    "<br />Developed at BioArch",
+                    $this->Html->image("bioarch_200_trans.png", array("alt" => "BioArCh logo")) .
+                    "<br />Developed at BioArCh",
                     'https://sites.google.com/a/palaeo.eu/xtnl-bioarch/Home',
                     array('escape' => false, 'target' => '_blank', 'class' => 'imagey-link ui-corner-all', 'style' => 'min-width: 257px; max-width: 274px;')
             );?>
