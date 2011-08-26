@@ -1,6 +1,7 @@
 <?php
 class SoilTemporothermal extends AppModel {
 	var $name = 'SoilTemporothermal';
+    var $actsAs = array ('ForeignKeyVerifiable');
 	var $displayField = 'thickness_m';
 	var $validate = array(
 		'sudden' => array(
@@ -27,7 +28,7 @@ class SoilTemporothermal extends AppModel {
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
+				'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
@@ -69,7 +70,8 @@ class SoilTemporothermal extends AppModel {
 			'foreignKey' => 'soil_id',
 			'conditions' => '',
 			'fields' => '',
-			'order' => ''
+			'order' => '',
+            'validateIt' => true
 		)
 	);
 }
