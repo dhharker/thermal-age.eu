@@ -133,7 +133,7 @@
                 </div>
                 <div class="grid_6 omega clearfix no-v-margin">
                     <?php
-                        echo $this->Html->link('T&C', array ('controller' => '', 'action' => ''), array(
+                        echo $this->Html->link('T&C', array ('controller' => 'pages', 'action' => 'legal', 'terms'), array(
                             'class' => 'ui-state-default fg-button',
                         ));
                     ?>
@@ -143,7 +143,7 @@
                         ));
                     ?>
                     <?php
-                        echo $this->Html->link('Copyright & Licensing', array ('controller' => '', 'action' => ''), array(
+                        echo $this->Html->link('Copyright & Licensing', array ('controller' => 'pages', 'action' => 'legal', 'copyright'), array(
                             'class' => 'ui-state-default fg-button',
                         ));
                     ?>
