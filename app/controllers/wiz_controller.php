@@ -163,8 +163,8 @@ class WizController extends AppController {
      * @param string $forwardAction the action to jump back to after checking browser etc. not shit.
      */
     function env_check ($forwardAction = null) {
-        $this->Session->write ('wizenv', 'CHECKED');
         $this->set ('cookie', (!$this->Session->check ('wizenv')) ? false : true);
+        $this->Session->write ('wizenv', 'CHECKED');
         $this->set ('redirectTo', (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '');
 
         
@@ -313,7 +313,7 @@ class WizController extends AppController {
         }
         $invalid = array ();
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if ($soiltemporothermal['soil_id'] > 0) {
+            if ($soiltemporothermal['soil_id'] > 0 || !empty ($soiltemporothermal['soil_thickness_m']) ) {
                 $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
                 $this->SoilTemporothermal->set ($soiltemporothermal);
                 if (!$this->SoilTemporothermal->validates()) {
