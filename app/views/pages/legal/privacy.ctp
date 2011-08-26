@@ -36,15 +36,16 @@
         By using this Site, you signify your acceptance of this policy and <a href="http://thermal-age.eu/pages/legal/terms_conditions">terms of service</a>. If you do not agree to this policy, please do not use our Site. Your continued use of the Site following the posting of changes to this policy will be deemed your acceptance of those changes.</p><h2 class="sbHeading">Contacting us</h2><p>
 
         If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this site, please contact us at:<br>
-        <a href="http://thermal-age.eu/">BioArCh</a><br>
-        <a href="http://thermal-age.eu/">http://thermal-age.eu/</a><br>
-        BioArCh
-        University of York
-        Heslington
-        York
-        United Kingdom<br>
+        <address>
+        
+        <a href="http://thermal-age.eu/">BioArCh</a> (<a href="http://thermal-age.eu/">http://thermal-age.eu/</a>)<br>
+        University of York,
+        Heslington,
+        York,
+        United Kingdom
+        </address>
         <br>
-        This document was last updated on July 25, 2011</p><p>
+        This document was last updated on August 26, 2011</p><p>
 
         <div style="font-size: 10px; color: gray;">Privacy policy created by <a style="font-size: 10px; color: gray; text-decoration: none; cursor: default;" href="http://www.generateprivacypolicy.com" target="_blank">Generate Privacy Policy</a></div>
 

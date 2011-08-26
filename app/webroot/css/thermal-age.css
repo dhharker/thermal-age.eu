@@ -28,9 +28,13 @@ h1 {
     background: url('/img/heading_bones.png') center left no-repeat transparent;
 }
 
-p {
+p, address {
     margin: 20px;
     text-align: justify;
+}
+
+address {
+    font-style: normal;
 }
 
 ol {
