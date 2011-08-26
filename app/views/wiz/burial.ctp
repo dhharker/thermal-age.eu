@@ -41,9 +41,14 @@
                     to model landslides or other sudden burials.
                 </p>
             </div>
+            <?=$this->Form->input ('numLayers', array (
+                'type' => 'hidden',
+                'value' => $numLayers,
+            ));?>
             <ul id="burialLayersList">
                 <?php
-                for ($i = 0; $i < 3; $i++) {
+                $numLayers = $this->Form->value ('numLayers');
+                for ($i = 0; $i < $numLayers; $i++) {
                 ?>
                 <li>
                     <fieldset style="clear: both">
@@ -65,6 +70,7 @@
                 }
                 ?>
             </ul>
+            
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha" style="display: none">
