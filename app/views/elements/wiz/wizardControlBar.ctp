@@ -16,7 +16,24 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
                 'Cancel',
                 array ('controller' => '', 'action' => '', ''),
                 array('class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary', 'escape' => false)); ?>
-            <?php echo $this->Form->submit('Continue &raquo;', array('div' => false, 'class' => 'fg-button ui-corner-all ui-state-default', 'escape' => false)); ?>
+
+            <?php
+            echo $this->Html->link(
+                'Load',
+                array ('controller' => '', 'action' => '', ''),
+                array(
+                    'class' => 'fg-button ui-corner-left ui-state-default ui-priority-secondary right',
+                    'escape' => false));
+            echo $this->Html->link(
+                'Save',
+                array ('controller' => '', 'action' => '', ''),
+                array(
+                    'class' => 'fg-button ui-state-default ui-priority-secondary right',
+                    'escape' => false));
+            echo $this->Form->submit('Continue &raquo;', array(
+                'div' => false,
+                'class' => 'fg-button ui-corner-all ui-state-default',
+                'escape' => false)); ?>
         </div>
     </div>
 

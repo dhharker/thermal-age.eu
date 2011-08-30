@@ -30,12 +30,21 @@
     margin-right: -7px;
     z-index: 202 !important;
 }
-
+#wizardBottomBar input[type=submit] {
+    margin:0px;
+}
 #wizardBottomBar .fg-button {
+    margin: 0px;
+}
+#wizardBottomBar .fg-button.ui-priority-secondary {
     margin: 4px -1px 4px 0px;
 }
-#wizardBottomBar input[type=submit] {
-    margin: 0px;
+#wizardBottomBar .fg-button.ui-priority-secondary.right {
+    float: none;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    
+    
 }
 
 #wizardContainer fieldset {
