@@ -42,10 +42,10 @@
                 </p>
             </div>
             <?php
-            $numLayers = 3;
-            $a = $this->Form->value ('numLayers', array (
-                'default' => 3
-            ));
+            $numLayers = $this->Form->value ('numLayers');
+            
+            // numlayers view logic here
+
             echo $this->Form->input ('numLayers', array (
                 'type' => 'hidden',
                 'value' => $numLayers,
