@@ -249,6 +249,7 @@ header, footer, .no-v-margin {
 .fg-button {
    font-size: .9em;
    outline: 0;
+   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
    margin: 0px;
    padding: 4px 8px;
    text-decoration:none !important;
@@ -260,6 +261,10 @@ header, footer, .no-v-margin {
 .fg-button.ui-priority-secondary {
    padding: .2em .5em;
    font-size: 0.8em;
+   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+}
+.fg-button.ui-priority-primary {
+   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
 }
 /*for putting 2° buttons next to 1° ones*/
 .fg-button.ui-margin-match-primary {
@@ -675,6 +680,7 @@ form div.error-message {
 
 /* feedback button (is red) */
 .fg-button.feedbackButton {
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
     background: #ff3019;
     background: -moz-linear-gradient(top, #ff3019 0%, #cf0404 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff3019), color-stop(100%,#cf0404));
