@@ -7,11 +7,11 @@ body {
     
     color: #505451;
 }
-a {
+fg-button a {
     color: #506241;
     text-decoration: none;
 }
-p a {
+a {
     color: #000082;
     text-decoration: none;
 }
