@@ -63,8 +63,7 @@
 </head>
 
 <body>
-    <div id="bg1"><div id="bg2">
-    <div id="container" class="container_12 smartbox">
+    <div id="bg1"><div id="bg2"><div id="container" class="container_12 smartbox">
 
         <header class="grid_12" style="clear: both;">
             <div class="grid_4 alpha clearfix no-v-margin">
@@ -153,8 +152,7 @@
             </div>
         </footer>
         
-    </div>
-    </div></div>
+    </div></div></div>
 
 
 </body>

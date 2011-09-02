@@ -47,6 +47,7 @@ var initialiseTAUI = function (scope) {
                 duration:1000
             },
             width: 550,
+            minWidth: 200,
             minHeight: 200,
             modal: true,
             title: 'Your feedback helps us to improve',

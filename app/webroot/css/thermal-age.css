@@ -111,7 +111,8 @@ li {
     right: 0px;
     width: 100%;
     height: 100%;
-
+    margin: 0px;
+    padding: 0px;
     background: url('/img/bg_spiral.png') transparent center center no-repeat;
 
 }
@@ -162,6 +163,13 @@ header, footer, .no-v-margin {
 
 .mobile-layout header nav div {
     margin-bottom: 10px;
+}
+
+.mobile-layout #container {
+    margin-right: -20px !important;
+}
+.mobile-layout #bg2 {
+    padding-right: -20px !important;
 }
 
 /* smartboxes are smart */
