@@ -23,7 +23,7 @@
 		<td><?php echo $feedback['Feedback']['title']; ?>&nbsp;</td>
 		<td><?php echo $feedback['Feedback']['uri']; ?>&nbsp;</td>
 		<td><?php echo $feedback['Feedback']['body']; ?>&nbsp;</td>
-		<td><?php echo $feedback['Feedback']['client_info']; ?>&nbsp;</td>
+		<td><pre class="dialogise"><?php echo (print_r (unserialize ($feedback['Feedback']['client_info']), true)); ?>&nbsp;</pre></td>
 		<td><?php echo $feedback['Feedback']['email']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $feedback['Feedback']['id'])); ?>

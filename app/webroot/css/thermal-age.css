@@ -457,6 +457,12 @@ input[disabled], input[readonly], select[disabled], select[readonly], checkbox[d
 form .required {
 	font-weight: bold;
 }
+form .help {
+    font-size: 80%;
+    padding: 2px 5px;
+    font-variant: italic;
+    color: #777;
+}
 form .required label:after {
 	color: #e32;
 	content: '*';

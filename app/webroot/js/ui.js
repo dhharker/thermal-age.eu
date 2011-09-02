@@ -34,7 +34,7 @@ var initialiseTAUI = function (scope) {
         );
     });
     
-    $('#feedbackButton').not('.inited').each (function () {
+    $('#feedbackButton', scope).not('.inited').each (function () {
         var fbf = $('<div id="fbfDialog"></div>');
 
         fbf.dialog ({
@@ -47,8 +47,9 @@ var initialiseTAUI = function (scope) {
                 duration:1000
             },
             width: 550,
+            minHeight: 200,
             modal: true,
-            title: 'Your constructive feedback helps us to improve',
+            title: 'Your feedback helps us to improve',
             position: ['center', 50],
             autoOpen: false,
             close: function (e, u) {
@@ -58,13 +59,14 @@ var initialiseTAUI = function (scope) {
         fbf.load ('/feedback');
         $(this).click (function () {
             fbf.dialog ('open');
+            initialiseTAUI (fbf);
             return false;
         });
         return false;
         
     }).addClass ('inited');
     
-    $('.dialogise').not ('.inited').each (function () {
+    $('.dialogise', scope).not ('.inited').each (function () {
         var clicker = $('<a class="fg-button ui-state-default dialogise-clicker ui-corner-all">Show &raquo;</a>');
         clicker.click (function () {
             $(this).siblings('.dialogise-dialog').dialog ('open');

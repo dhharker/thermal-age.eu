@@ -12,12 +12,16 @@
             ));?>
         </div>
         <div class="">
-            <?=$this->Form->input('body');?>
+            <?=$this->Form->input('body', array (
+                
+            ));?>
+            <span class="help">Please include as much detail as possible.</span>
         </div>
-        <div class="">
+        <div style="padding-bottom: 0px; padding-top: 10px; margin-bottom: -12px;">
             <?=$this->Form->submit('Send Feedback', array(
                 'div' => false,
                 'class' => 'fg-button ui-corner-all ui-state-default ui-priority-primary',
+                'style' => 'display: block; float: none; width: 100%;',
                 'escape' => false)); ?>
         </div>
 	</fieldset>
