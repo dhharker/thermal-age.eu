@@ -33,6 +33,21 @@ var initialiseTAUI = function (scope) {
                 })
         );
     });
+    
+    $('#feedbackButton').click (function () {
+        var fbf = $('<div></div>');
+        fbf.hide().load ('/feedback', {
+            complete: function (t, e) {
+                fbf.dialog ({
+                    width: 550,
+                    modal: true,
+                    title: 'Your constructive feedback helps us to improve'
+                });
+            }
+        });
+        return false;
+    });
+    
 };
 
 $(function () {

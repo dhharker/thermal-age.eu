@@ -29,7 +29,8 @@ class FeedbacksController extends AppController {
             $this->Feedback->set ($this->data);
             if ($this->Feedback->validates ()) {
                 $this->Feedback->save ();
-                $this->redirect(array ('action' => 'thanks'));
+                App::import('View', 'Thanks');
+                $this->render ('thanks');
             }
             else {
 

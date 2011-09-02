@@ -83,7 +83,7 @@
 
                         <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => 'index'), array('class' => 'fg-button ui-state-default')); ?>
 
-                        <?php echo $this->Html->link('Feedback', array ('controller' => 'feedbacks', 'action' => 'add'), array('class' => 'fg-button ui-state-default feedbackButton ui-corner-right')); ?>
+                        <?php echo $this->Html->link('Feedback', array ('controller' => 'feedbacks', 'action' => 'add'), array('class' => 'fg-button ui-state-default feedbackButton ui-corner-right', 'id' => 'feedbackButton')); ?>
 
                         <?php  $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
 

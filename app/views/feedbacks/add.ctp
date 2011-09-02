@@ -1,20 +1,20 @@
-<div class="feedbacks form">
+<div class="feedbacks form" id="fbAjCont">
 <?php echo $this->Form->create('Feedback');?>
 	<fieldset>
-        <div class="grid_6">
+        <div class="">
             <?=$this->Form->input('title', array (
                 'label' => 'Subject',
             ));?>
         </div>
-        <div class="grid_6">
+        <div class="">
             <?=$this->Form->input('email', array (
                 'label' => 'Email address (if you would like a response)'
             ));?>
         </div>
-        <div class="grid_12">
+        <div class="">
             <?=$this->Form->input('body');?>
         </div>
-        <div class="grid_12">
+        <div class="">
             <?=$this->Form->submit('Send Feedback', array(
                 'div' => false,
                 'class' => 'fg-button ui-corner-all ui-state-default ui-priority-primary',
@@ -26,7 +26,22 @@
         'default' => 'feedback'
     ));?>
     <script type="text/javascript">
-        $('input[name="uri"]').value (document.location);
+        $(document).ready (function () {
+            $('#FeedbackUri').val (document.location);
+            var fbf = $('#fbAjCont');
+            $('form#FeedbackAddForm').not('.axfInited').ajaxForm ({
+                beforeSubmit: function () {
+                        return true;
+                },
+                complete: function (a, b) {
+                    initialiseTAUI (fbf);
+                },
+                target: fbf
+            }).submit (function () {
+                return false;
+            }).addClass ('axfInited');
+        });
+
     </script>
 
 <?php echo $this->Form->end();?>
