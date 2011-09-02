@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* App schema generated on: 2011-08-12 03:08:24 : 1313117904*/
+/* App schema generated on: 2011-09-02 09:09:35 : 1314951395*/
 class AppSchema extends CakeSchema {
 	var $name = 'App';
 
@@ -19,6 +19,16 @@ class AppSchema extends CakeSchema {
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL),
 		'doi' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+	);
+	var $feedback = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+		'title' => array('type' => 'string', 'null' => true, 'default' => NULL),
+		'uri' => array('type' => 'string', 'null' => true, 'default' => NULL),
+		'body' => array('type' => 'text', 'null' => false, 'default' => NULL),
+		'client_info' => array('type' => 'text', 'null' => false, 'default' => NULL),
+		'email' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 200),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
