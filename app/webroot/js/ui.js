@@ -40,11 +40,11 @@ var initialiseTAUI = function (scope) {
         fbf.dialog ({
             show: {
                 effect:'fade',
-                duration:1000
+                duration:600
             },
             hide: {
                 effect:'fade',
-                duration:1000
+                duration:600
             },
             width: 550,
             minWidth: 200,
@@ -78,7 +78,36 @@ var initialiseTAUI = function (scope) {
             minWidth: 300,
             autoOpen: false,
         })
-    }).addClass ('inited')
+    }).addClass ('inited');
+    
+    $('div.moodSlider', scope).not ('.inited').each (function () {
+        var slider = $(this);
+        var input = slider.parent().find ('input[id$=Mood]');
+        var udhv = function () {
+            input.val ($(this).slider('value') / 100.0);
+        };
+        
+        slider.slider ({
+            step: 1,
+            min: -100,
+            max: 100,
+            value: input.val() * 100,
+            animate: true,
+            slide: udhv,
+            change: udhv
+        });
+    })
+    .prepend('<div class="sliderLabelInternal" style="float: none; margin: -2px auto; clear: none; width: 8em; text-align: center;">INDIFFERENT</div>')
+    .prepend('<div class="sliderLabelInternal" style="float: right">GOOD</div>')
+    .prepend('<div class="sliderLabelInternal" style="float: left">BAD</div>')
+
+    .addClass ('inited');
+    
+    /*
+    $('.class', scope).not ('.inited').each (function () {
+        $(this).doStuff();
+    }).addClass ('inited');
+    */
     
 };
 

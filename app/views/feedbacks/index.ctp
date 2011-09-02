@@ -8,6 +8,8 @@
 			<th><?php echo $this->Paginator->sort('body');?></th>
 			<th><?php echo $this->Paginator->sort('client_info');?></th>
 			<th><?php echo $this->Paginator->sort('email');?></th>
+			<th><?php echo $this->Paginator->sort('created');?></th>
+			<th><?php echo $this->Paginator->sort('mood');?></th>
 			<th class="actions"><?php __('Actions');?></th>
 	</tr>
 	<?php
@@ -23,8 +25,10 @@
 		<td><?php echo $feedback['Feedback']['title']; ?>&nbsp;</td>
 		<td><?php echo $feedback['Feedback']['uri']; ?>&nbsp;</td>
 		<td><?php echo $feedback['Feedback']['body']; ?>&nbsp;</td>
-		<td><pre class="dialogise"><?php echo (print_r (unserialize ($feedback['Feedback']['client_info']), true)); ?>&nbsp;</pre></td>
+		<td><?php $feedback['Feedback']['client_info']; ?>&nbsp;</td>
 		<td><?php echo $feedback['Feedback']['email']; ?>&nbsp;</td>
+		<td><?php echo $feedback['Feedback']['created']; ?>&nbsp;</td>
+		<td><?php echo $feedback['Feedback']['mood']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $feedback['Feedback']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $feedback['Feedback']['id'])); ?>

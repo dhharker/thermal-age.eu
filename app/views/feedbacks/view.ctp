@@ -31,6 +31,16 @@
 			<?php echo $feedback['Feedback']['email']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Created'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $feedback['Feedback']['created']; ?>
+			&nbsp;
+		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Mood'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $feedback['Feedback']['mood']; ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 <div class="actions">

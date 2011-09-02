@@ -7,10 +7,7 @@ body {
     
     color: #505451;
 }
-fg-button a {
-    color: #506241;
-    text-decoration: none;
-}
+
 a {
     color: #000082;
     text-decoration: none;
@@ -18,6 +15,17 @@ a {
 a:hover {
     color: #cf0404;
 }
+
+
+a.fg-button {
+    color: #506241;
+    text-decoration: none;
+}
+a.fg-button:hover {
+    color: #444;
+}
+
+
 em {
     font-style: italic;
 }
@@ -709,4 +717,47 @@ form div.error-message {
     background: linear-gradient(top, #cf0404 0%,#ff3019 100%);
     color: #fafafa;
     font-weight: bold;
+}
+
+
+
+/* mood slider */
+
+.ui-slider, .ui-slider-handle {
+    cursor: pointer;
+}
+
+div.moodSlider.ui-slider-horizontal {
+    background: #e21212;
+    background: -moz-linear-gradient(left, #e21212 0%, #a4a861 50%, #63d313 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e21212), color-stop(50%,#a4a861), color-stop(100%,#63d313));
+    background: -webkit-linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
+    background: -o-linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
+    background: -ms-linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e21212', endColorstr='#63d313',GradientType=1 );
+    background: linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
+    margin: 1px 3px 2px 3px;
+}
+div.moodSlider.ui-slider a.ui-slider-handle {
+    background: none;
+    background-color: rgba(255,255,255, 0.3);
+    border-width: 3px 1px 3px 1px;
+    margin-top: -.15em;
+    margin-left: -7px;
+    
+    border-color: #777;
+    -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow:    0px 0px 3px rgba(0, 0, 0, 0.75);
+    box-shadow:         0px 0px 3px rgba(0, 0, 0, 0.75);
+}
+div.moodSlider.ui-slider a.ui-slider-handle.ui-state-active {
+    border-color: #333;
+}
+div.moodSlider.ui-slider-horizontal .sliderLabelInternal {
+    font-weight: bold;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 0px;
+    margin: -2px 5px 0px 5px;
+    color: #fafafa;
 }

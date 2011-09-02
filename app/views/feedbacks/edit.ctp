@@ -9,6 +9,7 @@
 		echo $this->Form->input('body');
 		echo $this->Form->input('client_info');
 		echo $this->Form->input('email');
+		echo $this->Form->input('mood');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
