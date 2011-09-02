@@ -15,7 +15,7 @@ a {
     color: #000082;
     text-decoration: none;
 }
-p a:hover {
+a:hover {
     color: #cf0404;
 }
 em {
