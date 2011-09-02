@@ -35,19 +35,20 @@ var initialiseTAUI = function (scope) {
     });
     
     $('#feedbackButton').not('.inited').click (function () {
-        var fbf = $('<div></div>');
-        fbf.hide().load ('/feedback', {
+        var fbf = $('<div id="fbfDialog"></div>');
+        fbf.dialog ({
+            width: 550,
+            modal: true,
+            title: 'Your constructive feedback helps us to improve',
+            position: ['center', 50],
+            show: false
+        }).load ('/feedback', {
             complete: function (t, e) {
-                fbf.dialog ({
-                    width: 550,
-                    modal: true,
-                    title: 'Your constructive feedback helps us to improve',
-                    position: ['center', 50],
-                });
+                fbf.dialog ('show');
             }
         });
         return false;
-    }).addClass ('.inited');
+    }).addClass ('inited');
     
 };
 
