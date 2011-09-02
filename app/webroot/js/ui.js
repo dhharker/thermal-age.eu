@@ -34,21 +34,48 @@ var initialiseTAUI = function (scope) {
         );
     });
     
-    $('#feedbackButton').not('.inited').click (function () {
+    $('#feedbackButton').not('.inited').each (function () {
         var fbf = $('<div id="fbfDialog"></div>');
+
         fbf.dialog ({
+            show: {
+                effect:'fade',
+                duration:1000
+            },
+            hide: {
+                effect:'fade',
+                duration:1000
+            },
             width: 550,
             modal: true,
             title: 'Your constructive feedback helps us to improve',
             position: ['center', 50],
-            show: false
-        }).load ('/feedback', {
-            complete: function (t, e) {
-                fbf.dialog ('show');
-            }
+            autoOpen: false,
+            close: function (e, u) {
+                fbf.load ('/feedback');
+            },
+        });
+        fbf.load ('/feedback');
+        $(this).click (function () {
+            fbf.dialog ('open');
+            return false;
         });
         return false;
+        
     }).addClass ('inited');
+    
+    $('.dialogise').not ('.inited').each (function () {
+        var clicker = $('<a class="fg-button ui-state-default dialogise-clicker ui-corner-all">Show &raquo;</a>');
+        clicker.click (function () {
+            $(this).siblings('.dialogise-dialog').dialog ('open');
+        })
+        $(this).before (clicker).wrap('<div class="dialogise-dialog"></div>').parent().hide().dialog ({
+            position: ['top', 50],
+            width: 600,
+            minWidth: 300,
+            autoOpen: false,
+        })
+    }).addClass ('inited')
     
 };
 
