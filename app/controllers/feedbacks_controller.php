@@ -27,7 +27,12 @@ class FeedbacksController extends AppController {
 		if (!empty($this->data)) {
 			$this->Feedback->create();
             $this->Feedback->set ($this->data);
+            $this->Feedback->set ('client_info', serialize (array (
+                'server' => $_SERVER,
+                'request' => $_REQUEST
+            )));
             if ($this->Feedback->validates ()) {
+                
                 $this->Feedback->save ();
                 App::import('View', 'Thanks');
                 $this->render ('thanks');

@@ -28,7 +28,7 @@
     <script type="text/javascript">
         $(document).ready (function () {
             $('#FeedbackUri').val (document.location);
-            var fbf = $('#fbAjCont');
+            var fbf = $('#fbAjCont').wrap('<div></div>');
             $('form#FeedbackAddForm').not('.axfInited').ajaxForm ({
                 beforeSubmit: function () {
                         return true;

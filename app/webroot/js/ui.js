@@ -34,19 +34,20 @@ var initialiseTAUI = function (scope) {
         );
     });
     
-    $('#feedbackButton').click (function () {
+    $('#feedbackButton').not('.inited').click (function () {
         var fbf = $('<div></div>');
         fbf.hide().load ('/feedback', {
             complete: function (t, e) {
                 fbf.dialog ({
                     width: 550,
                     modal: true,
-                    title: 'Your constructive feedback helps us to improve'
+                    title: 'Your constructive feedback helps us to improve',
+                    position: ['center', 50],
                 });
             }
         });
         return false;
-    });
+    }).addClass ('.inited');
     
 };
 
