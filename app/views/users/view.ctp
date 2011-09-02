@@ -56,6 +56,11 @@
 			<?php echo $user['User']['modified']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Group'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 <div class="actions">
@@ -65,16 +70,20 @@
 		<li><?php echo $this->Html->link(__('Delete User', true), array('action' => 'delete', $user['User']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $user['User']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Users', true), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New User', true), array('action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Groups', true), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Group', true), array('controller' => 'groups', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Citations', true), array('controller' => 'citations', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Citation', true), array('controller' => 'citations', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Uploads', true), array('controller' => 'uploads', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Upload', true), array('controller' => 'uploads', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Reactions', true), array('controller' => 'reactions', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Reaction', true), array('controller' => 'reactions', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Sites', true), array('controller' => 'sites', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Site', true), array('controller' => 'sites', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Soils', true), array('controller' => 'soils', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Soil', true), array('controller' => 'soils', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Temporothermals', true), array('controller' => 'temporothermals', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Temporothermal', true), array('controller' => 'temporothermals', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Uploads', true), array('controller' => 'uploads', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Upload', true), array('controller' => 'uploads', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
 <div class="related">
@@ -124,56 +133,6 @@
 	</div>
 </div>
 <div class="related">
-	<h3><?php __('Related Uploads');?></h3>
-	<?php if (!empty($user['Upload'])):?>
-	<table cellpadding = "0" cellspacing = "0">
-	<tr>
-		<th><?php __('Id'); ?></th>
-		<th><?php __('Name'); ?></th>
-		<th><?php __('Title'); ?></th>
-		<th><?php __('Mime Type'); ?></th>
-		<th><?php __('Description'); ?></th>
-		<th><?php __('Citation Id'); ?></th>
-		<th><?php __('User Id'); ?></th>
-		<th><?php __('File Contents'); ?></th>
-		<th><?php __('File Location'); ?></th>
-		<th class="actions"><?php __('Actions');?></th>
-	</tr>
-	<?php
-		$i = 0;
-		foreach ($user['Upload'] as $upload):
-			$class = null;
-			if ($i++ % 2 == 0) {
-				$class = ' class="altrow"';
-			}
-		?>
-		<tr<?php echo $class;?>>
-			<td><?php echo $upload['id'];?></td>
-			<td><?php echo $upload['name'];?></td>
-			<td><?php echo $upload['title'];?></td>
-			<td><?php echo $upload['mime_type'];?></td>
-			<td><?php echo $upload['description'];?></td>
-			<td><?php echo $upload['citation_id'];?></td>
-			<td><?php echo $upload['user_id'];?></td>
-			<td><?php echo $upload['file_contents'];?></td>
-			<td><?php echo $upload['file_location'];?></td>
-			<td class="actions">
-				<?php echo $this->Html->link(__('View', true), array('controller' => 'uploads', 'action' => 'view', $upload['id'])); ?>
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'uploads', 'action' => 'edit', $upload['id'])); ?>
-				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'uploads', 'action' => 'delete', $upload['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $upload['id'])); ?>
-			</td>
-		</tr>
-	<?php endforeach; ?>
-	</table>
-<?php endif; ?>
-
-	<div class="actions">
-		<ul>
-			<li><?php echo $this->Html->link(__('New Upload', true), array('controller' => 'uploads', 'action' => 'add'));?> </li>
-		</ul>
-	</div>
-</div>
-<div class="related">
 	<h3><?php __('Related Reactions');?></h3>
 	<?php if (!empty($user['Reaction'])):?>
 	<table cellpadding = "0" cellspacing = "0">
@@ -182,6 +141,7 @@
 		<th><?php __('Name'); ?></th>
 		<th><?php __('Molecule Name'); ?></th>
 		<th><?php __('Reaction Name'); ?></th>
+		<th><?php __('Substrate Name'); ?></th>
 		<th><?php __('Ea Kj Per Mol'); ?></th>
 		<th><?php __('F Sec'); ?></th>
 		<th><?php __('User Id'); ?></th>
@@ -201,6 +161,7 @@
 			<td><?php echo $reaction['name'];?></td>
 			<td><?php echo $reaction['molecule_name'];?></td>
 			<td><?php echo $reaction['reaction_name'];?></td>
+			<td><?php echo $reaction['substrate_name'];?></td>
 			<td><?php echo $reaction['ea_kj_per_mol'];?></td>
 			<td><?php echo $reaction['f_sec'];?></td>
 			<td><?php echo $reaction['user_id'];?></td>
@@ -268,6 +229,52 @@
 	</div>
 </div>
 <div class="related">
+	<h3><?php __('Related Soils');?></h3>
+	<?php if (!empty($user['Soil'])):?>
+	<table cellpadding = "0" cellspacing = "0">
+	<tr>
+		<th><?php __('Id'); ?></th>
+		<th><?php __('Name'); ?></th>
+		<th><?php __('Thermal Diffusivity M2 Day'); ?></th>
+		<th><?php __('Particle Size'); ?></th>
+		<th><?php __('Water Content'); ?></th>
+		<th><?php __('Citation Id'); ?></th>
+		<th><?php __('User Id'); ?></th>
+		<th class="actions"><?php __('Actions');?></th>
+	</tr>
+	<?php
+		$i = 0;
+		foreach ($user['Soil'] as $soil):
+			$class = null;
+			if ($i++ % 2 == 0) {
+				$class = ' class="altrow"';
+			}
+		?>
+		<tr<?php echo $class;?>>
+			<td><?php echo $soil['id'];?></td>
+			<td><?php echo $soil['name'];?></td>
+			<td><?php echo $soil['thermal_diffusivity_m2_day'];?></td>
+			<td><?php echo $soil['particle_size'];?></td>
+			<td><?php echo $soil['water_content'];?></td>
+			<td><?php echo $soil['citation_id'];?></td>
+			<td><?php echo $soil['user_id'];?></td>
+			<td class="actions">
+				<?php echo $this->Html->link(__('View', true), array('controller' => 'soils', 'action' => 'view', $soil['id'])); ?>
+				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'soils', 'action' => 'edit', $soil['id'])); ?>
+				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'soils', 'action' => 'delete', $soil['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $soil['id'])); ?>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+	</table>
+<?php endif; ?>
+
+	<div class="actions">
+		<ul>
+			<li><?php echo $this->Html->link(__('New Soil', true), array('controller' => 'soils', 'action' => 'add'));?> </li>
+		</ul>
+	</div>
+</div>
+<div class="related">
 	<h3><?php __('Related Temporothermals');?></h3>
 	<?php if (!empty($user['Temporothermal'])):?>
 	<table cellpadding = "0" cellspacing = "0">
@@ -316,6 +323,58 @@
 	<div class="actions">
 		<ul>
 			<li><?php echo $this->Html->link(__('New Temporothermal', true), array('controller' => 'temporothermals', 'action' => 'add'));?> </li>
+		</ul>
+	</div>
+</div>
+<div class="related">
+	<h3><?php __('Related Uploads');?></h3>
+	<?php if (!empty($user['Upload'])):?>
+	<table cellpadding = "0" cellspacing = "0">
+	<tr>
+		<th><?php __('Id'); ?></th>
+		<th><?php __('Name'); ?></th>
+		<th><?php __('Title'); ?></th>
+		<th><?php __('Size'); ?></th>
+		<th><?php __('Mime Type'); ?></th>
+		<th><?php __('Description'); ?></th>
+		<th><?php __('Citation Id'); ?></th>
+		<th><?php __('User Id'); ?></th>
+		<th><?php __('File Contents'); ?></th>
+		<th><?php __('File Location'); ?></th>
+		<th class="actions"><?php __('Actions');?></th>
+	</tr>
+	<?php
+		$i = 0;
+		foreach ($user['Upload'] as $upload):
+			$class = null;
+			if ($i++ % 2 == 0) {
+				$class = ' class="altrow"';
+			}
+		?>
+		<tr<?php echo $class;?>>
+			<td><?php echo $upload['id'];?></td>
+			<td><?php echo $upload['name'];?></td>
+			<td><?php echo $upload['title'];?></td>
+			<td><?php echo $upload['size'];?></td>
+			<td><?php echo $upload['mime_type'];?></td>
+			<td><?php echo $upload['description'];?></td>
+			<td><?php echo $upload['citation_id'];?></td>
+			<td><?php echo $upload['user_id'];?></td>
+			<td><?php echo $upload['file_contents'];?></td>
+			<td><?php echo $upload['file_location'];?></td>
+			<td class="actions">
+				<?php echo $this->Html->link(__('View', true), array('controller' => 'uploads', 'action' => 'view', $upload['id'])); ?>
+				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'uploads', 'action' => 'edit', $upload['id'])); ?>
+				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'uploads', 'action' => 'delete', $upload['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $upload['id'])); ?>
+			</td>
+		</tr>
+	<?php endforeach; ?>
+	</table>
+<?php endif; ?>
+
+	<div class="actions">
+		<ul>
+			<li><?php echo $this->Html->link(__('New Upload', true), array('controller' => 'uploads', 'action' => 'add'));?> </li>
 		</ul>
 	</div>
 </div>

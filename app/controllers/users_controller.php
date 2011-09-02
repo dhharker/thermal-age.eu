@@ -3,8 +3,11 @@ class UsersController extends AppController {
 
 	var $name = 'Users';
 
-    function login () {
-        
+    function login() {
+       //Auth Magic
+    }
+    function logout() {
+       //Leave empty for now.
     }
 
 	function index() {
