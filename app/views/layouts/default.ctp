@@ -26,9 +26,12 @@
 
         // this is only the default for when js is disabled, sizes otherwise in config.js
         $cssSize = (isset ($isMobile) && $isMobile) ? 'mobile' : '960';
-            
+
+        
     ?>
 
+    <!-- iPhone & pals -->
+    <meta name="viewport" content="initial-scale = 1.0">
 
     <noscript>
         <?= $this->Html->css('adapt/' . $cssSize . '.min.css') . "\n"; ?>
