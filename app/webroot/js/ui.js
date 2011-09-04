@@ -53,14 +53,21 @@ var initialiseTAUI = function (scope) {
             title: 'Your feedback helps us to improve',
             position: ['center', 50],
             autoOpen: false,
-            close: function (e, u) {
-                fbf.load ('/feedback');
+            open: function (e, u) {
+                fbf
+                    .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." style="" /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
+                    .load ('/feedback', function () {
+                        initialiseTAUI (this);
+                        $(this).show({
+                            effect: 'blind',
+                            duration: 600,
+                        });
+                    });
             },
         });
-        fbf.load ('/feedback');
+        //fbf.load ('/feedback');
         $(this).click (function () {
             fbf.dialog ('open');
-            initialiseTAUI (fbf);
             return false;
         });
         return false;
