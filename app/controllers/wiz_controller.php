@@ -165,8 +165,9 @@ class WizController extends AppController {
      */
     function env_check ($forwardAction = null) {
         $this->set ('ie', preg_match ("/MSIE/", $_SERVER['HTTP_USER_AGENT']) ? true : false);
-        $this->set ('cookie', (!$this->Session->check ('wizenv')) ? false : true);
-        $this->Session->write ('wizenv', 'CHECKED');
+        $c = (!$this->Session->check ('wizenv')) ? false : true;
+        $this->set ('cookie', $c);
+        if ($c) $this->Session->write ('wizenv', 'CHECKED');
 
         // @todo SECURITY: This might potentially leak the names of private functions (but not allow them to be run)
         // this isn't really much of a security hole because the source is publicly available but just thought I'd mention it.

@@ -10,7 +10,7 @@
                     return false;
                 };
 
-                $('#recklessButton').click (redFunc);
+                $('.recklessButton').click (redFunc);
 
                 $('#envCheckMsg').show();
 
@@ -24,7 +24,7 @@
                         $('#badCookieMsg').show(eff);
                     });
                 }
-                else if ($.support.ajax == true && $.support.boxModel == true) {
+                else if (0 && $.support.ajax == true && $.support.boxModel == true) {
                     $('#envCheckMsg')
                         .hide()
                         .text ("Browser is compatible; redirecting you to the wizard now!")
@@ -48,20 +48,29 @@
             <img src="/img/no_ie.png" alt="No IE" style="float: right; margin: .5em; margin-right: -200px;">
 
             This website is not fully compatible with Internet Explorer. Please upgrade to a better browser like 
-            <a href="" alt="Download Google Chrome">Chrome</a>,
-            <a href="" alt="Download Mozilla Firefox">Firefox</a> or
-            <a href="" alt="Download Apple Safari">Safari</a>. If you want to give
+            <a href="http://www.google.com/chrome/" alt="Download Google Chrome">Chrome</a>,
+            <a href="http://www.mozilla.com/firefox/" alt="Download Mozilla Firefox">Firefox</a> or
+            <a href="http://www.apple.com/safari/download/" alt="Download Apple Safari">Safari</a>. If you want to give
             it a try in IE then click below, but be warned it may not work well or at all.
 
             <?php echo $this->Html->link(
                 "Try it anyway...",
                 '',
-                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false, 'id' => 'recklessButton')
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button recklessButton', 'escape' => false)
             ); ?>
         </p>
         <p id="badJsMsg" style="display: none" class="error ui-corner-all">
-            You do have javascript enabled, but we have detected that your browser's javascript implementation cannot support this website. Please
-            upgrade to a better browser like Chrome, Firefox or Safari.
+            You have javascript enabled, but we have detected that your browser's javascript implementation cannot support this website. Please upgrade to a better browser like
+            <a href="http://www.google.com/chrome/" alt="Download Google Chrome">Chrome</a>,
+            <a href="http://www.mozilla.com/firefox/" alt="Download Mozilla Firefox">Firefox</a> or
+            <a href="http://www.apple.com/safari/download/" alt="Download Apple Safari">Safari</a>.
+            You can click below if you want to try it anyway, please let us know how you get on using the &quot;Feedback&quot; link above.
+
+            <?php echo $this->Html->link(
+                "Try it anyway...",
+                '',
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button recklessButton', 'escape' => false)
+            ); ?>
         </p>
         <p id="badCookieMsg" style="display: none" class="error ui-corner-all">
             You need to have session cookies enabled to use the wizards. These only persist until
