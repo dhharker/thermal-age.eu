@@ -151,10 +151,10 @@ class WizController extends AppController {
         $environmentGood = true;
 
         if (!$this->Session->check ('wizenv')) {
+            // the cookie testing flag hasn't been set yet, set it and redirect to see if its still there
             $environmentGood = false;
             $this->Session->write ('wizenv', 'CHECK');
             $this->redirect(array ('action' => 'env_check', $this->action));
-
         }
 
         return $environmentGood;
@@ -164,11 +164,12 @@ class WizController extends AppController {
      * @param string $forwardAction the action to jump back to after checking browser etc. not shit.
      */
     function env_check ($forwardAction = null) {
+        $this->set ('ie', preg_match ("/MSIE/", $_SERVER['HTTP_USER_AGENT']) ? true : false);
         $this->set ('cookie', (!$this->Session->check ('wizenv')) ? false : true);
         $this->Session->write ('wizenv', 'CHECKED');
 
         // @todo SECURITY: This might potentially leak the names of private functions (but not allow them to be run)
-        // this isn't really a security hole because the source is publicly available but just thought I'd mention it.
+        // this isn't really much of a security hole because the source is publicly available but just thought I'd mention it.
         $this->set ('redirectTo', (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '');
 
         

@@ -4,9 +4,22 @@
             $(document).ready (function () {
                 var eff = 'blind';
                 var ssCookie = <?= (isset ($cookie) && $cookie == true) ? 1 : 0; ?>;
+                var ssIe = <?= (isset ($ie) && $ie == true) ? 1 : 0; ?>;
+                var redFunc = function () {
+                    window.location = '<?=$this->Html->url (array ('action' => $redirectTo))?>';
+                    return false;
+                };
+
+                $('#recklessButton').click (redFunc);
+
                 $('#envCheckMsg').show();
-                
-                if (ssCookie != 1) {
+
+                if (ssIe != 0) {
+                    $('#envCheckMsg').hide(eff, function () {
+                        $('#ieMsg').show(eff);
+                    });
+                }
+                else if (ssCookie != 1) {
                     $('#envCheckMsg').hide(eff, function () {
                         $('#badCookieMsg').show(eff);
                     });
@@ -15,9 +28,7 @@
                     $('#envCheckMsg')
                         .hide()
                         .text ("Browser is compatible; redirecting you to the wizard now!")
-                        .show(eff, function () {
-                            window.location = '<?=$this->Html->url (array ('action' => $redirectTo))?>';
-                        });
+                        .show(eff, redFunc);
                 }
                 else {
                     $('#envCheckMsg').hide(eff, function () {
@@ -31,6 +42,22 @@
         </noscript>
         <p id="envCheckMsg" style="display: none">
             Checking your browser for compatibility, please wait...
+        </p>
+
+        <p id="ieMsg" style="display: none; margin-right: 200px;" class="error ui-corner-all">
+            <img src="/img/no_ie.png" alt="No IE" style="float: right; margin: .5em; margin-right: -200px;">
+
+            This website is not fully compatible with Internet Explorer. Please upgrade to a better browser like 
+            <a href="" alt="Download Google Chrome">Chrome</a>,
+            <a href="" alt="Download Mozilla Firefox">Firefox</a> or
+            <a href="" alt="Download Apple Safari">Safari</a>. If you want to give
+            it a try in IE then click below, but be warned it may not work well or at all.
+
+            <?php echo $this->Html->link(
+                "Try it anyway...",
+                '',
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false, 'id' => 'recklessButton')
+            ); ?>
         </p>
         <p id="badJsMsg" style="display: none" class="error ui-corner-all">
             You do have javascript enabled, but we have detected that your browser's javascript implementation cannot support this website. Please
