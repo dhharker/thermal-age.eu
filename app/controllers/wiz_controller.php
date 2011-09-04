@@ -166,6 +166,9 @@ class WizController extends AppController {
     function env_check ($forwardAction = null) {
         $this->set ('cookie', (!$this->Session->check ('wizenv')) ? false : true);
         $this->Session->write ('wizenv', 'CHECKED');
+
+        // @todo SECURITY: This might potentially leak the names of private functions (but not allow them to be run)
+        // this isn't really a security hole because the source is publicly available but just thought I'd mention it.
         $this->set ('redirectTo', (in_array ($forwardAction, get_class_methods ($this))) ? $forwardAction : '');
 
         

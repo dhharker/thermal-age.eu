@@ -23,16 +23,23 @@
 <?php echo $this->Form->create  ('Specimen', array('id' => 'SpecimenForm', 'url' => $this->here, 'class' => 'ui-corner-all')); ?>
 	<fieldset>
         <div class="grid_11 alpha">
-            <?= $this->Form->input('Specimen.name', array('label' => 'Specimen Name:'));?>
+            <?= $this->Form->input('Specimen.name', array(
+                'label' => 'Specimen Name:',
+                'placeholder' => 'e.g. "Neolithic cave burial, N. Germany, grave III"',
+            ));?>
         </div>
 
         <div class="grid_6 alpha">
             <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
-                'label' => 'Specimen Age (years b.p.)'
+                'label' => 'Specimen Age (years b.p.)',
+                'placeholder' => 'years before 1950',
             ));?>
         </div>
         <div class="grid_5 omega">
-            <?= $this->Form->input('Specimen.code', array('label' => 'Your Reference:'));?>
+            <?= $this->Form->input('Specimen.code', array(
+                'label' => 'Your Reference:',
+                'placeholder' => 'e.g. "ABC10 1024" or "box 41"',
+            ));?>
         </div>
 
         <div class="grid_11">
