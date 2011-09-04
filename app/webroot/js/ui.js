@@ -37,35 +37,35 @@ var initialiseTAUI = function (scope) {
     $('#feedbackButton', scope).not('.inited').each (function () {
         var fbf = $('<div id="fbfDialog"></div>');
 
-        fbf.dialog ({
-            show: {
-                effect:'fade',
-                duration:600
-            },
-            hide: {
-                effect:'fade',
-                duration:600
-            },
-            width: 550,
-            minWidth: 200,
-            minHeight: 200,
-            modal: true,
-            title: 'Your feedback helps us to improve',
-            position: ['center', 50],
-            autoOpen: false,
-            open: function (e, u) {
-                fbf
-                    .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." style="" /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
-                    .load ('/feedback', function () {
-                        initialiseTAUI (this);
-                        $(this).show({
-                            effect: 'blind',
-                            duration: 600,
+        fbf
+            .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." style="" /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
+            .dialog ({
+                show: {
+                    effect:'fade',
+                    duration:600
+                },
+                hide: {
+                    effect:'fade',
+                    duration:600
+                },
+                width: 550,
+                minWidth: 200,
+                minHeight: 200,
+                modal: true,
+                title: 'Your feedback helps us to improve',
+                position: ['center', 50],
+                autoOpen: false,
+                open: function (e, u) {
+                    fbf.load ('/feedback', function () {
+                            initialiseTAUI (this);
+                            $(this).show({
+                                effect: 'blind',
+                                duration: 600,
+                            });
                         });
-                    });
-            },
-        });
-        //fbf.load ('/feedback');
+                },
+            });
+        
         $(this).click (function () {
             fbf.dialog ('open');
             return false;
