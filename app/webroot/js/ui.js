@@ -38,7 +38,8 @@ var initialiseTAUI = function (scope) {
         var fbf = $('<div id="fbfDialog"></div>');
 
         fbf
-            .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
+            .hide()
+            
             .dialog ({
                 show: {
                     effect:'fade',
@@ -56,6 +57,10 @@ var initialiseTAUI = function (scope) {
                 position: ['center', 50],
                 autoOpen: false,
                 open: function (e, u) {
+                    $(this)
+                        .hide()
+                        .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
+                        .show();
                     fbf.load ('/feedback', function () {
                             initialiseTAUI (this);
                             $(this).show({
