@@ -16,14 +16,18 @@ a:hover {
     color: #cf0404;
 }
 
+p.error a:hover {
+    color: #fafafa;
+}
 
 a.fg-button {
     color: #506241;
     text-decoration: none;
 }
-a.fg-button:hover {
+a.fg-button:hover, p.error a.fg-button:hover {
     color: #444;
 }
+
 
 
 em {
