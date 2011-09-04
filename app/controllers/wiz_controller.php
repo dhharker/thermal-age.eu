@@ -16,6 +16,7 @@ class WizController extends AppController {
                 'site' => array (),
                 'burial' => array (),
                 'storage' => array (),
+                'review' => array (),
             ),
         ),
         'titles' => array (
@@ -342,6 +343,13 @@ class WizController extends AppController {
         $this->redirect(array('controller' => 'wiz', 'action' => 'disptest'));
 
 	}
+
+    function _prepareReview () {
+        $this->set ('input', $this->Wizard->read());
+    }
+    function _processReview () {
+
+    }
 
 
     function disptest () {

@@ -43,7 +43,8 @@
             </div>
             <?php
             $numLayers = $this->Form->value ('numLayers');
-            
+            if ($numLayers < 1)
+                $numLayers = 3;
             // numlayers view logic here
 
             echo $this->Form->input ('numLayers', array (
