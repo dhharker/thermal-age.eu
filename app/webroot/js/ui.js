@@ -1,3 +1,4 @@
+
 var initialiseTAUI = function (scope) {
     scope = scope || 'body';
     $('.fg-button,.hover', scope).hover(
@@ -57,10 +58,7 @@ var initialiseTAUI = function (scope) {
                 position: ['center', 50],
                 autoOpen: false,
                 open: function (e, u) {
-                    $(this)
-                        .hide()
-                        .html ('<div style="text-align: center; margin-top: 3.5em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
-                        .show();
+                    $(this).loadingAnim();
                     fbf.load ('/feedback', function () {
                             initialiseTAUI (this);
                             $(this).show({
@@ -125,6 +123,25 @@ var initialiseTAUI = function (scope) {
 
 $(function () {
     initialiseTAUI();
+    (function( $ ){
+      $.fn.loadingAnim = function(options) {
+        var settings = options || {
+            show: {
+                effect: 'blind',
+                duration: 200,
+            },
+            hide: {
+                effect: '',
+                duration: 0,
+            },
+        };
+        this.hide(settings.hide)
+            .html ('<div style="text-align: center; margin: 2em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')
+            .show(settings.show);
+        return this;
+      };
+    })( jQuery );
+
 });
 
 // thanks to http://jamiethompson.co.uk/web/2008/07/21/jquerygetscript-does-not-cache/

@@ -237,3 +237,12 @@ ul#burialLayersList li {
     border: 5px solid #fff;
     border-bottom-width: 0px;
 }
+
+
+/* rev geocoding place search result row element styles */
+.placeSearchResultRow {
+    margin: 0px; padding: 0px;
+}
+.placeSearchResultRow .cell {
+    padding: 10px;
+}

@@ -140,7 +140,7 @@ li {
 #container {
     z-index: 5;
     padding: -1px 20px 0px 20px;
-    margin: -1px auto 0px auto;
+    margin: -1px auto 10px;
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
     overflow: hidden;

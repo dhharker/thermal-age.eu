@@ -171,7 +171,22 @@ var wc = {
     },
     initLocationLookupButton: function () {
         $("#FindLatLonBySiteNameButton").click (function () {
-            alert ("this button doesn't work yet, sorry.");
+            var res = $('#reverseGeocodeResults');
+            var inp = $('input#SiteName');
+            var minLength = 4; // Characters before a search will be made
+            if (res.data ('lookupStatus') != 'loading' && inp.val().length >= minLength) {
+                res
+                    .loadingAnim()
+                    .data ('lookupStatus', 'loading')
+                    .load ('/wiz/place_search/' + inp.val(),
+                        function () {
+                            $(this)
+                                .hide()
+                                .data ('lookupStatus', 'ok')
+                                .show ({effect: 'blind', duration: 300});
+                    });
+                    
+            }
             return false;
         });
     },
