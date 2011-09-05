@@ -19,10 +19,10 @@ else {
             "Clear Results",
             '',
             array(
-                'class' => 'fg-button ui-state-default ui-corner-all ui-priority-secondary',
-                'id' => 'rgsClearResultsButton',
+                'class' => 'fg-button ui-state-default ui-corner-all ui-priority-secondary rgsClearResultsButton',
+                'id' => '',
                 'escape' => false,
-                'style' => 'margin: 2px; float: right;',
+                'style' => 'margin-bottom: 2px; float: right; font-size: 10px;',
             )); ?>
         </p>
         

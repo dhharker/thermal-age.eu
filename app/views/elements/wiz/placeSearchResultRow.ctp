@@ -12,7 +12,7 @@ if (!empty ($placeInfo['summary'])) {
         }
         ?>
         <div class="cell grid_2 alpha">
-            <span style="font-weight: bold"><?=$placeInfo['title']?></span>
+            <span style="font-weight: bold" class="placeTitle"><?=$placeInfo['title']?></span>
             (<?=@$placeInfo['countryCode']?>)
             <div>
                 <?php echo $this->Html->link(

@@ -145,11 +145,10 @@ class WizController extends AppController {
      * @param string $place name to search for (/part of)
      * @return string JSON place records from geonames wikipedia search or anywhere else.
      */
-    function place_search ($place = null) {
-        if ($place === null) {
-            $place = (!empty ($this->data['place'])) ? $this->data['place'] : null;
-        }
-        print_r ($this->data);
+    function place_search () {
+        $place = (!empty ($this->params['form']['place'])) ? $this->params['form']['place'] : null;
+        
+        //die (print_r ((array) $this, TRUE) . "<-END");
         $place = trim (Sanitize::paranoid($place));
         $places = array ('no places');
         if (strlen ($place) > 0) {

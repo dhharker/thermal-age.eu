@@ -169,7 +169,27 @@ var wc = {
         wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
     },
-    
+    initSiteChoiceButtons: function (scope) {
+        
+        $('.rgsClearResultsButton', scope).click (function () {
+            $(this).parentUntil ('#reverseGeocodeResults').html();
+            return false;
+        });
+        
+        $('.placeSearchResultRow').each (function () {
+            
+        });
+        
+        
+        var $m = $('.rgsMapButton', scope);
+        var $u = $('.rgsUseButton', scope);
+        var $c = $('.rgsClearResultsButton', scope);
+        
+        if ($e) {
+            
+        }
+        return $e;
+    },
     initLocationLookupButton: function () {
         $("#FindLatLonBySiteNameButton").click (function () {
             var res = $('#reverseGeocodeResults');
@@ -179,12 +199,13 @@ var wc = {
                 res
                     .loadingAnim()
                     .data ('lookupStatus', 'loading')
-                    .load ('/wiz/place_search/' + escape(inp.val()),
+                    .load ('/wiz/place_search/', {place: inp.val()},
                         function () {
                             $(this)
                                 .hide()
                                 .data ('lookupStatus', 'ok')
                                 .show ({effect: 'blind', duration: 300});
+                            wc.initSiteChoiceButtons (this);
                     });
                     
             }
