@@ -76,7 +76,12 @@
             You need to have session cookies enabled to use the wizards. These only persist until
             you close your browser window. Please see our
             <?=$this->Html->link ("privacy policy", array ('controller' => 'pages', 'action' => 'legal', 'privacy'))?>
-            if you have concerns about this.
+            if you have concerns about this. Please enable session cookies for this domain and then click below:
+            <?php echo $this->Html->link(
+                "Cookies are enabled, try again...",
+                '',
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button recklessButton', 'escape' => false)
+            ); ?>
         </p>
     </div>
 </div>
