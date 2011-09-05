@@ -91,8 +91,7 @@ var wc = {
         }).addClass ('axfInited');
     },
     initBurialForm: function (ele) {
-
-
+        
     },
     initStorageForm: function (ele) {
         ele = ele || '#wizardContainer';

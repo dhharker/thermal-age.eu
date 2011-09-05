@@ -141,6 +141,20 @@ class WizController extends AppController {
     }
 
     /**
+     *
+     * @param string $place name to search for (/part of)
+     * @return string JSON place records from geonames wikipedia search or anywhere else.
+     */
+    function placeSearch ($place = null) {
+        if ($place === null) return "{}\n";
+        $place = trim (Sanitize::paranoid($place));
+        if (strlen ($place) > 0) {
+            $places = ClassRegistry::init('Geonames')->placeSearch($place);
+            return ($places != false) ?  (print (json_encode ($places))) : false;
+        }
+    }
+
+    /**
      * Each of the wizards should check on pageload whether the client environment cookie is set:
      *  Cookie not set, is a browser        ->      redirect to index
      *  Cookie set, env. good               ->      load wizard

@@ -92,4 +92,11 @@ class DATABASE_CONFIG {
 		'database' => 'test_database_name',
 		'prefix' => '',
 	);
+
+    // See https://github.com/signified/CakePHP-GeoNames-DataSource
+    public $geoNames = array(
+        'datasource' => 'GeoNamesSource',
+        'username' => 'myusername',
+		'cache' => true
+    );
 }
