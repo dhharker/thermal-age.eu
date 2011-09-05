@@ -147,17 +147,23 @@ li {
 }
 
 
+#pageContent {
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+}
+
 /* headers and footers*/
 
 footer {
+    clear: both;
     padding: 0px 2px;
-    margin: 0px;
+    margin-top: 0px;
     position: relative;
     font-variant: small-caps !important;
     
 }
 footer .smartsharp {
-    margin: 0px 2px -1px -2px;
+    margin: -10px 2px -1px -2px;
     padding: 2px;
 }
 footer .smartsharp  div {
