@@ -135,48 +135,62 @@ li {
 
 }
 
-#container.smartbox {
-    margin: -5px auto 15px auto;
-    padding: 20px 10px;
-    background-color: rgba(255,255,255,0.5);
-    border: 1px solid #8a9881;
-    
-    
-}
+
 
 #container {
     z-index: 5;
+    padding: -1px 20px 0px 20px;
+    margin: -1px auto 0px auto;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid #8a9881;
+    overflow: hidden;
 }
+
 
 /* headers and footers*/
 
 footer {
-    margin-top: 20px;
+    padding: 0px 2px;
+    margin: 0px;
+    position: relative;
     font-variant: small-caps !important;
+    
+}
+footer .smartsharp {
+    margin: 0px 2px -1px -2px;
     padding: 2px;
 }
-footer .smartbox {
-    margin: 0px 2px 0px -2px;
-    padding: 0px;
-}
-footer .smartbox  div {
+footer .smartsharp  div {
     margin: 0px;
     padding: 0px;
 }
 footer .fg-button {
-    margin: -1px 4px;
-    padding: 3px .6em;
+    position: relative;
+    top: 0px;
+    bottom: 0px;
+    margin: -3px 4px;
+    padding: 10px .6em;
     line-height: inherit;
     display: inline;
     float: right !important;
 }
-header {
-
+footer div.footerText {
+    padding: 5px 1em;
 }
+
 /* to get rid of ugly gap under header */
 header, footer, .no-v-margin {
     margin-bottom: 0px !important;
     margin-top: 0px !important;
+}
+
+header {
+    display: block;
+    position: relative;
+    padding-top: 21px;
+    padding-bottom: 10px;
+    margin-bottom: -10px !important;
+    top: -1px;
 }
 
 .mobile-layout header nav div {
@@ -194,18 +208,21 @@ header, footer, .no-v-margin {
 .smartbox {
     -moz-border-radius: 5px;
     border-radius: 5px;
+}
+.smartbox, .smartsharp {
     padding: 0px 5px;
     margin: 0px;
+    overflow: hidden;
+}
+.smartbox, .smartsharp, .smart {
     background-color: rgba(255,255,255,0.5);
     border: 1px solid #8a9881;
-    overflow: hidden;
     -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.2);
     -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.2);
     box-shadow: 0px 0px 10px rgba(0,0,0,.2);
-
 }
 /* a nice hr to break up smartboxen gradient bgs don't work in <hr>s in ff :-(' */
-.smartbox .smartHr {
+.smartbox .smartHr, .smartsharp .smartHr {
     height: 1px;
     margin: 2px -5px;
     color: #8a9881;

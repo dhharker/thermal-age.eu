@@ -66,9 +66,9 @@
 </head>
 
 <body>
-    <div id="bg1"><div id="bg2"><div id="container" class="container_12 smartbox">
+    <div id="bg1"><div id="bg2"><div id="container" class="container_12 ui-corner-bottom">
 
-        <header class="grid_12" style="clear: both;">
+        <header class="grid_12 smart ui-corner-bottom" style="clear: both;">
             <div class="grid_4 alpha clearfix no-v-margin">
                 <?php echo $this->Html->link('', '/', array('id' => 'thermalAgeLogo', 'title' => 'thermal-age.eu home')); ?>
             </div>
@@ -128,9 +128,9 @@
         </div>
 
         <footer class="grid_12">
-            <div class="smartbox">
+            <div class="smartsharp ui-corner-top">
                 <div class="grid_6 alpha clearfix no-v-margin">
-                    <div class="paddedCell_10_h">
+                    <div class="footerText">
                         &copy; Copyright 2009&ndash;<?= date ('Y') ?>
                     </div>
 
