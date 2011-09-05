@@ -169,6 +169,7 @@ var wc = {
         wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
     },
+    
     initLocationLookupButton: function () {
         $("#FindLatLonBySiteNameButton").click (function () {
             var res = $('#reverseGeocodeResults');
@@ -178,7 +179,7 @@ var wc = {
                 res
                     .loadingAnim()
                     .data ('lookupStatus', 'loading')
-                    .load ('/wiz/place_search/' + inp.val(),
+                    .load ('/wiz/place_search/' + escape(inp.val()),
                         function () {
                             $(this)
                                 .hide()

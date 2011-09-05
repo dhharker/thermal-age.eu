@@ -12,8 +12,19 @@ if (empty ($places['geonames'])) {
 else {
     ?>
     <div>
-        <span class="help">Click the Map button to show the place on the map and the Use button to copy
-        in the name and coordinates.</span>
+        <p class="help">
+            Click the Map button to show the place on the map and the Use button to copy
+            in the name and coordinates.
+            <?php echo $this->Html->link(
+            "Clear Results",
+            '',
+            array(
+                'class' => 'fg-button ui-state-default ui-corner-all ui-priority-secondary',
+                'id' => 'rgsClearResultsButton',
+                'escape' => false,
+                'style' => 'margin: 2px; float: right;')); ?>
+        </p>
+        
     </div>
     <?php
 
@@ -22,7 +33,9 @@ else {
     ?>
 
     <div>
-        <span class="help">Data are kindly provided by <a href="http://www.geonames.org/">geonames.org</a>. Data are provided "as-is"; you should always verify them yourself.</span>
+        <p class="help">
+            Data are kindly provided by <a href="http://www.geonames.org/">geonames.org</a>. Data are provided "as-is"; you should always verify them yourself.
+        </p>
     </div>
     <?php
 }
