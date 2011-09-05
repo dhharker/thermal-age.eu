@@ -24,7 +24,7 @@
                         $('#badCookieMsg').show(eff);
                     });
                 }
-                else if (0 && $.support.ajax == true && $.support.boxModel == true) {
+                else if ($.support.ajax == true && $.support.boxModel == true) {
                     $('#envCheckMsg')
                         .hide()
                         .text ("Browser is compatible; redirecting you to the wizard now!")
