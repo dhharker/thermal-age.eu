@@ -12,7 +12,7 @@
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
         </div>
-        <div id="reverseGeocodeResults" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
+        <div id="reverseGeocodeResults" class="grid_11 alpha ui-corner-all smartbox">
 
         </div>
         <div class="grid_4 alpha">

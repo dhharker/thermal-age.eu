@@ -240,9 +240,38 @@ ul#burialLayersList li {
 
 
 /* rev geocoding place search result row element styles */
+#reverseGeocodeResults {
+    overflow: hidden;
+    clear: both;
+    margin: 20px 0px;
+    display: none;
+    font-size: 0.8em;
+}
 .placeSearchResultRow {
-    margin: 0px; padding: 0px;
+    margin: -1px -1px;
+    margin-top: -1px;
+    padding: 0px;
+    clear: both;
 }
 .placeSearchResultRow .cell {
-    padding: 10px;
+    padding: .4em;
+    margin: 0px;
+    overflow: hidden;
+    line-height: 1.1em;
+
+}
+.placeSearchResultRow .cell.summary {
+    max-height: none;
+}
+span.geo span.longitude::after {
+    content: '\00B0 E';
+}
+span.geo span.latitude::after {
+    content: '\00B0 N';
+}
+span.elevation::after {
+    content: 'm';
+}
+span.elevation::before {
+    content: 'elevation: ';
 }
