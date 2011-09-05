@@ -49,8 +49,8 @@ var initialiseTAUI = function (scope) {
                     effect:'fade',
                     duration:600
                 },
-                width: 550,
-                minWidth: 200,
+//                width: 550,
+                minWidth: 300,
                 minHeight: 200,
                 modal: true,
                 title: 'Your feedback helps us to improve',

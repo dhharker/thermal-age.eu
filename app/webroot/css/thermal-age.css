@@ -788,3 +788,9 @@ div.moodSlider.ui-slider-horizontal .sliderLabelInternal {
     margin: -2px 5px 0px 5px;
     color: #fafafa;
 }
+
+
+/* stop overlay from scrolling */
+.ui-widget-overlay {
+    position: static;
+}
