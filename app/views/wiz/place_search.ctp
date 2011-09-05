@@ -22,7 +22,8 @@ else {
                 'class' => 'fg-button ui-state-default ui-corner-all ui-priority-secondary',
                 'id' => 'rgsClearResultsButton',
                 'escape' => false,
-                'style' => 'margin: 2px; float: right;')); ?>
+                'style' => 'margin: 2px; float: right;',
+            )); ?>
         </p>
         
     </div>
