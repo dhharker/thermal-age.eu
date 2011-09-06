@@ -91,7 +91,13 @@ var wc = {
         }).addClass ('axfInited');
     },
     initBurialForm: function (ele) {
-        
+        var list = $( "#burialLayersList > ul" );
+        list.sortable({
+            axis: 'y',
+            containment: 'parent',
+            forcePlaceholderSize: true,
+            forceHelperSize: true,
+        });
     },
     initStorageForm: function (ele) {
         ele = ele || '#wizardContainer';

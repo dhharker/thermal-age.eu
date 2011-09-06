@@ -51,13 +51,15 @@
                 'type' => 'hidden',
                 'value' => $numLayers,
             ));?>
-            <ul id="burialLayersList">
+            <div id="burialLayersList" class="smartbox grid_10 alpha" style="clear: both;">
+            <div>hai</div>
+            <ul class="ui-sortable">
                 <?php
                 for ($i = 0; $i < $numLayers; $i++) {
                 ?>
-                <li>
-                    <fieldset style="clear: both">
-                        <div class="grid_3 alpha">
+                <li class="grid_10 alpha smartsharp burialLayer">
+                    <fieldset style="clear: both" class="">
+                        <div class="grid_3">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.soil_id');?>
                         </div>
                         <div class="grid_3">
@@ -76,7 +78,14 @@
                 }
                 ?>
             </ul>
-            
+            <div>
+            <?php echo $this->Html->link(
+                "Add Soil Layer",
+                array ('controller' => '', 'action' => '', ''),
+                array('class' => 'fg-button ui-state-default ui-corner-bottom cta-button', 'escape' => false, 'id' => 'addSoilLayerButton', 'style' => "margin: 0px 2em 10px 2em;")); ?>
+            </div>
+
+            </div>
         </div>
         <div class="grid_12 alpha smartHr"></div>
         <div class="grid_11 alpha" style="display: none">

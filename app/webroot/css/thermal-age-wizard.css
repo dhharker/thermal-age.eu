@@ -268,23 +268,32 @@ span.elevation::before {
 
 
 /* burial layers, soils, all that malarkey */
-ul#burialLayersList {
+#burialLayersList {
     display: block;
-    margin: 0px;
+    margin: 10px 4.5% 20px 4.5% !important; /* % is a hack cos automargins not working for some reason */
     padding: 0px;
-    list-style-type: none;
-    border-bottom: 5px solid #fff;
+    list-style-type: none;    
 }
-ul#burialLayersList li {
+#burialLayersList ul {
+    margin-bottom: 0px !important;
+}
+#burialLayersList li {
     display: block;
-    margin: 0px;
+    margin: -1px;
     padding: 0px;
-    border: 5px solid #fff;
-    border-bottom-width: 0px;
+    clear: both;
 }
-ul#burialLayersList div.input.checkbox input {
+li.burialLayer{
+    margin-bottom: -1px !important;
+    float: none;
+    clear: both;
+}
+.burialLayer.smartsharp > div {
+    padding: 10px;
+}
+#burialLayersList div.input.checkbox input {
     margin: .3em;
 }
-ul#burialLayersList div.input.checkbox {
-    margin-top: .6em;
+#burialLayersList div.input.checkbox {
+    margin-top: .5em;
 }
