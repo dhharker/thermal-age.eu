@@ -67,9 +67,7 @@
                         </div>
                         <div class="grid_3 omega">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
-                            <?=$this->Form->checkbox('SoilTemporothermal.'.$i.'.veg_cover', array (
-                                'label' => 'Vegetation Cover'
-                            ));?>
+                            <?=$this->Form->input('SoilTemporothermal.'.$i.'.direct_sunlight');?>
                         </div>
 
                     </fieldset>
@@ -113,7 +111,6 @@ $(document).ready (function () {
     wc.initBurialForm ();
 });
 </script>
-
 
 <!--
 <div class="actions">

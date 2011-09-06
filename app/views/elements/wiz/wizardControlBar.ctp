@@ -8,14 +8,23 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
     <div id="wizardProgressButtons" class="clearfix grid_8 alpha no-v-margin">
         <div class="paddedCell_5">
 
-            <?php echo $this->Html->link(
-                '&laquo; Previous',
-                array ('controller' => 'pages', 'action' => 'help', 'curator_intro'),
-                array('class' => 'fg-button ui-corner-left ui-state-default ui-priority-secondary', 'escape' => false)); ?>
+            <?php
+            $cocl = "ui-corner-left";
+            if ($wizardInfos['prevstep'] != FALSE) {
+                echo $this->Html->link(
+                    '&laquo; Previous',
+                    array ('controller' => 'wiz', 'action' => '', $wizardInfos['prevstep']),
+                    array('class' => 'fg-button ui-corner-left ui-state-default ui-priority-secondary', 'escape' => false));
+                $cocl = '';
+            }
+
+
+
+            ?>
             <?php echo $this->Html->link(
                 'Cancel',
                 array ('controller' => '', 'action' => '', ''),
-                array('class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary', 'escape' => false)); ?>
+                array('class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary ' . $cocl, 'escape' => false)); ?>
 
             <?php
             echo $this->Html->link(

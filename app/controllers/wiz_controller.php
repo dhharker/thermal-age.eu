@@ -69,6 +69,7 @@ class WizController extends AppController {
             }
             if ($wizName == $this->amWizard) {
                 $lastWasComplete = true;
+                $lastWas = '';
                 foreach ($steps as $stepName => &$stepInfo) {
                     $num['steps']++;
                     $sd = $this->Wizard->read($stepName);
@@ -77,6 +78,7 @@ class WizController extends AppController {
                         $stepInfo['class'] = "complete";
                         $stepInfo['sfval'] = print_r ($this->Wizard->read($stepName .".". $stepInfo['showfield']), true);
                         $lastWasComplete = true;
+                        $lastWas = $stepName;
                     }
                     elseif ($lastWasComplete == true) {
                         $stepInfo['class'] = "current";
@@ -89,6 +91,7 @@ class WizController extends AppController {
 
                     //$stepInfo['class'];
                 }
+                $this->wizardInfos['prevstep'] = (strlen ($lastWas) > 0) ? $lastWas : false;
             }
         }
 
