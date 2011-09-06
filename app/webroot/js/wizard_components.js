@@ -94,7 +94,7 @@ var wc = {
         var list = $( "#burialLayersList > ul" );
         list.sortable({
             axis: 'y',
-            containment: 'parent',
+            containment: 'div#burialLayersList',
             forcePlaceholderSize: true,
             forceHelperSize: true,
             handle: '.sort-handle',
