@@ -140,16 +140,18 @@ var wc = {
         });
         
         wc.initLayerDeleteButtons (scope);
+        wc.reorderLayers (scope);
+        wc.local.burial.nextIndex = $('input#BurialNumLayers', scope).val();
         
         $('#addSoilLayerButton', scope).click(function () {
             var template = list.data ('liTemplate').clone();
             var attrs = ['id', 'name', 'for'];
-            var nid = wc.local.burial.startNew;
-            wc.local.burial.startNew++;
+            var nid = wc.local.burial.nextIndex;
+            wc.local.burial.nextIndex++;
             var newItem = $(template);
             for (p in attrs) {
                 var atr = attrs[p];
-                newItem.find('input, label').each (function () {
+                newItem.find('input, label, select').each (function () {
                     var $this = $(this);
                     if (typeof $this.attr(atr) != 'undefined') {
                         var val = $this.attr (atr);
@@ -170,7 +172,7 @@ var wc = {
             return false;
         });
         
-        wc.reorderLayers (scope);
+
         
     },
     initStorageForm: function (ele) {

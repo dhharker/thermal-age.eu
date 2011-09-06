@@ -334,6 +334,7 @@ class WizController extends AppController {
         }
         $invalid = array ();
         $newST = array ();
+        
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
             if (isset ($soiltemporothermal['order']))
                 $newST[$soiltemporothermal['order']] = $soiltemporothermal;
