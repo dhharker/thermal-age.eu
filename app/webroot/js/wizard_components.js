@@ -96,9 +96,8 @@ var wc = {
         scope = scope || '#wizardContainer';
         $('.deleteLayerButton', scope).not('.inited').click (function () {
             $(this).parentsUntil('li.burialLayer').parent().hide({
-                effect: 'slide',
-                direction: 'right',
-                duration: 600,
+                effect: 'blind',
+                duration: 300,
             }, function () {
                 $(this).remove();
                 wc.reorderLayers();
@@ -162,8 +161,7 @@ var wc = {
             }
 
             $(newItem).appendTo (list).show ({
-                effect: 'slide',
-                direction: 'down',
+                effect: 'blind',
                 duration: 300,
             });
             initialiseTAUI (list);
