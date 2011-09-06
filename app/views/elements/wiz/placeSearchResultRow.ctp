@@ -3,7 +3,6 @@
 if (!empty ($placeInfo['summary'])) {
     ?>
     <div class="smartsharp placeSearchResultRow">
-        <?=@$placeInfo['']?>
         <?php
         if (strlen (@$placeInfo['thumbnailImg']) > 0) {
             ?>
@@ -12,6 +11,7 @@ if (!empty ($placeInfo['summary'])) {
         }
         ?>
         <div class="cell grid_2 alpha">
+            <span class="placeIndex" style="display: none;"><?=$placeIndex?></span>
             <span style="font-weight: bold" class="placeTitle"><?=$placeInfo['title']?></span>
             (<?=@$placeInfo['countryCode']?>)
             <div>
@@ -28,13 +28,14 @@ if (!empty ($placeInfo['summary'])) {
                     array(
                         'class' => 'fg-button ui-state-default ui-corner-all ui-priority-secondary rgsUseButton',
                         'escape' => false,
+                        'id' => 'rgsUseButton-' . $placeIndex,
                         'style' => 'margin: 1px;')); ?>
             </div>
         </div>
         <div class="cell grid_2">
             <span class="geo">
-                <span class="latitude"><?=sprintf ("%-5.03f", $placeInfo['lat'])?></span>;
-                <span class="longitude"><?=sprintf ("%-6.03f", $placeInfo['lng'])?></span>
+                <span class="latitude" title="<?=$placeInfo['lat']?>"><?=sprintf ("%-5.03f", $placeInfo['lat'])?></span>;
+                <span class="longitude" title="<?=$placeInfo['lng']?>"><?=sprintf ("%-6.03f", $placeInfo['lng'])?></span>
             </span>
             <br />
             <span class="elevation"><?=sprintf ("%-3.00f", @$placeInfo['elevation'])?></span>

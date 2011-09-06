@@ -118,7 +118,7 @@ var wc = {
             });
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
-            latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
+            var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
             myOptions = {
                 zoom: 2,
                 center: latlng,
@@ -138,17 +138,49 @@ var wc = {
                 animation: google.maps.Animation.DROP
             });
             
+            var infoWindow = new google.maps.InfoWindow ({
+                maxWidth: 250, // iPhone
+            });
+              
             wc.local.map = {
                 mapContainer: $mc,
                 map: gmap,
                 marker: marker,
+                info: infoWindow,
+                showPlace: function (place) {
+                    //console.log ("showPlace", this, place);
+                    var latlng = new google.maps.LatLng(parseFloat (place.lat) || 0, parseFloat (place.lng) || 0);
+                    var iwi = "rgsMapInfoBox-"+place.placeIndex;
+                    
+                    this.info.setPosition (latlng);
+                    this.info.setContent ('<div id="'+iwi+'" style="height: 7em;">Loading...</div>');
+                    
+                    google.maps.event.addListener (this.info, 'domready', function () {
+                        console.log ("domready", this, iwi);
+                        ($('#'+iwi).text('')
+                            .append ($('#rgsUseButton-'+place.placeIndex).clone(true)))
+                            .append ($('<span class="placeTitle">'+place.placeTitle+'</span>'))
+                            .append ($('<div style="float: right;" class="help"><span class="geo"><span class="latitude">'+place.hrLat+'</span> <span class="longitude">'+place.hrLng+'</span></span> <span class="elevation">'+place.elevation+'</span><div>'));
+                    });
+                    
+                    this.info.open (this.map);
+                    
+                    return true;
+                },
             };
+            
+            if (typeof wc.local.mapqueue == 'function') {
+                wc.local.mapqueue ();
+                wc.local.mapqueue = null;
+            }
+            
             var udm = function (event) {
                 marker.setPosition (event.latLng);
                 $('#SiteLatDec').val(event.latLng.lat())
                 $('#SiteLonDec').val(event.latLng.lng())
                 gmap.panTo (event.latLng);
             };
+
             google.maps.event.addListener (marker, 'dragend', udm);
             google.maps.event.addListener (gmap, 'click', udm);
             
@@ -170,24 +202,73 @@ var wc = {
         wc.initLocationLookupButton ();
     },
     initSiteChoiceButtons: function (scope) {
-        
+        if (!$(scope).attr('id') == 'reverseGeocodeResults') {
+            return false;
+        }
+        var container = $(scope);
+        initialiseTAUI (container);
+            
+        var eff = {
+            effect: 'blind',
+            duration: 300,
+        };
         $('.rgsClearResultsButton', scope).click (function () {
-            $(this).parentUntil ('#reverseGeocodeResults').html();
+            container.hide(eff, function () {
+                $(this).html('');
+            });
             return false;
         });
         
+        var placeMap = function (event) {
+            //console.log (event.data);
+            
+            // get or load map
+            if (!wc.local.map.map) {
+                wc.local.mapqueue = function () {
+                    wc.local.map.showPlace (event.data);
+                };
+                $('#FindLatLonByMapButton').click();
+            }
+            else {
+                wc.local.map.showPlace (event.data);
+            }
+            // scroll to place on map
+            // open info window with name, coords and "use" button
+            
+            return false;
+        };
+        var placeUse = function (place, scope) {
+            return false;
+        };
+        
         $('.placeSearchResultRow').each (function () {
+            var place = {};
+            var $row = $(this);
+            //var $m = $('.rgsMapButton', scope);
+            //var $u = $('.rgsUseButton', scope);
+            var index = $('span.placeIndex', this).text();
+            place = {
+                placeIndex: index,
+                placeTitle: $('span.placeTitle', this).text(),
+                lat: $('span.geo span.latitude', this).attr('title'),
+                lng: $('span.geo span.longitude', this).attr('title'),
+                hrLat: $('span.geo span.latitude', this).text(),
+                hrLng: $('span.geo span.longitude', this).text(),
+                elevation: $('span.elevation', this).text(),
+            };
+            $row.data ('place', place);
+            
+            $('.rgsMapButton', $row).click (place, placeMap);
+            $('.rgsUseButton', $row).click (place, placeUse);
+            
+            
             
         });
         
         
-        var $m = $('.rgsMapButton', scope);
-        var $u = $('.rgsUseButton', scope);
-        var $c = $('.rgsClearResultsButton', scope);
         
-        if ($e) {
-            
-        }
+        
+
         return $e;
     },
     initLocationLookupButton: function () {
