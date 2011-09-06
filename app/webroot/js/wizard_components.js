@@ -97,6 +97,7 @@ var wc = {
             containment: 'parent',
             forcePlaceholderSize: true,
             forceHelperSize: true,
+            handle: '.sort-handle',
         });
     },
     initStorageForm: function (ele) {
