@@ -120,7 +120,7 @@ var wc = {
             var $mc = $(ele);
             var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
             myOptions = {
-                zoom: 2,
+                zoom: 5,
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
@@ -153,21 +153,32 @@ var wc = {
                     var iwi = "rgsMapInfoBox-"+place.placeIndex;
                     
                     this.info.setPosition (latlng);
-                    this.info.setContent ('<div id="'+iwi+'" style="height: 7em;">Loading...</div>');
+                    this.info.setContent ('<div id="'+iwi+'" style="height: 4.7em; width: 250px; overflow: hidden;">Loading...</div>');
                     
                     google.maps.event.addListener (this.info, 'domready', function () {
-                        console.log ("domready", this, iwi);
                         ($('#'+iwi).text('')
                             .append ($('#rgsUseButton-'+place.placeIndex).clone(true)))
-                            .append ($('<span class="placeTitle">'+place.placeTitle+'</span>'))
-                            .append ($('<div style="float: right;" class="help"><span class="geo"><span class="latitude">'+place.hrLat+'</span> <span class="longitude">'+place.hrLng+'</span></span> <span class="elevation">'+place.elevation+'</span><div>'));
+                            .append ($('<span class="placeTitle" style="margin-left: 3px;">'+place.placeTitle+'</span>'))
+                            .append ($('<div class="help"><span class="geo"><span class="latitude">'+place.hrLat+'</span> <span class="longitude">'+place.hrLng+'</span></span> <span class="elevation">'+place.elevation+'</span><div>'));
+                    });
+                    google.maps.event.addListener (this.info, 'closeclick', function () {
+                        wc.local.map.map.panTo (wc.local.map.marker.getPosition());
                     });
                     
                     this.info.open (this.map);
                     
                     return true;
                 },
+                fromBoxen: function () {
+                    var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
+                    wc.local.map.marker.setPosition (latlng);
+                    wc.local.map.map.panTo (latlng);
+                },
             };
+            
+            $('#SiteLatDec #SiteLonDec').keyup (function () {
+                wc.local.map.fromBoxen();
+            });
             
             if (typeof wc.local.mapqueue == 'function') {
                 wc.local.mapqueue ();
@@ -180,9 +191,19 @@ var wc = {
                 $('#SiteLonDec').val(event.latLng.lng())
                 gmap.panTo (event.latLng);
             };
+            var drop = function (event) {
+                udm (event);
+                var z = gmap.getZoom ();
+                console.log ("z=",z);
+                if (z < 16) {
+                    z = Math.ceil (z * 1.15);
+                    gmap.setZoom (z);
+                }
+                
+            };
 
-            google.maps.event.addListener (marker, 'dragend', udm);
-            google.maps.event.addListener (gmap, 'click', udm);
+            google.maps.event.addListener (marker, 'dragend', drop);
+            google.maps.event.addListener (gmap, 'click', drop);
             
             google.maps.event.addListener (gmap, 'resize', function () {
                 gmap.setCenter (marker.getPosition());
@@ -220,9 +241,6 @@ var wc = {
         });
         
         var placeMap = function (event) {
-            //console.log (event.data);
-            
-            // get or load map
             if (!wc.local.map.map) {
                 wc.local.mapqueue = function () {
                     wc.local.map.showPlace (event.data);
@@ -232,12 +250,42 @@ var wc = {
             else {
                 wc.local.map.showPlace (event.data);
             }
-            // scroll to place on map
-            // open info window with name, coords and "use" button
+            $.smoothScroll ({
+                scrollElement: $('#bg2'),
+                scrollTarget: $('#gMapGridBox'),
+                offset: -85
+            });
             
             return false;
         };
-        var placeUse = function (place, scope) {
+        var placeUse = function (event) {
+            var place = event.data;
+            
+            var dswm = function (place) {
+                wc.local.map.info.close();
+                $('input#SiteName').val(place.placeTitle);
+                $('input#SiteLatDec').val(place.lat);
+                $('input#SiteLonDec').val(place.lng);
+                $('textarea#SiteDescription').val(place.summary + '\n(elevation: '+place.elevation+'m)');
+                $('.rgsClearResultsButton').click();
+                wc.local.map.fromBoxen ();
+                $.smoothScroll ({
+                    scrollElement: $('#bg2'),
+                    scrollTarget: $('#SiteName'),
+                    offset: -85
+                });
+            };
+            
+            if (!wc.local.map.map) {
+                wc.local.mapqueue = function () {
+                    dswm (place);
+                };
+                $('#FindLatLonByMapButton').click();
+            }
+            else {
+                dswm (place);
+            }
+            
             return false;
         };
         
@@ -255,6 +303,7 @@ var wc = {
                 hrLat: $('span.geo span.latitude', this).text(),
                 hrLng: $('span.geo span.longitude', this).text(),
                 elevation: $('span.elevation', this).text(),
+                summary: $('div.summary', this).text(),
             };
             $row.data ('place', place);
             

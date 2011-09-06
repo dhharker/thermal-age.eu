@@ -12,8 +12,8 @@ class Geonames extends AppModel {
      */
     function placeSearch ($place, $maxRows = 5) {
         return $this->wikipediaSearch (array (
-            'formatted' => false,
-            'q' => urlencode($place),
+            //'formatted' => false,
+            'q' => $place,
             'style' => 'full',
             'maxRows' => $maxRows,
         ));
