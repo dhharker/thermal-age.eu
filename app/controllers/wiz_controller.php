@@ -147,13 +147,8 @@ class WizController extends AppController {
      */
     function place_search () {
         $place = (!empty ($this->params['form']['place'])) ? $this->params['form']['place'] : null;
-        //die ($place);
-        //die (print_r ((array) $this, TRUE) . "<-END");
         $place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
-        $places = array ('no places');
-        if (strlen ($place) > 0) {
-            $places = ClassRegistry::init('Geonames')->placeSearch($place);
-        }
+        $places = (strlen ($place) > 0) ? $places = ClassRegistry::init('Geonames')->placeSearch($place) : array ();
         $this->set ('places', (array) $places);
     }
 
