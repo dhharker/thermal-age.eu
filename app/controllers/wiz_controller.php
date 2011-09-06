@@ -335,11 +335,16 @@ class WizController extends AppController {
         $invalid = array ();
         $newST = array ();
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            $newST[$soiltemporothermal['order']] = $soiltemporothermal;
+            if (isset ($soiltemporothermal['order']))
+                $newST[$soiltemporothermal['order']] = $soiltemporothermal;
+        }
+        foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
+            if (!isset ($soiltemporothermal['order']))
+                $newST[] = $soiltemporothermal;
         }
         $this->data['SoilTemporothermal'] = $newST;
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if ($soiltemporothermal['soil_id'] > 0 || !empty ($soiltemporothermal['soil_thickness_m']) ) {
+            if (isset ($soiltemporothermal['soil_id']) && isset ($soiltemporothermal['soil_id']) && $soiltemporothermal['soil_id'] > 0 || !empty ($soiltemporothermal['soil_thickness_m']) ) {
                 $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
                 $this->SoilTemporothermal->set ($soiltemporothermal);
                 if (!$this->SoilTemporothermal->validates()) {

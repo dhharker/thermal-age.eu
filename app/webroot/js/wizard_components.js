@@ -4,7 +4,7 @@ var wc = {
     local: {
         map: {},
         burial: {
-            startNew: 1000,
+            nextIndex: 1,
         },
     },
     loadGmapsAsync: function (callback) {
@@ -111,7 +111,7 @@ var wc = {
         var list = $( "#burialLayersList > ul", scope);
         
         var template = $('li.burialLayer:first', list);
-        list.data ('liTemplate', template.html());
+        list.data ('liTemplate', template);
         template.remove();
         
         wc.reorderLayers = function (scope) {
@@ -122,7 +122,7 @@ var wc = {
                 $(this).val(wc.local.burial.layersindex);
                 wc.local.burial.layersindex++;
             });
-            var layers = $('input#BurialNumLayers', scope).val(wc.local.burial.layersindex);
+            $('input#BurialNumLayers').val(wc.local.burial.layersindex);
         };
         
         list.sortable({
@@ -142,28 +142,35 @@ var wc = {
         wc.initLayerDeleteButtons (scope);
         
         $('#addSoilLayerButton', scope).click(function () {
-            var template = list.data ('liTemplate');
+            var template = list.data ('liTemplate').clone();
             var attrs = ['id', 'name', 'for'];
-            var nid = ++wc.local.burial.startNew;
+            var nid = wc.local.burial.startNew;
+            wc.local.burial.startNew++;
             var newItem = $(template);
             for (p in attrs) {
                 var atr = attrs[p];
-                $('input, label', newItem).each (function () {
+                newItem.find('input, label').each (function () {
                     var $this = $(this);
-                    console.log ("atr", atr);
                     if (typeof $this.attr(atr) != 'undefined') {
                         var val = $this.attr (atr);
-                        val.replace ('-1', nid)
+                        val = val.replace ('-1', nid)
                         $this.attr (atr, val);
                     }
                 });
             }
-            
-            newItem.appendTo (list);
+
+            $(newItem).appendTo (list).show ({
+                effect: 'slide',
+                direction: 'down',
+                duration: 300,
+            });
             initialiseTAUI (list);
             wc.initLayerDeleteButtons (list);
+            wc.reorderLayers (list);
             return false;
         });
+        
+        wc.reorderLayers (scope);
         
     },
     initStorageForm: function (ele) {
