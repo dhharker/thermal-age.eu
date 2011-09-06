@@ -19,7 +19,7 @@
     display: block;
     border-left: 1px solid #8a9881;
     margin-left: -1px;
-    z-index: 201 !important;
+    z-index: 2001 !important;
     
 }
 #wizardProgressBar .progressbarPadding {
@@ -84,7 +84,7 @@
 
     display: block;
 
-    z-index: 201 !important;
+    z-index: 999 !important;
     margin: 0px;
     padding: 0px;
     padding-right: 3px;

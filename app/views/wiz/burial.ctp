@@ -52,25 +52,41 @@
                 'value' => $numLayers,
             ));?>
             <div id="burialLayersList" class="smartbox grid_10 alpha" style="clear: both;">
-            <div>hai</div>
+            <div>
+                <p class="help">
+                    The soil surface is up here, the sample ends up down by the &quot;Add&quot; button.
+                </p>
+            </div>
             <ul class="ui-sortable">
                 <?php
                 for ($i = 0; $i < $numLayers; $i++) {
                 ?>
                 <li class="grid_10 alpha smartsharp burialLayer">
                     <fieldset style="clear: both" class="">
+                        <div style="float: left">
+                            <?php echo $this->Html->link(
+                                '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>',
+                                '#',
+                                array(
+                                    'class' => 'fg-button ui-state-default sort-handle',
+                                    'escape' => false,
+                                    'style' => "margin: -1px 0px -1px -1px; padding: 6px 10px; height: 5em;"
+                                ));
+                            ?>
+                        </div>
                         <div class="grid_3">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.soil_id');?>
                         </div>
-                        <div class="grid_3">
+                        <div class="grid_2">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.thickness_m', array (
-                                'label' => 'Thickness (m)'
+                                'label' => 'Thick (m)'
                             ));?>
                         </div>
                         <div class="grid_3 omega">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.direct_sunlight');?>
                         </div>
+
 
                     </fieldset>
                 </li>
@@ -81,8 +97,14 @@
             <div>
             <?php echo $this->Html->link(
                 "Add Soil Layer",
-                array ('controller' => '', 'action' => '', ''),
-                array('class' => 'fg-button ui-state-default ui-corner-bottom cta-button', 'escape' => false, 'id' => 'addSoilLayerButton', 'style' => "margin: 0px 2em 10px 2em;")); ?>
+                '',
+                array(
+                    'class' => 'fg-button ui-state-default ui-corner-bottom cta-button',
+                    'escape' => false,
+                    'id' => 'addSoilLayerButton',
+                    'style' => "margin: 0px 2em 10px 2em;"
+                ));
+            ?>
             </div>
 
             </div>
