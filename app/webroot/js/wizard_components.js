@@ -92,13 +92,31 @@ var wc = {
     },
     initBurialForm: function (ele) {
         var list = $( "#burialLayersList > ul" );
+        wc.local.layers = [];
+        wc.reorderLayers = function (scope) {
+            scope = scope || '#wizardContainer';
+            var layers = $('input.layerOrder', scope);
+            wc.local.layersindex = 0;
+            layers.each (function () {
+                $(this).val(wc.local.layersindex);
+                wc.local.layersindex++;
+            });
+            console.log (layers);
+        };
         list.sortable({
             axis: 'y',
             containment: 'div#burialLayersList',
             forcePlaceholderSize: true,
             forceHelperSize: true,
             handle: '.sort-handle',
+            update: function (event, ui) {
+                wc.reorderLayers ();
+            },
+            create: function (event, ui) {
+                wc.reorderLayers ();
+            },
         });
+        
     },
     initStorageForm: function (ele) {
         ele = ele || '#wizardContainer';

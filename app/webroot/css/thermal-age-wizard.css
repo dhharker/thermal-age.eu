@@ -291,9 +291,36 @@ li.burialLayer{
 .burialLayer.smartsharp > div {
     padding: 10px;
 }
+.mobile-layout .burialLayer.smartsharp > div {
+    padding: 0px;
+}
 #burialLayersList div.input.checkbox input {
     margin: .3em;
 }
 #burialLayersList div.input.checkbox {
     margin-top: .5em;
+}
+
+.burialLayer .deleteLayerButton {
+    margin: -1px -1px -1px 0px; padding: 6px 10px; height: 5em;
+    float: right;
+}
+.burialLayer .sort-handle {
+    margin: -1px 0px -1px -1px; padding: 6px 10px; height: 5em;
+    float: left;
+}
+
+.mobile-layout .burialLayer .deleteLayerButton {
+    height: 10px;
+    width: 10px;
+    margin: -1px;
+    padding: 6px 7px;
+    -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px;
+}
+.mobile-layout .burialLayer .sort-handle {
+    height: 10px;
+    width: 5px;
+    overflow: hidden;
+    margin: -1px;
+    -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px;
 }
