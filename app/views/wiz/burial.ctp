@@ -59,9 +59,14 @@
                 </div>
                 <ul class="ui-sortable">
                     <?php
-                    for ($i = 0; $i < $numLayers; $i++) {
+                    for ($i = -1; $i < $numLayers; $i++) {
+                    $n = $i;
+                    /* The first layer is a hidden template for the cs js to use for the add layer
+                     * button so hide it */
+                        $hideLi = ($i == -1) ? ' style="display: none"' : '';
+
                     ?>
-                    <li class="grid_10 alpha smartsharp burialLayer">
+                    <li class="grid_10 alpha smartsharp burialLayer"<?=$hideLi?>>
                         <fieldset style="clear: both" class="">
                             <div class="lcButtons">
                                 <?php echo $this->Html->link(
@@ -83,22 +88,22 @@
                             </div>
                             <div class="mobileLayers">
                                 <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$i.'.soil_id');?>
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id');?>
                                 </div>
                                 <div class="grid_2">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$i.'.thickness_m', array (
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
                                         'label' => 'Thick (m)'
                                     ));?>
                                 </div>
                                 <div class="grid_3 omega">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
-                                    <?=$this->Form->input('SoilTemporothermal.'.$i.'.direct_sunlight');?>
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.sudden');?>
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.direct_sunlight');?>
                                 </div>
-                                <?/*=*/$this->Form->input('SoilTemporothermal.'.$i.'.order', array (
+                                <?/*=*/$this->Form->input('SoilTemporothermal.'.$n.'.order', array (
                                     'type' => 'hidden',
                                     'class' => 'layerOrder',
                                 ));?>
-                                <input type="hidden" id="SoilTemporothermal<?=$i?>Order" name="data[SoilTemporothermal][<?=$i?>][order]" class="layerOrder">
+                                <input type="hidden" id="SoilTemporothermal<?=$n?>Order" name="data[SoilTemporothermal][<?=$n?>][order]" class="layerOrder">
                             </div>
                             
 

@@ -2,8 +2,10 @@ var ADAPT_CALLBACK_2;
 // hat, cloak etc.
 var wc = {
     local: {
-        map: {}
-        
+        map: {},
+        burial: {
+            startNew: 1000,
+        },
     },
     loadGmapsAsync: function (callback) {
 //    return false; // debug
@@ -90,19 +92,39 @@ var wc = {
             return false;
         }).addClass ('axfInited');
     },
-    initBurialForm: function (ele) {
-        var list = $( "#burialLayersList > ul" );
-        wc.local.layers = [];
+    initLayerDeleteButtons: function (scope) {
+        scope = scope || '#wizardContainer';
+        $('.deleteLayerButton', scope).not('.inited').click (function () {
+            $(this).parentsUntil('li.burialLayer').parent().hide({
+                effect: 'slide',
+                direction: 'right',
+                duration: 600,
+            }, function () {
+                $(this).remove();
+                wc.reorderLayers();
+            });
+            return false;
+        }).addClass('inited');
+    },
+    initBurialForm: function (scope) {
+        scope = scope || '#wizardContainer';
+        var list = $( "#burialLayersList > ul", scope);
+        
+        var template = $('li.burialLayer:first', list);
+        list.data ('liTemplate', template.html());
+        template.remove();
+        
         wc.reorderLayers = function (scope) {
             scope = scope || '#wizardContainer';
             var layers = $('input.layerOrder', scope);
-            wc.local.layersindex = 0;
+            wc.local.burial.layersindex = 0;
             layers.each (function () {
-                $(this).val(wc.local.layersindex);
-                wc.local.layersindex++;
+                $(this).val(wc.local.burial.layersindex);
+                wc.local.burial.layersindex++;
             });
-            console.log (layers);
+            var layers = $('input#BurialNumLayers', scope).val(wc.local.burial.layersindex);
         };
+        
         list.sortable({
             axis: 'y',
             containment: 'div#burialLayersList',
@@ -110,11 +132,37 @@ var wc = {
             forceHelperSize: true,
             handle: '.sort-handle',
             update: function (event, ui) {
-                wc.reorderLayers ();
+                wc.reorderLayers (list);
             },
             create: function (event, ui) {
-                wc.reorderLayers ();
+                wc.reorderLayers (list);
             },
+        });
+        
+        wc.initLayerDeleteButtons (scope);
+        
+        $('#addSoilLayerButton', scope).click(function () {
+            var template = list.data ('liTemplate');
+            var attrs = ['id', 'name', 'for'];
+            var nid = ++wc.local.burial.startNew;
+            var newItem = $(template);
+            for (p in attrs) {
+                var atr = attrs[p];
+                $('input, label', newItem).each (function () {
+                    var $this = $(this);
+                    console.log ("atr", atr);
+                    if (typeof $this.attr(atr) != 'undefined') {
+                        var val = $this.attr (atr);
+                        val.replace ('-1', nid)
+                        $this.attr (atr, val);
+                    }
+                });
+            }
+            
+            newItem.appendTo (list);
+            initialiseTAUI (list);
+            wc.initLayerDeleteButtons (list);
+            return false;
         });
         
     },
