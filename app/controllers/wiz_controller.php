@@ -318,7 +318,7 @@ class WizController extends AppController {
         $this->set ('agebp', $ssd);
 
         $this->loadModel('Soil');
-        $soils = array_merge (array ('-1' => ' '), $this->Soil->find('list'));
+        $soils = array_merge (array ('0' => ' '), $this->Soil->find('list'));
         
         $this->set(compact('soils'));
     }

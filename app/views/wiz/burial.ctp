@@ -67,8 +67,11 @@
                         </div>
                         <div class="grid_3 omega">
                             <?=$this->Form->input('SoilTemporothermal.'.$i.'.sudden');?>
+                            <?=$this->Form->checkbox('SoilTemporothermal.'.$i.'.veg_cover', array (
+                                'label' => 'Vegetation Cover'
+                            ));?>
                         </div>
-                      
+
                     </fieldset>
                 </li>
                 <?php

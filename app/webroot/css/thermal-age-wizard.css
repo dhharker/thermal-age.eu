@@ -222,23 +222,6 @@ div.mapContainer a.middle {
 
 
 
-/* burial layers, soils, all that malarkey */
-ul#burialLayersList {
-    display: block;
-    margin: 0px;
-    padding: 0px;
-    list-style-type: none;
-    border-bottom: 5px solid #fff;
-}
-ul#burialLayersList li {
-    display: block;
-    margin: 0px;
-    padding: 0px;
-    border: 5px solid #fff;
-    border-bottom-width: 0px;
-}
-
-
 /* rev geocoding place search result row element styles */
 #reverseGeocodeResults {
     overflow: hidden;
@@ -279,4 +262,29 @@ span.elevation::before {
 
 .help {
     margin:4px;
+}
+
+
+
+
+/* burial layers, soils, all that malarkey */
+ul#burialLayersList {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+    border-bottom: 5px solid #fff;
+}
+ul#burialLayersList li {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    border: 5px solid #fff;
+    border-bottom-width: 0px;
+}
+ul#burialLayersList div.input.checkbox input {
+    margin: .3em;
+}
+ul#burialLayersList div.input.checkbox {
+    margin-top: .6em;
 }
