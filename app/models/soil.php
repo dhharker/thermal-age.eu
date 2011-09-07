@@ -31,7 +31,7 @@ class Soil extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'particle_size' => array(
+		'particle_size' => array( // 0 = unk, 1 = clay,silt, 2= sand,loam, 3= gravel
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
@@ -41,7 +41,7 @@ class Soil extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'water_content' => array(
+		'water_content' => array( // 0 = unk 1 = dry, 2 = medium, 3 = wet,
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
