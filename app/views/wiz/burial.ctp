@@ -20,7 +20,7 @@
             
             <div class="grid_3 omega">
                 <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
-                    'label' => 'Deposited (b.p.)',
+                    'label' => 'Deposited (bp)',
                     'default' => $agebp,
                     'disabled' => 'disabled'
                 ));?>
@@ -57,7 +57,7 @@
                         The soil surface is up here, the sample ends up down by the &quot;Add&quot; button.
                     </p>
                 </div>
-                <ul class="ui-sortable">
+                <ul class="ui-sortable smartsharp">
                     <?php
                     for ($i = -1; $i < $numLayers; $i++) {
                     $n = $i;
@@ -90,7 +90,7 @@
                                 <div class="grid_3">
                                     <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id');?>
                                 </div>
-                                <div class="grid_2">
+                                <div class="grid_3">
                                     <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
                                         'label' => 'Thick (m)'
                                     ));?>

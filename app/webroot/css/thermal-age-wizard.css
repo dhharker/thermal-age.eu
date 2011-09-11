@@ -275,7 +275,8 @@ span.elevation::before {
     list-style-type: none;    
 }
 #burialLayersList ul {
-    margin-bottom: 0px !important;
+    margin: -1px;
+    padding: 0px;
 }
 #burialLayersList li {
     display: block;
