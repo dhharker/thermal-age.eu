@@ -427,35 +427,40 @@ var wc = {
             .trigger ('keyup')
             //.filter ('#ReactionReactionName, #ReactionSubstrateName')
             .keyup(function () {
-                    var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
-                    combinedName = jQuery.trim (combinedName);
-                    var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
-                    if (subs.length > 0)
-                        combinedName += ' (' + subs + ')';
+                    var $me = $(this);
+                    var llk = 'reaction.'+$me.attr('id')+'.lastLen';
+                    if ($me.data(llk) && $me.data(llk) != $me.val().length) {
+                        var combinedName = $('input#ReactionMoleculeName').val () + ' ' + $('input#ReactionReactionName').val ();
+                        combinedName = jQuery.trim (combinedName);
+                        var subs = jQuery.trim ($('input#ReactionSubstrateName').val ());
+                        if (subs.length > 0)
+                            combinedName += ' (' + subs + ')';
 
-                    // takes care of editing not working on reload
-                    if (!$('input#ReactionName').data ('lastSet') && $('input#ReactionName').val ().indexOf (combinedName) != -1) {
-                        $('input#ReactionName').data ('lastSet', combinedName);
+                        // takes care of editing not working on reload
+                        if (!$('input#ReactionName').data ('lastSet') && $('input#ReactionName').val ().indexOf (combinedName) != -1) {
+                            $('input#ReactionName').data ('lastSet', combinedName);
+                        }
+                        
+                        // try and overwrite/replace/populate with a degree of sensitivity
+                        if (combinedName.length > 0 && (
+                            jQuery.trim ($('input#ReactionName').val ()).length == 0
+                            || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
+                        )) {
+                            $('input#ReactionName')
+                                .val (combinedName)
+                                .data ('lastSet', combinedName);
+                        }
+                        else if (
+                            $('input#ReactionName').data ('lastSet') && 
+                            $('input#ReactionName').data ('lastSet').length > 0
+                        ) {
+                            $('input#ReactionName')
+                                .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
+                                .data ('lastSet', combinedName);
+                        }
+                        $('input#ReactionShowname').val ($('input#ReactionName').val());
                     }
-                    
-                    // try and overwrite/replace/populate with a degree of sensitivity
-                    if (combinedName.length > 0 && (
-                        jQuery.trim ($('input#ReactionName').val ()).length == 0
-                        || $('input#ReactionName').data ('lastSet') == $('input#ReactionName').val ()
-                    )) {
-                        $('input#ReactionName')
-                            .val (combinedName)
-                            .data ('lastSet', combinedName);
-                    }
-                    else if (
-                        $('input#ReactionName').data ('lastSet') && 
-                        $('input#ReactionName').data ('lastSet').length > 0
-                    ) {
-                        $('input#ReactionName')
-                            .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
-                            .data ('lastSet', combinedName);
-                    }
-                    $('input#ReactionShowname').val ($('input#ReactionName').val());
+                    $me.data(llk, $me.val().length);
             }).trigger ('keyup');
             
         $('select#ReactionSelect').once ('widgetInited', function () {
