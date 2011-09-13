@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* App schema generated on: 2011-09-07 00:09:34 : 1315353454*/
+/* App schema generated on: 2011-09-13 11:09:54 : 1315909914*/
 class AppSchema extends CakeSchema {
 	var $name = 'App';
 
@@ -39,6 +39,21 @@ class AppSchema extends CakeSchema {
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
+	);
+	var $jobs = array(
+		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
+		'title' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 150),
+		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
+		'data' => array('type' => 'text', 'null' => false, 'default' => NULL),
+		'processor_name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'parser_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 50),
+		'reporter_name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 50),
+		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+		'updated' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
+		'pub_ref' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 30),
+		'status' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 4),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
@@ -81,10 +96,10 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL),
 		'thermal_diffusivity_m2_day' => array('type' => 'float', 'null' => false, 'default' => NULL),
-		'particle_size' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 7),
-		'water_content' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 6),
+		'water_content' => array('type' => 'float', 'null' => true, 'default' => NULL),
 		'citation_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
+		'particle_size' => array('type' => 'float', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
