@@ -66,7 +66,7 @@ var initialiseTAUI = function (scope) {
                                 duration: 600,
                             });
                         });
-                },
+                }
             });
         
         $(this).click (function () {
@@ -123,16 +123,16 @@ var initialiseTAUI = function (scope) {
 
 $(function () {
     initialiseTAUI();
-    (function( $ ){
+    (function($){
       $.fn.loadingAnim = function(options) {
         var settings = options || {
             show: {
                 effect: 'blind',
-                duration: 200,
+                duration: 200
             },
             hide: {
                 effect: '',
-                duration: 0,
+                duration: 0
             },
         };
         this.hide(settings.hide)
@@ -140,7 +140,7 @@ $(function () {
             .show(settings.show);
         return this;
       };
-    })( jQuery );
+    })(jQuery);
 
 });
 
