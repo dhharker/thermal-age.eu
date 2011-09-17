@@ -63,7 +63,7 @@ var initialiseTAUI = function (scope) {
                             initialiseTAUI (this);
                             $(this).show({
                                 effect: 'blind',
-                                duration: 600,
+                                duration: 600
                             });
                         });
                 }
@@ -86,7 +86,7 @@ var initialiseTAUI = function (scope) {
             position: ['top', 50],
             width: 600,
             minWidth: 300,
-            autoOpen: false,
+            autoOpen: false
         })
     }).addClass ('inited');
     
@@ -133,7 +133,7 @@ $(function () {
             hide: {
                 effect: '',
                 duration: 0
-            },
+            }
         };
         this.hide(settings.hide)
             .html ('<div style="text-align: center; margin: 2em;"><img src="/img/loading_spinner_blue.gif" alt="loading..." /><br /><span style="font-size: 120%; font-style: italic;">Loading...</span></div>')

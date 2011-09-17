@@ -5,7 +5,7 @@ var wc = {
         map: {},
         burial: {
             nextIndex: 1,
-        },
+        }
     },
     loadGmapsAsync: function (callback) {
 //    return false; // debug
@@ -113,7 +113,7 @@ var wc = {
         list.data ('liTemplate', template);
         template.remove();
         
-        wc.reorderLayers = function (scope) {
+        if (wc) wc.reorderLayers = function (scope) {
             scope = scope || '#wizardContainer';
             var layers = $('input.layerOrder', scope);
             wc.local.burial.layersindex = 0;
@@ -131,16 +131,16 @@ var wc = {
             forceHelperSize: true,
             handle: '.sort-handle',
             update: function (event, ui) {
-                wc.reorderLayers (list);
+                if (wc) wc.reorderLayers (list);
             },
             create: function (event, ui) {
-                wc.reorderLayers (list);
+                if (wc) wc.reorderLayers (list);
             },
         });
         
-        wc.initLayerDeleteButtons (scope);
-        wc.reorderLayers (scope);
-        wc.local.burial.nextIndex = $('input#BurialNumLayers', scope).val();
+        this.initLayerDeleteButtons (scope);
+        this.reorderLayers (scope);
+        this.local.burial.nextIndex = $('input#BurialNumLayers', scope).val();
         
         $('#addSoilLayerButton', scope).click(function () {
             var template = list.data ('liTemplate').clone();
