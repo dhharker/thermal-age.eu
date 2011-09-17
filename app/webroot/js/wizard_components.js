@@ -486,7 +486,7 @@ var wc = {
                     $('#ReactionShowname').val ($('option:selected', this).text());
                 }
             }).change();
-
+            
             if ($(this).val () == '-1') {
                 $('#ReactionDetails:hidden').show ();
             }
