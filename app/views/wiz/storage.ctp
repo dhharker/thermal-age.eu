@@ -39,7 +39,16 @@
                     'label' => 'T<sub>max</sub> ─ T<sub>min</sub> (°C)'
                 ));?>
             </div>
+            <div class="grid_6 alpha">
+                 <?=$this->Html->image("temp_expl_graph_small.png", array(
+                     "alt" => "Graph showing temperatures",
+                     'style' => "display: block; margin: 0px auto;"
+
+                 ));?>
+            </div>
         </div>
+
+
         
         <div class="grid_11 alpha" style="">
 

@@ -325,3 +325,11 @@ li.burialLayer{
     margin: -1px;
     -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px;
 }
+
+
+
+/* description input is hidden by default unless stuff in it */
+
+div.input div.hidden_description {
+    display: none;
+}

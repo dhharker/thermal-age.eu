@@ -76,6 +76,12 @@ var wc = {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
         var ajaxTarget = '#wizardAjaxTarget';
+        
+        $('textarea[id$=Description]', $me).not ('.inited')
+            .each (function () {
+                $(this).parentsUntil ('div.input').parent().wrapInner ('<div class="hidden_description"></div>');
+            }).addClass ('inited');
+        
         var afOpts = {
             beforeSubmit: function () {
                 //$(ajaxTarget).not(':animated').hide ('fast');
