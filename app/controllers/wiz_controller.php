@@ -345,14 +345,14 @@ class WizController extends AppController {
         }
         $this->data['SoilTemporothermal'] = $newST;
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if (strlen (trim (str_replace ('0', '', implode ('', $soiltemporothermal)))) > 0) {
+            $soiltemporothermal['order'] = 0;
+            if (strlen (trim (str_replace ('0', '', implode ('', $soiltemporothermal)))) > 0 ) {
                 $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
                 $this->SoilTemporothermal->set ($soiltemporothermal);
                 if (!$this->SoilTemporothermal->validates()) {
                     $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
                 }    
             }
-
         }
         
         if (!empty ($invalid)) {
