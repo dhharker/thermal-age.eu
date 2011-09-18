@@ -27,7 +27,7 @@
                     'disabled' => 'disabled'
                 ));?>
             </div>
-
+            <div style="clear: both"></div>
             <div class="grid_3 alpha">
                 <?=$this->Form->input('Temporothermal.temp_mean_c', array (
                     'label' => 'T<sub>mean</sub> (°C)',
@@ -39,12 +39,13 @@
                     'label' => 'T<sub>max</sub> ─ T<sub>min</sub> (°C)'
                 ));?>
             </div>
+            
             <div class="grid_6 alpha">
-                 <?=$this->Html->image("temp_expl_graph_small.png", array(
-                     "alt" => "Graph showing temperatures",
-                     'style' => "display: block; margin: 0px auto;"
-
-                 ));?>
+                <div class="smartbox" style="width: 280px; margin: 0px auto; padding: 6px 6px 2px 6px;">
+                     <?=$this->Html->image("temp_expl_graph_small.png", array(
+                         "alt" => "Graph showing temperatures",
+                     ));?>
+                 </div>
             </div>
         </div>
 
