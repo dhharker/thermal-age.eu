@@ -321,7 +321,7 @@ class WizController extends AppController {
         $this->set ('agebp', $ssd);
 
         $this->loadModel('Soil');
-        $soils = array_merge (array ('0' => ' '), $this->Soil->find('list'));
+        $soils = array_merge (array ('' => ' '), $this->Soil->find('list'));
         
         $this->set(compact('soils'));
     }
@@ -345,13 +345,14 @@ class WizController extends AppController {
         }
         $this->data['SoilTemporothermal'] = $newST;
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if (isset ($soiltemporothermal['soil_id']) && isset ($soiltemporothermal['soil_id']) && $soiltemporothermal['soil_id'] > 0 || !empty ($soiltemporothermal['soil_thickness_m']) ) {
+            if (strlen (trim (str_replace ('0', '', implode ('', $soiltemporothermal)))) > 0) {
                 $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
                 $this->SoilTemporothermal->set ($soiltemporothermal);
                 if (!$this->SoilTemporothermal->validates()) {
                     $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
-                }
+                }    
             }
+
         }
         
         if (!empty ($invalid)) {
