@@ -1,8 +1,41 @@
-<h1>Review</h1>
+<h1 class="sbHeading ui-corner-tl">
+    Review
+</h1>
 
-<ol>
+
+<?php echo $this->Form->create('Job', array('id' => 'JobForm', 'url' => $this->here)); ?>
+	<fieldset>
+        <div class="grid_11 alpha">
+            <?=$this->Form->input('Job.processor_name', array (
+                'default' => 'thermal_age_processor',
+                //'disabled' => true
+            ));?>
+        </div>
+        <div class="grid_11 alpha">
+            <?=$this->Form->input('Job.parser_name', array (
+                'default' => 'dna_screener_parser',
+                //'disabled' => true
+            ));?>
+        </div>
+        <div class="grid_11 alpha">
+            <?=$this->Form->input('Job.reporter_name', array (
+                'default' => 'dna_screener_report',
+                //'disabled' => true
+            ));?>
+        </div>
+        
+    </fieldset>
+
+
+<p>
+    All done - click 'Continue' below to add your job to the queue, it will be processed in due turn
+    and will take anywhere up to a few minutes to complete. 
+</p>
+
+
+<ol style="display: none    ">
 <?php
-    
+
     foreach ($input as $stepName => $models) {
         echo "<li>$stepName:<ol>";
         foreach ($models as $modelName => $modelValues) {
@@ -14,6 +47,20 @@
         }
         echo "</ol></li>";
     }
-    
+
 ?>
 </ol>
+
+
+<?=$this->element('wiz/wizardControlBar',  array ('wizardInfos' => $wizardInfos));?>
+
+<?php echo $this->Form->end(); ?>
+
+<script type="text/javascript">
+$(document).ready (function () {
+    wc.initReviewForm ();
+});
+</script>
+
+
+

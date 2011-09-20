@@ -1,7 +1,68 @@
 <?php
+/**
+ * The Job model currently includes all the code for process management etc.; this should be moved
+ * out at some point.
+ */
 class Job extends AppModel {
 	var $name = 'Job';
 	var $displayField = 'title';
+
+    var $statusCodes = array ('pending', 'running', 'finished', 'error');
+
+    /**
+     * Attempts to get human readable status information about a job. Possible responses are:
+     * - Pending (place in queue, time estimates)
+     * - Running (latest output from status file/socket, % complete, time estimate)
+     * - Finished (time to complete, link to report)
+     * - Error (error info)
+     *
+     * @return array of info (probably to pass on to view)
+     */
+    function bgGetProgress () {
+        $status = $this->field ('status');
+        if ($status !== FALSE) {
+            $statusName = (isset ($this->statusCodes[$status])) ?
+                    $this->statusCodes[$status] :
+                    sprintf ('%1d ' . 'Unknown', $status);
+
+            $rtn = array (
+                'statusCode' => $status,
+                'statusName' => $statusName,
+            );
+
+            switch ($status) {
+                case 0: // Pending
+                    $rtn['statusText'] = sprintf ("");
+                    break;
+
+                case 1: // Running
+                    $rtn['statusText'] = sprintf ("");
+                    break;
+
+                case 2: // Complete
+                    $rtn['statusText'] = sprintf ("");
+                    break;
+
+                case 3: // Error
+                    $rtn['statusText'] = sprintf ("");
+                    break;
+
+            }
+
+        }
+        else return false;
+    }
+    function bgGetQueuePos () {
+        $status = $this->field ('status');
+        if ($status !== FALSE) {
+            
+        }
+        else return false;
+    }
+    function bg () {}
+
+
+
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(

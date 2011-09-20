@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard');
-    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation');
+    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation', 'Job');
 
     var $amWizard = ''; // contains the name of the current wizard
     var $wizardInfos = array (
@@ -373,7 +373,7 @@ class WizController extends AppController {
      */
 	function _afterComplete() {
 		
-        $this->redirect(array('controller' => 'wiz', 'action' => 'disptest'));
+        $this->redirect(array('controller' => 'wiz', 'action' => 'create_job'));
 
 	}
 
@@ -381,11 +381,11 @@ class WizController extends AppController {
         $this->set ('input', $this->Wizard->read());
     }
     function _processReview () {
-
+        return true;
     }
 
 
-    function disptest () {
+    function create_job () {
         $wizardData = $this->Wizard->read();
 		extract($wizardData);
 

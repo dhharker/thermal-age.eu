@@ -497,6 +497,11 @@ var wc = {
                 $('#ReactionDetails:hidden').show ();
             }
         });
+    },
+    initReviewForm: function (ele) {
+        ele = ele || '#wizardContainer';
+        var $me = $(ele);
+        // do stuff here.
     }
 };
 
