@@ -3,6 +3,24 @@ class JobsController extends AppController {
 
 	var $name = 'Jobs';
 
+
+    function status ($id = null) {
+        $j = $this->Job->read(array (
+            'Job.id',
+            'Job.title',
+            'Job.status',
+            'Job.created',
+        ), $id);
+        //die (print_r ($j));
+        $this->set ('job', $j);
+        $this->set ('status', $this->Job->bgpGetStatus ());
+        $this->set ('async', ($this->RequestHandler->isAjax ()));
+
+        if ($j['Job']['status'] > 1)
+            $this->redirect(array('action' => 'report', ));
+    }
+
+
 	function index() {
 		$this->Job->recursive = 0;
 		$this->set('jobs', $this->paginate());

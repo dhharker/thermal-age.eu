@@ -380,16 +380,25 @@ class WizController extends AppController {
     function _prepareReview () {
         $this->set ('input', $this->Wizard->read());
     }
-    function _processReview () {
-        return true;
-    }
+    
 
 
     function create_job () {
         $wizardData = $this->Wizard->read();
-		extract($wizardData);
+        $this->Job->create();
 
-        $this->set ('wizdata', $wizardData);
+        $job = $wizardData['review'];
+        $job['Job']['status'] = 0; // set pending
+        $job['Job']['data'] = serialize ($wizardData);
+
+        if ($this->Job->save ($job)) {
+            // created job ok. reset the wizard and redirect to the job status page.
+            $this->Wizard->reset ();
+            $this->Session->Setflash ("Do not close this window!", true);
+            $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
+        }
+
+        //$this->set ('wizdata', $wizardData);
     }
 
 }
