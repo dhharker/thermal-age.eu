@@ -1,6 +1,6 @@
 <?php 
 /* SVN FILE: $Id$ */
-/* App schema generated on: 2011-09-13 11:09:54 : 1315909914*/
+/* App schema generated on: 2011-09-21 18:09:38 : 1316625578*/
 class AppSchema extends CakeSchema {
 	var $name = 'App';
 
@@ -43,7 +43,6 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);
 	var $jobs = array(
-		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
 		'title' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 150),
 		'user_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'data' => array('type' => 'text', 'null' => false, 'default' => NULL),
@@ -54,6 +53,7 @@ class AppSchema extends CakeSchema {
 		'updated' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'pub_ref' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 30),
 		'status' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 4),
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'latin1', 'collate' => 'latin1_swedish_ci', 'engine' => 'MyISAM')
 	);

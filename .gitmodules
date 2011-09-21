@@ -12,4 +12,4 @@
 	url = https://github.com/srobbin/jquery-pageslide.git
 [submodule "app/vendors/ttkpl"]
 	path = app/vendors/ttkpl
-	url = git@github.com:dhharker/ttkpl
+	url = https://github.com/dhharker/ttkpl.git
