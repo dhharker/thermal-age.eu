@@ -19,9 +19,20 @@ class Job extends AppModel {
         if (PHP_SAPI !== 'cli')
             return $this->_forkToBackground ();
 
-        // init
+        $next = $this->find('first', array (
+            'order' => 'Job.id ASC',
+            'conditions' => array (
+                'Job.status' => 0
+            )
+        ));
 
-        // load ttkpl
+        if (!$next) return false; // if there's nothing to do
+
+        $this->_startProcessing();
+
+        
+
+        $this->_stopProcessing();
 
     }
 
@@ -33,7 +44,7 @@ class Job extends AppModel {
         $id = $this->field ('id');
         if ($id !== false) {
 
-            App:import ('Vendor', 'ttkpl/predict.php');
+            App::import ('Vendor', 'ttkpl/lib/ttkpl');
 
             foreach (array ('pid', 'status') as $f)
                 $this->bg[$f] = $this->bgpGetJobFileName();
@@ -49,10 +60,15 @@ class Job extends AppModel {
      * Cleans up runtime files
      */
     function _stopProcessing () {
-        $this->bg['stopTime'] = microtime (true);
-        unlink ($this->bg['pid']);
-        $this->_addToStatus("Finished job $id");
-        $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
+        $id = $this->field ('id');
+        if ($id !== false) {
+            $this->bg['stopTime'] = microtime (true);
+            unlink ($this->bg['pid']);
+            $this->_addToStatus("Finished job $id");
+            $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
+            return true;
+        }
+        return false;
     }
     /**
      * Adds a timestamped message to the TOP of the status file
