@@ -11,12 +11,21 @@ class JobsController extends AppController {
             'Job.status',
             'Job.created',
         ), $id);
-        //die (print_r ($j));
+
+        $skey = 'jobstatus' . $j['Job']['id'] . 'since';
+        if ($this->Session->check ($skey)) {
+            $since = $this->Session->read ($skey);
+        }
+        else {
+            $since = time ();
+        }
+        $this->Session->write ($skey, time());
+
         $this->set ('job', $j);
-        $this->set ('status', $this->Job->bgpGetStatus ());
+        $this->set ('status', $this->Job->bgpGetStatus ($since));
         $this->set ('async', ($this->RequestHandler->isAjax ()));
 
-        if ($j['Job']['status'] > 1)
+        if ($j['Job']['status'] == 2) // if job is complete with no error
             $this->redirect(array('action' => 'report', ));
     }
 

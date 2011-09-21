@@ -100,10 +100,8 @@
             </nav>
         </header>
 
-        <div class="grid_12">
-            <?php echo $this->Session->flash(); ?>
-        </div>
         <div id="pageContent" style="clear: both;">
+            <?php echo $this->Session->flash(); ?>
             <? if (isset ($isWizard) && $isWizard == TRUE) { ?>
             <div class="grid_12" id="wizardContainer">
                 <div id="wizardAjaxTarget" class="smartbox clearfix ui-ish">

@@ -7,18 +7,21 @@
 	<fieldset>
         <div class="grid_11 alpha">
             <?=$this->Form->input('Job.processor_name', array (
+                'type' => 'hidden',
                 'default' => 'thermal_age',
                 //'disabled' => true
             ));?>
         </div>
         <div class="grid_11 alpha">
             <?=$this->Form->input('Job.parser_name', array (
+                'type' => 'hidden',
                 'default' => 'dna_screener',
                 //'disabled' => true
             ));?>
         </div>
         <div class="grid_11 alpha">
             <?=$this->Form->input('Job.reporter_name', array (
+                'type' => 'hidden',
                 'default' => 'dna_screener',
                 //'disabled' => true
             ));?>

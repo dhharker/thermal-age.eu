@@ -5,8 +5,14 @@ if (isset ($job['Job']['id']) && is_numeric ($job['Job']['id'])) {
 else {
     $jid = 0;
 }
-if (!@$async) {
-?><div class="grid_12">
+
+if ($jid == 0) {
+    $this->error (404, 'Error', "Job not found.");
+}
+elseif (!@$async) {
+
+?>
+<div class="grid_12">
     <div class="smartbox">
         <div style="width: 50px; text-align: center; margin: 0px; float: left; margin: 1em;">
             <img src="/img/loading_spinner_blue.gif" alt="Please wait..." />
@@ -23,21 +29,22 @@ if (!@$async) {
 <script type="text/javascript">
     $(function () {
         var upd = function () {
-            $('#jobStatusContainer').load ('/jobs/status/' + <?=$jid?>, function () {
-
+            $('#jobStatusContainer').load ('/jobs/status/' + <?=$jid;?>, function () {
+                $(this).highlight();
             });
         };
-        var inter = setInterval (upd, 5000);
+        var inter = setInterval (upd, 2500);
     });
 </script>
+
 <?php
 
 }
 else {
     ?>
-<p>
-    <? print_r ($status)?>
-</p>
+        <p>
+            <? print_r ($status)?>
+        </p>
     <?php
 }
 ?>

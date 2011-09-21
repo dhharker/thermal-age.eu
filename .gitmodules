@@ -10,3 +10,6 @@
 [submodule "app/webroot/js/pageslide"]
 	path = app/webroot/js/pageslide
 	url = https://github.com/srobbin/jquery-pageslide.git
+[submodule "app/vendors/ttkpl"]
+	path = app/vendors/ttkpl
+	url = git@github.com:dhharker/ttkpl

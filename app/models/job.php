@@ -6,9 +6,37 @@
 class Job extends AppModel {
 	var $name = 'Job';
 	var $displayField = 'title';
-
     var $statusCodes = array ('pending', 'running', 'finished', 'error');
 
+    var $maxThreads = 1; // maximum number of concurrent bg processors at a time
+
+    /**
+     * To be run from CLI. Finds the next job in the queue and runs it.
+     */
+    function tryProcessNext () {
+        if (!$this->_goodToGo())
+            return false;
+        if (PHP_SAPI !== 'cli')
+            return $this->_forkToBackground ();
+        
+
+    }
+    /**
+     * Spawns a background process to run tryProcessNext
+     */
+    function _forkToBackground () {
+        $command = $command = CAKE . "console/cake \"--app\" \"" . APP . "\" background";
+        $pid = shell_exec ("nohup $command 2> /dev/null & echo $!");
+        return ($pid);
+    }
+    /**
+     * Run by tryProcessNext prior to doing any work; initialises
+     * @return bool is it ok to create another bg processing thread
+     */
+    function _goodToGo () {
+        // if running threads < maxThreads return true
+        return true;
+    }
 
     /**
      * Attempts to get human readable status information about a job. Possible responses are:
@@ -31,7 +59,10 @@ class Job extends AppModel {
             switch ($status) {
                 case 0: // Pending
                     $qp = $this->bgGetQueuePos();
-                    $rtn['statusText'] = sprintf ("Your job is in position #%d in the queue", $qp);
+                    if ($qp < 1)
+                        $rtn['statusText'] = "Your job is up next!";
+                    else
+                        $rtn['statusText'] = sprintf ("Your $qp job is in position #%d in the queue", $qp);
                     break;
                 case 1: // Running
                     $rtn['statusText'] = sprintf ("");
@@ -44,9 +75,9 @@ class Job extends AppModel {
                 case 3: // Error
                     $rtn['statusText'] = sprintf ("");
                     break;
-
             }
-
+            
+            return $rtn;
         }
         else return false;
     }
@@ -65,7 +96,7 @@ class Job extends AppModel {
         if ($id !== FALSE) {
             return $this->find('count', array (
                 'conditions' => array (
-                    'Job.id >' => $this->field('id'),
+                    'Job.id <' => $this->field('id'),
                     'Job.status <' => 2,
                 )
             ));
@@ -80,42 +111,29 @@ class Job extends AppModel {
     function bgpGetStatus ($since = null) {
         $since = ($since === null) ? time () : $since;
         $status = $this->field ('status');
-        if ($status !== FALSE) {
+        if ($status !== false) {
 
             $rtn = array (
                 'statusCode' => $status,
                 'statusName' => $this->_bgGetStatusName($status),
             );
 
-            switch ($status) {
-                case 0: // Pending
-                    $qp = $this->bgGetQueuePos();
-                    $rtn['statusText'] = sprintf ("Your job is in position #%d in the queue", $qp);
-                    break;
-                case 1: // Running
-                    // Crash detection
-                    if ($this->bgpBOYD()) {
-                        // ruh roh
-                        $rtn['statusText'] = sprintf ("Uh oh, it looks like the job has crashed. Stand by for a status update!");
-                    }
-                    else {
-                        $rtn['statusText'] = sprintf ("Your job is currently being processed.");
-                        $rtn['statusFile'] = bgpGetStatusFileSince ($since);
+            if ($status == 1) { // Status = Running
+                // Crash detection
+                if ($this->bgpBOYD()) {
+                    // ruh roh
+                    $rtn['statusText'] = sprintf ("Uh oh, it looks like the job has crashed. Stand by for a status update!");
+                }
+                else {
+                    $rtn['statusText'] = sprintf ("Your job is currently being processed.");
+                    $rtn['statusFile'] = bgpGetStatusFileSince ($since);
 
-                    }
-                    
-                    break;
-
-                case 2: // Complete
-                    $rtn['statusText'] = sprintf ("");
-                    break;
-
-                case 3: // Error
-                    $rtn['statusText'] = sprintf ("");
-                    break;
+                }
+                return $rtn;
             }
-            
-            return $rtn;
+            else {
+                return $this->bgGetProgress ();
+            }
         }
         else {
             return false;
