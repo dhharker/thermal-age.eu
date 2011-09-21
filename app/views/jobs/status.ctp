@@ -43,7 +43,7 @@ elseif (!@$async) {
 else {
     ?>
         <p>
-            <? print_r ($status)?>
+            <?=$status['statusText']?>
         </p>
     <?php
 }

@@ -4,19 +4,17 @@
  */
 class BackgroundShell extends Shell {
 
-    function __construct () {
+    function __construct ($dispatch) {
+        parent::__construct($dispatch);
         $this->Job = ClassRegistry::init('Job');
     }
 
     function main() {
-
+        echo "\nStarting up...\n";
         if ($this->Job)
+            return ($this->Job->tryProcessNext ());
+        return false;
 
-        $i = 60;
-        while ($i-- > 0) {
-        echo ".";
-        sleep (1);
-        }
     }
 
 

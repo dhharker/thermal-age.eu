@@ -18,8 +18,55 @@ class Job extends AppModel {
             return false;
         if (PHP_SAPI !== 'cli')
             return $this->_forkToBackground ();
-        
 
+        // init
+
+        // load ttkpl
+
+    }
+
+    /**
+     * Creates runtime files etc.
+     * @return bool success
+     */
+    function _startProcessing () {
+        $id = $this->field ('id');
+        if ($id !== false) {
+
+            App:import ('Vendor', 'ttkpl/predict.php');
+
+            foreach (array ('pid', 'status') as $f)
+                $this->bg[$f] = $this->bgpGetJobFileName();
+            file_put_contents($this->bg['pid'], posix_getpid ());
+            file_put_contents($this->bg['status'], '');
+            $this->_addToStatus("Starting processor for job $id");
+            $this->bg['startTime'] = microtime (true);
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Cleans up runtime files
+     */
+    function _stopProcessing () {
+        $this->bg['stopTime'] = microtime (true);
+        unlink ($this->bg['pid']);
+        $this->_addToStatus("Finished job $id");
+        $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
+    }
+    /**
+     * Adds a timestamped message to the TOP of the status file
+     * @return bool false if status file doesn't exist or can't be written else true
+     */
+    function _addToStatus ($message) {
+        if (file_exists ($this->bg['status'])) {
+            $st = file_get_contents ($this->bg['status']);
+            $fmsg = sprintf("%f %s\n", microtime (true), $message);
+            echo $fmsg;
+            $st = $fmsg . $st;
+            return file_put_contents ($this->bg['status'], $st);
+        }
+        return false;
     }
     /**
      * Spawns a background process to run tryProcessNext
@@ -62,18 +109,18 @@ class Job extends AppModel {
                     if ($qp < 1)
                         $rtn['statusText'] = "Your job is up next!";
                     else
-                        $rtn['statusText'] = sprintf ("Your $qp job is in position #%d in the queue", $qp);
+                        $rtn['statusText'] = sprintf ("There %s %d job%s ahead of yours in the queue...", ($qp>1)?'are':'is', $qp, ($qp>1)?'s':'');
                     break;
                 case 1: // Running
-                    $rtn['statusText'] = sprintf ("");
+                    $rtn['statusText'] = sprintf ("Your job is running now.");
                     break;
 
                 case 2: // Complete
-                    $rtn['statusText'] = sprintf ("");
+                    $rtn['statusText'] = sprintf ("Job is complete.");
                     break;
 
                 case 3: // Error
-                    $rtn['statusText'] = sprintf ("");
+                    $rtn['statusText'] = sprintf ("Job finished, but with errors.");
                     break;
             }
             
@@ -103,7 +150,6 @@ class Job extends AppModel {
         }
         else return false;
     }
-    function bg () {}
     /**
      * @param int $since unix timestamp for log cutoff
      * @return array statuses of the process is running, should be running, has crashed
