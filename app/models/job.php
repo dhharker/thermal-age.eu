@@ -18,22 +18,65 @@ class Job extends AppModel {
             return false;
         if (PHP_SAPI !== 'cli')
             return $this->_forkToBackground ();
-
+        
         $next = $this->find('first', array (
             'order' => 'Job.id ASC',
             'conditions' => array (
                 'Job.status' => 0
             )
         ));
-
+        
         if (!$next) return false; // if there's nothing to do
+        
+        $this->read (null, $next['Job']['id']);
 
-        $this->_startProcessing();
-
+        $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
         
 
+        $this->_startProcessing();
+        $input = unserialize ($this->field('data'));
+        $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
+        $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
+        $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
         $this->_stopProcessing();
+    }
 
+    /**
+     * Checks to see if Job::_task_$name_$type exists and calls it with $args & returns retval
+     * @param string $name of task (e.g. thermal_age)
+     * @param string $type of task (i.e. parser, processor or reporter)
+     */
+    function _task ($name, $type, $args = array ()) {
+        // processors have default parsers and reporters so if these aren't specified then use defaults
+        if ($type != 'processor' && $name == '') {
+            $name = $this->_task ($this->field('processor_name'), $type, array ("get_" . $type));
+        }
+        $meth = "_task_{$name}_{$type}";
+        if (method_exists($this, $meth))
+            return $this->$meth ($args);
+        return false;
+    }
+
+    function _task_thermal_age_processor ($args) {
+        $args = (array) $args;
+        if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
+
+        $this->_addToStatus ("Processor: Thermal Age");
+
+        $i = 0;
+        while ($i++ < 5) {
+            echo ".";
+            sleep (1);
+        }
+
+        return array ();
+    }
+    function _task_dna_screener_parser ($args) {
+        $this->_addToStatus ("Parser: DNA Screener");
+        return $args;
+    }
+    function _task_dna_screener_reporter ($args) {
+        $this->_addToStatus ("Reporter: DNA Screener");
     }
 
     /**
@@ -47,7 +90,7 @@ class Job extends AppModel {
             App::import ('Vendor', 'ttkpl/lib/ttkpl');
 
             foreach (array ('pid', 'status') as $f)
-                $this->bg[$f] = $this->bgpGetJobFileName();
+                $this->bg[$f] = $this->bgpGetJobFileName($f);
             file_put_contents($this->bg['pid'], posix_getpid ());
             file_put_contents($this->bg['status'], '');
             $this->_addToStatus("Starting processor for job $id");
@@ -63,9 +106,9 @@ class Job extends AppModel {
         $id = $this->field ('id');
         if ($id !== false) {
             $this->bg['stopTime'] = microtime (true);
-            unlink ($this->bg['pid']);
             $this->_addToStatus("Finished job $id");
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
+            unlink ($this->bg['pid']);
             return true;
         }
         return false;
@@ -172,6 +215,7 @@ class Job extends AppModel {
      */
     function bgpGetStatus ($since = null) {
         $since = ($since === null) ? time () : $since;
+        $since = 1;
         $status = $this->field ('status');
         if ($status !== false) {
 
@@ -271,7 +315,10 @@ class Job extends AppModel {
      */
     function bgpBOYD () {
         if ($this->field ('status') == 1 && $this->bgpGetPid() !== false)
-            return !$this->bgpIsRunning ();
+            if (!$this->bgpIsRunning ()) {
+                $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 3)), false);
+                return true;
+            }
         return false;
     }
     

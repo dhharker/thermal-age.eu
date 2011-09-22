@@ -3,7 +3,10 @@ class JobsController extends AppController {
 
 	var $name = 'Jobs';
 
-
+    /**
+     * Users are redirected here after submitting a job for processing.
+     * @param int $id of job to get status of
+     */
     function status ($id = null) {
         $j = $this->Job->read(array (
             'Job.id',
@@ -22,11 +25,13 @@ class JobsController extends AppController {
         $this->Session->write ($skey, time());
 
         $this->set ('job', $j);
-        $this->set ('status', $this->Job->bgpGetStatus ($since));
-        $this->set ('async', ($this->RequestHandler->isAjax ()));
+        $this->set ('status', $this->Job->bgpGetStatus ());//$since)); ignoring this for now as status update page currently too simple for it
+        $this->set ('async', $this->RequestHandler->isAjax ());
 
         if ($j['Job']['status'] == 2) // if job is complete with no error
             $this->redirect(array('action' => 'report', ));
+        elseif ($j['Job']['status'] == 0) // job is pending
+            $this->Job->tryProcessNext();
     }
 
 

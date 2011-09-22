@@ -33,7 +33,8 @@ elseif (!@$async) {
                 $(this).highlight();
             });
         };
-        var inter = setInterval (upd, 2500);
+        var inter = setInterval (upd, 7500);
+        upd();
     });
 </script>
 
@@ -44,6 +45,9 @@ else {
     ?>
         <p>
             <?=$status['statusText']?>
+        </p>
+        <p>
+            <?=@$status['statusFile']?>
         </p>
     <?php
 }
