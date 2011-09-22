@@ -30,7 +30,7 @@ elseif (!@$async) {
     $(function () {
         var upd = function () {
             $('#jobStatusContainer').load ('/jobs/status/' + <?=$jid;?>, function () {
-                $(this).highlight();
+                
             });
         };
         var inter = setInterval (upd, 7500);

@@ -8,6 +8,7 @@ class JobsController extends AppController {
      * @param int $id of job to get status of
      */
     function status ($id = null) {
+        $this->disableCache();
         $j = $this->Job->read(array (
             'Job.id',
             'Job.title',
@@ -29,7 +30,7 @@ class JobsController extends AppController {
         $this->set ('async', $this->RequestHandler->isAjax ());
 
         if ($j['Job']['status'] == 2) // if job is complete with no error
-            $this->redirect(array('action' => 'report', ));
+            $this->redirect(array('action' => 'report', $id));
         elseif ($j['Job']['status'] == 0) // job is pending
             $this->Job->tryProcessNext();
     }
