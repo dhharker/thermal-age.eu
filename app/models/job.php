@@ -45,7 +45,8 @@ class Job extends AppModel {
         // once complete, start a new process (to process the next job, if any) and exit
 // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
 // @todo implement checking whether max number of processor threads has been reached.
-        //$this->_forkToBackground();
+        sleep (1);
+        $this->_forkToBackground();
         exit (0);
 
     }
@@ -275,8 +276,11 @@ class Job extends AppModel {
      * Spawns a background process to run tryProcessNext
      */
     function _forkToBackground () {
-        $command = $command = CAKE . "console/cake \"--app\" \"" . APP . "\" background";
+        $command = "php \"-q\" \"" . trim (`pwd`) . "/../../cake/console/cake.php\" \"--app\" \"" . APP . "\" background";
+        //echo shell_exec($command);
+        echo $command;
         $pid = shell_exec ("nohup $command 2> /dev/null & echo $!");
+        echo "\nFORK $pid\n";
         return ($pid);
     }
     /**

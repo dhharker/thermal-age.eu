@@ -9,8 +9,13 @@ class JobsController extends AppController {
     function report ($id = null) {
         $j = $this->Job->read(null, $id);
         if ($j !== false) {
-            $results = file_get_contents ($this->Job->bgpGetJobFileName ('report'));
+            $fn = $this->Job->bgpGetJobFileName ('report');
+            if (file_exists ($fn))
+                $results = file_get_contents ($fn);
+            else
+                $results = "Couldn't find report, sorry!";
             $this->set ('results', $results);
+            $this->set ('job', $j);
         }
         else {
             $this->set ('results', "Error :-(");
@@ -43,11 +48,12 @@ class JobsController extends AppController {
 
         $this->set ('job', $j);
         $this->set ('status', $this->Job->bgpGetStatus ());//$since)); ignoring this for now as status update page currently too simple for it
-        $this->set ('async', $this->RequestHandler->isAjax ());
+        $async = $this->RequestHandler->isAjax ();
+        $this->set ('async', $async);
 
         if ($j['Job']['status'] >= 2) // if job is complete, with or without error
             $this->redirect(array('action' => 'report', $id));
-        elseif ($j['Job']['status'] == 0) // job is pending
+        elseif ($j['Job']['status'] == 0 && $async) // job is pending
             $this->Job->tryProcessNext();
     }
 
