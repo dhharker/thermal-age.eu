@@ -92,7 +92,7 @@ class Job extends AppModel {
         $args = (array) $args;
         if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
         $this->_addToStatus ("Processor: Thermal Age");
-        //$this->_addToStatus (print_r ($args, true));
+        $this->_addToStatus (print_r ($args, true));
 
         return array ();
     }
