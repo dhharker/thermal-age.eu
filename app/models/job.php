@@ -92,7 +92,9 @@ class Job extends AppModel {
         $args = (array) $args;
         if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
         $this->_addToStatus ("Processor: Thermal Age");
-        $this->_addToStatus (print_r ($args, true));
+
+
+        
 
         return array ();
     }
@@ -140,7 +142,6 @@ class Job extends AppModel {
         // storage temporothermal
         // @todo needs to support getting temperature data from uploaded CSV file stored in db
         $tt = new \ttkpl\temporothermal();
-        $tt->setKinetics($kinetics);
         $tt->setTimeRange(
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['startdate_ybp']),
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['stopdate_ybp'])
@@ -160,7 +161,6 @@ class Job extends AppModel {
 
         // burial temporothermal (inc. site, soils)
         $tt = new \ttkpl\temporothermal();
-        $tt->setKinetics($kinetics);
         $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
         $tt->setTempSource($temps);
         $tt->setTimeRange(
@@ -177,10 +177,7 @@ class Job extends AppModel {
         $tt->setLocalisingCorrections ($localisingCorrections);
         $parsed['Temporothermals'][] = $tt;
         
-        return array (
-            'input' => $args,
-            'parsed' => $parsed
-        );
+        return $parsed;
     }
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
