@@ -29,11 +29,15 @@ elseif (!@$async) {
 <script type="text/javascript">
     $(function () {
         var upd = function () {
-            $('#jobStatusContainer').load ('/jobs/status/' + <?=$jid;?>, function () {
-                
-            });
+            var sc = $('#jobStatusContainer');
+            if  (sc.data('wait') != true)
+            sc
+                .data('wait',true)
+                .load ('/jobs/status/' + <?=$jid;?>, function () {
+                    sc.data('wait', false);
+                });
         };
-        var inter = setInterval (upd, 7500);
+        var inter = setInterval (upd, 3000);
         upd();
     });
 </script>
@@ -47,10 +51,7 @@ else {
             <?=$status['statusText']?>
         </p>
         <p>
-            <?=@$status['statusFile']?>
-        </p>
-        <p>
-            <? print_r ($job); ?>
+            <?=nl2br($status['statusFile'])?>
         </p>
     <?php
 }

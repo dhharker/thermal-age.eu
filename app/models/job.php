@@ -101,7 +101,7 @@ class Job extends AppModel {
             $ta->addTemporothermal ($tt);
 
 
-        $this->_addToStatus("About to calulate thermal age.");
+        $this->_addToStatus("Calculating thermal age. This can take a long time, please be patient...");
 
         $taYrs = $ta->getThermalAge();
 
@@ -198,6 +198,8 @@ class Job extends AppModel {
 
         $ta = $args['thermalAge'];
         $taYrs = $args['thermalYears'];
+
+        sleep (10);
 
         $results = array (
             'λ' => $ta->getLambda(),
@@ -404,9 +406,11 @@ class Job extends AppModel {
      * @return mixed string of status file since timestamp or false if none available/no file
      */
     function bgpGetStatusFileSince ($since = null) {
-        $since = ($since === null) ? time () : $since;
+        $since = ($since === null) ? 1 : $since;
         $fn = $this->bgpGetJobFileName ('status');
         if (!file_exists ($fn)) return false;
+        return file_get_contents($fn);
+        
         $handle = fopen ($fn, 'r');
         $op = '';
         $old = false;

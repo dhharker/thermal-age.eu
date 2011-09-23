@@ -5,6 +5,7 @@ class JobsController extends AppController {
 
     /**
      * Users get bounced here when a job is finished (with or without errors)
+     * @param int $id of job to get report for
      */
     function report ($id = null) {
         $j = $this->Job->read(null, $id);
