@@ -24,11 +24,12 @@ class Job extends AppModel {
         
         $next = $this->_getNext ();
         
-        if (!$next) return false; // if there's nothing to do
+        if (!$next) {
+            echo "Nothing to do!\n";
+            return false; // if there's nothing to do
+        }
         
         $this->read (null, $next['Job']['id']);
-//debug only!
-        //$this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
         
 
         $this->_startProcessing();
@@ -92,11 +93,20 @@ class Job extends AppModel {
         $args = (array) $args;
         if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
         $this->_addToStatus ("Processor: Thermal Age");
-
-
         
+        $ta = new \ttkpl\thermalAge();
+        $ta->setKinetics($args['kinetics']);
+        foreach ($args['Temporothermals'] as $tt)
+            $ta->addTemporothermal ($tt);
 
-        return array ();
+
+        $this->_addToStatus("About to calulate thermal age.");
+
+        $taYrs = $ta->getThermalAge();
+
+        $this->_addToStatus("Thermal age: " . $taYrs->getValue());
+
+        return array ('thermalAge' => $ta, 'thermalYears' => $taYrs);
     }
     function _task_dna_screener_parser ($args) {
         $this->_addToStatus ("Parser: DNA Screener");
@@ -109,7 +119,7 @@ class Job extends AppModel {
             $kinetics = new \ttkpl\kinetics(
                 $r['Reaction']['ea_kj_per_mol'],
                 $r['Reaction']['f_sec'],
-                $r['Reaction']['name'] . "({$r['Citation']['id']}:{$r['Citation']['name']})"
+                $r['Reaction']['name'] . " (Source: {$r['Citation']['name']} [{$r['Citation']['id']}])"
             );
         }
         else {
@@ -119,6 +129,7 @@ class Job extends AppModel {
                 $args['reaction']['Reaction']['name']
             );
         }
+        $parsed['kinetics'] = $kinetics;
 
         // soils
         $bur = new \ttkpl\burial();
@@ -148,11 +159,13 @@ class Job extends AppModel {
         );
         $storageSine = new \ttkpl\sine ();
         $storageSine->setGenericSine (
-            $args['storage']['Temporothermal']['temp_mean_c'],
-            $args['storage']['Temporothermal']['temp_pp_amp_c'],
-            0);
+            \ttkpl\scalarFactory::makeCentigradeAbs ($args['storage']['Temporothermal']['temp_mean_c']),
+            \ttkpl\scalarFactory::makeKelvinAnomaly ($args['storage']['Temporothermal']['temp_pp_amp_c']),
+            \ttkpl\scalarFactory::makeDays (0));
+         
         
         $storageSine->desc = $args['storage']['Temporothermal']['description'];
+//var_dump ($storageSine);
         $tt->setConstantClimate ($storageSine);
         if ($addbur == true)
             $tt->setBurial ($bur);
@@ -181,6 +194,22 @@ class Job extends AppModel {
     }
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
+
+        $ta = $args['thermalAge'];
+        $taYrs = $args['thermalYears'];
+
+        $results = array (
+            'λ' => $ta->getLambda(),
+            '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
+            'k (yr)' => $ta->getKYear (),
+            'k (sec)' => $ta->getKSec (),
+            'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
+            'Thermal age' => $taYrs->getValue(),
+        );
+
+        $report = $this->bgpGetJobFileName('report');
+
+        file_put_contents($report, print_r ($results, true));
     }
 
     /**
@@ -204,6 +233,9 @@ class Job extends AppModel {
             file_put_contents($this->bg['status'], '');
             $this->_addToStatus("Starting processor for job $id");
             $this->bg['startTime'] = microtime (true);
+
+            $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
+
             return true;
         }
         return false;
@@ -211,13 +243,16 @@ class Job extends AppModel {
     /**
      * Cleans up runtime files
      */
-    function _stopProcessing () {
+    function _stopProcessing ($error = false) {
         $id = $this->field ('id');
         if ($id !== false) {
             $this->bg['stopTime'] = microtime (true);
             $this->_addToStatus("Finished job $id");
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
+
+            $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => ($error == FALSE) ? 2 : 3)), false);
+
             return true;
         }
         return false;
