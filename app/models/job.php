@@ -45,8 +45,8 @@ class Job extends AppModel {
         // once complete, start a new process (to process the next job, if any) and exit
 // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
 // @todo implement checking whether max number of processor threads has been reached.
-        sleep (1);
-        $this->_forkToBackground();
+        //sleep (1);
+        //$this->_forkToBackground();
         exit (0);
 
     }
