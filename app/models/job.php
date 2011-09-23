@@ -63,6 +63,13 @@ class Job extends AppModel {
             )
         ));
     }
+    function _getSoil ($id) {
+        return $this->Soil->find('first', array (
+            'conditions' => array (
+                'Soil.id' => $id
+            )
+        ));
+    }
 
     /**
      * Checks to see if Job::_task_$name_$type exists and calls it with $args & returns retval
@@ -77,6 +84,7 @@ class Job extends AppModel {
         $meth = "_task_{$name}_{$type}";
         if (method_exists($this, $meth))
             return $this->$meth ($args);
+        $this->_addToStatus("Error: Unknown task.");
         return false;
     }
 
@@ -84,7 +92,7 @@ class Job extends AppModel {
         $args = (array) $args;
         if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
         $this->_addToStatus ("Processor: Thermal Age");
-        $this->_addToStatus (print_r ($args, true));
+        //$this->_addToStatus (print_r ($args, true));
 
         return array ();
     }
@@ -110,9 +118,29 @@ class Job extends AppModel {
             );
         }
 
+        // soils
+        $bur = new \ttkpl\burial();
+        $addbur = false;
+        if ($args['burial']['Burial']['numLayers'] > 0) {
+            foreach ($args['burial']['SoilTemporothermal'] as $layer) {
+                $s = $this->_getSoil($layer['soil_id']);
+                if ($s !== false && $layer['thickness_m'] > 0) {
+                    $std = \ttkpl\scalarFactory::makeThermalDiffusivity ($s['Soil']['thermal_diffusivity_m2_day']);
+                    $z = \ttkpl\scalarFactory::makeMetres ($layer['thickness_m']);
+                    $slayer = new \ttkpl\thermalLayer($z, $std, '');
+                    $bur->addThermalLayer($slayer);
+                    $addbur = true;
+                }
+                else {
+                    $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
+                }
+            }
+        }
+
         // storage temporothermal
         // @todo needs to support getting temperature data from uploaded CSV file stored in db
         $tt = new \ttkpl\temporothermal();
+        $tt->setKinetics($kinetics);
         $tt->setTimeRange(
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['startdate_ybp']),
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['stopdate_ybp'])
@@ -125,11 +153,14 @@ class Job extends AppModel {
         
         $storageSine->desc = $args['storage']['Temporothermal']['description'];
         $tt->setConstantClimate ($storageSine);
+        if ($addbur == true)
+            $tt->setBurial ($bur);
         $parsed['Temporothermals'][] = $tt;
         
 
         // burial temporothermal (inc. site, soils)
         $tt = new \ttkpl\temporothermal();
+        $tt->setKinetics($kinetics);
         $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
         $tt->setTempSource($temps);
         $tt->setTimeRange(
@@ -145,11 +176,11 @@ class Job extends AppModel {
         $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
         $tt->setLocalisingCorrections ($localisingCorrections);
         $parsed['Temporothermals'][] = $tt;
-
-
-
-
-        return $args;
+        
+        return array (
+            'input' => $args,
+            'parsed' => $parsed
+        );
     }
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
