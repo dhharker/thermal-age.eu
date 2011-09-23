@@ -17,14 +17,16 @@
             <div class="grid_3 alpha">
                 <?=$this->Form->input('Temporothermal.startdate_ybp', array (
                     'label' => 'Analysed (AD)',
-                    'default' => date ('Y')
+                    'default' => date ('Y'),
+                    'div' => 'makeInputAd'
                 ));?>
             </div>
             <div class="grid_3 omega">
                 <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
                     'label' => 'Excavated (AD)',
-                    'default' => $excavatedad,
-                    'disabled' => 'disabled'
+                    'default' => (-1 * $excavatedad) + 1950,
+                    'disabled' => 'disabled',
+                    'div' => 'makeInputAd'
                 ));?>
             </div>
             <div style="clear: both"></div>

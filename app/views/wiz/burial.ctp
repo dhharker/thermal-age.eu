@@ -14,7 +14,8 @@
             </div>
             <div class="grid_3">
                 <?=$this->Form->input('Temporothermal.startdate_ybp', array (
-                    'label' => 'Excavated (AD)'
+                    'label' => 'Excavated (AD)',
+                    'div' => 'makeInputAd'
                 ));?>
             </div>
             

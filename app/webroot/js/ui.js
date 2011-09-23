@@ -1,4 +1,10 @@
 
+var useful = {
+    ad2bp: function (ad) {
+        return (ad - 1950) * -1;
+    }
+};
+
 var initialiseTAUI = function (scope) {
     scope = scope || 'body';
     $('.fg-button,.hover', scope).hover(

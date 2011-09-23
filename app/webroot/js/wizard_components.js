@@ -111,8 +111,34 @@ var wc = {
             return false;
         }).addClass('inited');
     },
+    initAutoAd2BpFields: function (scope) {
+        scope = scope || '#wizardContainer';
+
+        $('.makeInputAd input[name$="_ybp]"]', scope).not ('.inited').each (function () {
+            var $i = $(this);
+            var bpName = $i.attr('name');
+            var adName = bpName.substr (0, bpName.length - 3) + 'ad]';
+            var newInp = $('<input type="hidden" name="'+bpName+'" />');
+            var isBp = $('<span class="isBp"></span>');
+            $i.attr('name', adName);
+            newInp.insertAfter ($i);
+            isBp.insertAfter ($i);
+            $i.change (function () {
+                newInp.val (useful.ad2bp ($i.val()));
+                $(this).siblings ('span.isBp').text (' = ' + newInp.val() + ' bp');
+                return true;
+            });
+            newInp.change (function () {
+
+            });
+            $i.change();
+        }).addClass ('inited');
+    },
     initBurialForm: function (scope) {
         scope = scope || '#wizardContainer';
+        
+        this.initAutoAd2BpFields (scope);
+        
         var list = $( "#burialLayersList > ul", scope);
         
         var template = $('li.burialLayer:first', list);
@@ -179,9 +205,11 @@ var wc = {
 
         
     },
-    initStorageForm: function (ele) {
-        ele = ele || '#wizardContainer';
-        var $me = $(ele);
+    initStorageForm: function (scope) {
+        scope = scope || '#wizardContainer';
+        //var $me = $(scope);
+        
+        this.initAutoAd2BpFields (scope);
     },
     initMapLoadButton: function () {
         $('#FindLatLonByMapButton')

@@ -337,3 +337,13 @@ div.input div.hidden_description {
 
 /* wizard review step */
 
+
+
+/* note to tell people what the bp equiv of their AD dates are */
+
+span.isBp {
+    float: left;
+    margin: 2px 5px;
+    font-weight: normal;
+    font-size: 80% !important;
+}
