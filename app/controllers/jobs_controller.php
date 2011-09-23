@@ -4,6 +4,20 @@ class JobsController extends AppController {
 	var $name = 'Jobs';
 
     /**
+     * Users get bounced here when a job is finished (with or without errors)
+     */
+    function report ($id = null) {
+        $j = $this->Job->read(null, $id);
+        if ($j !== false) {
+            $results = file_get_contents ($this->Job->bgpGetJobFileName ('report'));
+            $this->set ('results', $results);
+        }
+        else {
+            $this->set ('results', "Error :-(");
+        }
+    }
+
+    /**
      * Users are redirected here after submitting a job for processing.
      * @param int $id of job to get status of
      */
