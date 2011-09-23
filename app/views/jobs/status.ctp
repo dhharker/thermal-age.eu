@@ -49,6 +49,9 @@ else {
         <p>
             <?=@$status['statusFile']?>
         </p>
+        <p>
+            <? print_r ($job); ?>
+        </p>
     <?php
 }
 ?>

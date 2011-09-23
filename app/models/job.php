@@ -2,6 +2,9 @@
 /**
  * The Job model currently includes all the code for process management etc.; this should be moved
  * out at some point.
+ *
+ * When reading this code, remember all the _task functions will be run in a background process and
+ * not as part of any http transaction.
  */
 class Job extends AppModel {
 	var $name = 'Job';
@@ -19,26 +22,46 @@ class Job extends AppModel {
         if (PHP_SAPI !== 'cli')
             return $this->_forkToBackground ();
         
-        $next = $this->find('first', array (
+        $next = $this->_getNext ();
+        
+        if (!$next) return false; // if there's nothing to do
+        
+        $this->read (null, $next['Job']['id']);
+//debug only!
+        //$this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
+        
+
+        $this->_startProcessing();
+        $input = unserialize ($this->field('data'));
+        // the parser loads user input in whatever-ass format into the ttkpl object model
+        $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
+        // the processor takes this bunch of objects and makes them work
+        $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
+        // assuming nothing went wrong with the above steps, the reporter makes nice graphs and pdfs
+        $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
+        $this->_stopProcessing();
+
+        // once complete, start a new process (to process the next job, if any) and exit
+// DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
+// @todo implement checking whether max number of processor threads has been reached.
+        //$this->_forkToBackground();
+        exit (0);
+
+    }
+    function _getNext () {
+        return $this->find('first', array (
             'order' => 'Job.id ASC',
             'conditions' => array (
                 'Job.status' => 0
             )
         ));
-        
-        if (!$next) return false; // if there's nothing to do
-        
-        $this->read (null, $next['Job']['id']);
-
-        $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
-        
-
-        $this->_startProcessing();
-        $input = unserialize ($this->field('data'));
-        $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
-        $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
-        $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
-        $this->_stopProcessing();
+    }
+    function _getReaction ($id) {
+        return $this->Reaction->find('first', array (
+            'conditions' => array (
+                'Reaction.id' => $id
+            )
+        ));
     }
 
     /**
@@ -60,19 +83,72 @@ class Job extends AppModel {
     function _task_thermal_age_processor ($args) {
         $args = (array) $args;
         if (isset ($args[0]) && $args[0] == 'get_parser') return "dna_screener"; elseif (isset ($args[0]) && $args[0] == 'get_reporter') return "dna_screener"; // <-- default parser/reporter
-
         $this->_addToStatus ("Processor: Thermal Age");
-
-        $i = 0;
-        while ($i++ < 5) {
-            echo ".";
-            sleep (1);
-        }
+        $this->_addToStatus (print_r ($args, true));
 
         return array ();
     }
     function _task_dna_screener_parser ($args) {
         $this->_addToStatus ("Parser: DNA Screener");
+        $parsed = array ();
+        $parsed['Temporothermals'] = array (); // pretty much everything ends up in here
+
+        // reaction
+        $r = $this->_getReaction($args['reaction']['Reaction']['reaction_id']);
+        if ($r !== false) {
+            $kinetics = new \ttkpl\kinetics(
+                $r['Reaction']['ea_kj_per_mol'],
+                $r['Reaction']['f_sec'],
+                $r['Reaction']['name'] . "({$r['Citation']['id']}:{$r['Citation']['name']})"
+            );
+        }
+        else {
+            $kinetics = new \ttkpl\kinetics(
+                $args['reaction']['Reaction']['reaction_id'],
+                $args['reaction']['Reaction']['f_sec'],
+                $args['reaction']['Reaction']['name']
+            );
+        }
+
+        // storage temporothermal
+        // @todo needs to support getting temperature data from uploaded CSV file stored in db
+        $tt = new \ttkpl\temporothermal();
+        $tt->setTimeRange(
+            new \ttkpl\palaeoTime($args['storage']['Temporothermal']['startdate_ybp']),
+            new \ttkpl\palaeoTime($args['storage']['Temporothermal']['stopdate_ybp'])
+        );
+        $storageSine = new \ttkpl\sine ();
+        $storageSine->setGenericSine (
+            $args['storage']['Temporothermal']['temp_mean_c'],
+            $args['storage']['Temporothermal']['temp_pp_amp_c'],
+            0);
+        
+        $storageSine->desc = $args['storage']['Temporothermal']['description'];
+        $tt->setConstantClimate ($storageSine);
+        $parsed['Temporothermals'][] = $tt;
+        
+
+        // burial temporothermal (inc. site, soils)
+        $tt = new \ttkpl\temporothermal();
+        $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
+        $tt->setTempSource($temps);
+        $tt->setTimeRange(
+            new \ttkpl\palaeoTime($args['burial']['Temporothermal']['startdate_ybp']),
+            new \ttkpl\palaeoTime($args['specimen']['Temporothermal']['stopdate_ybp'])
+        );
+        $location = new \ttkpl\latLon (
+            $args['site']['Site']['lat_dec'],
+            $args['site']['Site']['lon_dec']
+        );
+        
+        $location->desc = $args['site']['Site']['description'];
+        $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
+        $tt->setLocalisingCorrections ($localisingCorrections);
+        $parsed['Temporothermals'][] = $tt;
+
+
+
+
         return $args;
     }
     function _task_dna_screener_reporter ($args) {
@@ -88,6 +164,11 @@ class Job extends AppModel {
         if ($id !== false) {
 
             App::import ('Vendor', 'ttkpl/lib/ttkpl');
+
+            // Currently we only need to import models for stuff which will only have been input by
+            // record ID during data capture.
+            foreach (array ('Reaction', 'Soil') as $importModel)
+                $this->$importModel = ClassRegistry::init ($importModel);
 
             foreach (array ('pid', 'status') as $f)
                 $this->bg[$f] = $this->bgpGetJobFileName($f);
@@ -232,7 +313,7 @@ class Job extends AppModel {
                 }
                 else {
                     $rtn['statusText'] = sprintf ("Your job is currently being processed.");
-                    $rtn['statusFile'] = bgpGetStatusFileSince ($since);
+                    $rtn['statusFile'] = $this->bgpGetStatusFileSince ($since);
 
                 }
                 return $rtn;

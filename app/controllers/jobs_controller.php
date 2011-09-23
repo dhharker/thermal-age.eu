@@ -8,7 +8,9 @@ class JobsController extends AppController {
      * @param int $id of job to get status of
      */
     function status ($id = null) {
+
         $this->disableCache();
+
         $j = $this->Job->read(array (
             'Job.id',
             'Job.title',
@@ -29,7 +31,7 @@ class JobsController extends AppController {
         $this->set ('status', $this->Job->bgpGetStatus ());//$since)); ignoring this for now as status update page currently too simple for it
         $this->set ('async', $this->RequestHandler->isAjax ());
 
-        if ($j['Job']['status'] == 2) // if job is complete with no error
+        if ($j['Job']['status'] >= 2) // if job is complete, with or without error
             $this->redirect(array('action' => 'report', $id));
         elseif ($j['Job']['status'] == 0) // job is pending
             $this->Job->tryProcessNext();
