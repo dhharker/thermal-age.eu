@@ -276,9 +276,8 @@ class Job extends AppModel {
      * Spawns a background process to run tryProcessNext
      */
     function _forkToBackground () {
-        $command = "php \"-q\" \"" . trim (`pwd`) . "/../../cake/console/cake.php\" \"--app\" \"" . APP . "\" background";
-        $pid = shell_exec ("nohup $command 2> /dev/null & echo $!");
-        echo "\nFORK $pid\n";
+        $command = "php -q " . trim (`pwd`) . "/../../cake/console/cake.php --app " . APP . " background";
+        $pid = shell_exec ("nohup $command > /dev/null 2>&1 & echo $!");
         return ($pid);
     }
     /**
