@@ -235,7 +235,7 @@ class Job extends AppModel {
             $this->_addToStatus("Starting processor for job $id");
             $this->bg['startTime'] = microtime (true);
 
-            $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 1)), false);
+            $this->save (array ('Job' => array ('id' => $id, 'status' => 1)), false);
 
             return true;
         }
@@ -252,7 +252,7 @@ class Job extends AppModel {
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
 
-            $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => ($error == FALSE) ? 2 : 3)), false);
+            $this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
 
             return true;
         }
@@ -277,8 +277,6 @@ class Job extends AppModel {
      */
     function _forkToBackground () {
         $command = "php \"-q\" \"" . trim (`pwd`) . "/../../cake/console/cake.php\" \"--app\" \"" . APP . "\" background";
-        //echo shell_exec($command);
-        echo $command;
         $pid = shell_exec ("nohup $command 2> /dev/null & echo $!");
         echo "\nFORK $pid\n";
         return ($pid);
