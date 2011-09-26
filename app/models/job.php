@@ -524,7 +524,9 @@ class Job extends AppModel {
      */
     function bgpIsRunning ($pid = null) {
         $pid = ($pid == null) ? $this->bgpGetPid() : $pid;
-        $n = sprintf ("/proc/%d", $pid);
+        //$n = sprintf ("/proc/%d", $pid);
+        $n = $this->bgpGetJobFileName('pid');
+
         if (file_exists ($n)) {
             return (posix_getsid (sprintf ("%d", file_get_contents ($n))) === false) ? false : true;
         }
@@ -537,7 +539,7 @@ class Job extends AppModel {
      */
     function bgpBOYD () {
         if ($this->field ('status') == 1 && $this->bgpGetPid() !== false)
-            if (!$this->bgpIsRunning ()) {
+            if ($this->bgpIsRunning () == false) {
                 $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 3)), false);
                 return true;
             }
