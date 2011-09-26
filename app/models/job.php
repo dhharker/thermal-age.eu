@@ -250,9 +250,9 @@ class Job extends AppModel {
             $plot->addData ($l, $this->Ps ($l, $λ), 1);
         }
 
-        $reportDir = `pwd` . '/webroot/reports/';
+        $reportDir = trim(`pwd`) . '/webroot/reports/';
         
-        $fn = $reportDir . "/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
+        $fn = $reportDir . "lambdas_fragment_lengths_" . $this->field ('id') . ".png";
         $this->_addToStatus("Saving lambda graph to $fn");
         $plot->plot($fn);
 
@@ -283,7 +283,7 @@ class Job extends AppModel {
             $this->_addToStatus("Starting processor for job $id");
             $this->bg['startTime'] = microtime (true);
 
-            //$this->save (array ('Job' => array ('id' => $id, 'status' => 1)), false);
+            $this->save (array ('Job' => array ('id' => $id, 'status' => 1)), false);
 
             return true;
         }
@@ -300,7 +300,7 @@ class Job extends AppModel {
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
 
-            //$this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
+            $this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
 
             return true;
         }
