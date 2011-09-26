@@ -54,7 +54,7 @@ class JobsController extends AppController {
 
         if ($j['Job']['status'] >= 2) // if job is complete, with or without error
             $this->redirect(array('action' => 'report', $id));
-        elseif ($j['Job']['status'] == 0 && $async) // job is pending
+        elseif ($j['Job']['status'] == 0 && !$async) // job is pending
             $this->Job->tryProcessNext();
     }
 

@@ -10,13 +10,18 @@ if ($jid == 0) {
     $this->error (404, 'Error', "Job not found.");
 }
 ?>
-<div class="grid_12">
-    <div class="smartbox">
-        <div id="jobStatusContainer">
-            <pre>
 
-<?=$results?>
-            </pre>
+<div class="grid_6">
+    <div class="smartbox">
+        <div id="">
+            <?=$results?>
+        </div>
+    </div>
+</div>
+<div class="grid_6">
+    <div class="smartbox">
+        <div id="">
+
         </div>
     </div>
 </div>

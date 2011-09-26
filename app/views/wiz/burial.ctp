@@ -89,7 +89,9 @@
                             </div>
                             <div class="mobileLayers">
                                 <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id');?>
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id', array (
+                                        'label' => 'Layer of'
+                                    ));?>
                                 </div>
                                 <div class="grid_3">
                                     <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
@@ -116,7 +118,7 @@
                 </ul>
                 <div>
                 <?php echo $this->Html->link(
-                    "Add Soil Layer",
+                    'Add Layer',
                     '',
                     array(
                         'class' => 'fg-button ui-state-default ui-corner-bottom cta-button',

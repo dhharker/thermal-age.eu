@@ -29,7 +29,7 @@
 		<td>
 			<?php echo $this->Html->link($job['User']['name'], array('controller' => 'users', 'action' => 'view', $job['User']['id'])); ?>
 		</td>
-		<td><?php echo $job['Job']['data']; ?>&nbsp;</td>
+		<td><?php $job['Job']['data']; ?>&nbsp;</td>
 		<td><?php echo $job['Job']['processor_name']; ?>&nbsp;</td>
 		<td><?php echo $job['Job']['parser_name']; ?>&nbsp;</td>
 		<td><?php echo $job['Job']['reporter_name']; ?>&nbsp;</td>

@@ -232,9 +232,9 @@ var wc = {
             });
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
-            var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
+            var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 58, parseFloat ($('#SiteLonDec').val()) || 9.5);
             myOptions = {
-                zoom: 5,
+                zoom: 3,
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };

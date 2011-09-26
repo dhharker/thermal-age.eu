@@ -1,5 +1,6 @@
 design_stuff
 design_stuff/*
-app/tmp/*
+app/tmp/jobrun/*
+app/tmp/**
 app/config/database.php
 cake/console/templates/skel/tmp/*

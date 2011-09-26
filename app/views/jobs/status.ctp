@@ -51,7 +51,7 @@ else {
             <?=$status['statusText']?>
         </p>
         <p>
-            <?=nl2br($status['statusFile'])?>
+            <?=nl2br(@$status['statusFile'])?>
         </p>
     <?php
 }

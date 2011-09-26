@@ -13,6 +13,7 @@ class Job extends AppModel {
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
 
+    private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
     /**
      * To be run from CLI. Finds the next job in the queue and runs it.
      */
@@ -132,6 +133,8 @@ class Job extends AppModel {
         }
         $parsed['kinetics'] = $kinetics;
 
+        $this->_addToStatus("Kinetics: Done");
+
         // soils
         $bur = new \ttkpl\burial();
         $addbur = false;
@@ -149,7 +152,9 @@ class Job extends AppModel {
                     $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
                 }
             }
+            $this->_addToStatus("Burial: Done");
         }
+        else $this->_addToStatus("No burial layers specified");
 
         // storage temporothermal
         // @todo needs to support getting temperature data from uploaded CSV file stored in db
@@ -163,11 +168,10 @@ class Job extends AppModel {
             \ttkpl\scalarFactory::makeCentigradeAbs ($args['storage']['Temporothermal']['temp_mean_c']),
             \ttkpl\scalarFactory::makeKelvinAnomaly ($args['storage']['Temporothermal']['temp_pp_amp_c']),
             \ttkpl\scalarFactory::makeDays (0));
-         
-        
         $storageSine->desc = $args['storage']['Temporothermal']['description'];
-//var_dump ($storageSine);
         $tt->setConstantClimate ($storageSine);
+        $this->_addToStatus("Storage temperatures: Done");
+
         if ($addbur == true)
             $tt->setBurial ($bur);
         $parsed['Temporothermals'][] = $tt;
@@ -190,17 +194,29 @@ class Job extends AppModel {
         $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
         $tt->setLocalisingCorrections ($localisingCorrections);
         $parsed['Temporothermals'][] = $tt;
-        
+        $this->_addToStatus("Burial conditions: Done");
+        //print_r ($parsed);
         return $parsed;
+    }
+    /**
+     * ignore this if you like, it's just to make the graph render faster in svg by plotting points
+     * decresingly often as we approach longer lengths (log graph innit)
+     */
+    function _unprecision ($x, $precision = 5) {
+        $n = ceil ($x / $precision);
+        return ($n < 1) ? 1 : $n;
+    }
+    function Ps ($length, $λ) { // probability that a DNA strand of a given length will survive
+        return pow (1 - $λ, $length - 1);
     }
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
+        global $tempDir;
+        $tempDir = $this->_makeJobTmpDir() . "/";
+
 
         $ta = $args['thermalAge'];
         $taYrs = $args['thermalYears'];
-
-        sleep (10);
-
         $results = array (
             'λ' => $ta->getLambda(),
             '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
@@ -209,10 +225,40 @@ class Job extends AppModel {
             'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
             'Thermal age' => $taYrs->getValue(),
         );
-
         $report = $this->bgpGetJobFileName('report');
-
+        $this->_addToStatus("Saving report to $report");
         file_put_contents($report, print_r ($results, true));
+
+        
+
+
+        $λ = $results['λ'];
+        
+        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution");
+        $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
+                ->setGrid(array ('x','y'))
+                ->setLog(array ('x'))
+                ->setData (sprintf ("λ = %0.6f", $λ), 1, 'x1y1', 'line');
+
+
+        $mfl = round ((1/$λ)+1);
+        $plot->setData ("Mean Fragment Length = $mfl", 2, 'x1y1', 'points')
+             ->addData ($mfl, $this->Ps ($mfl, $λ), 2);
+
+        for ($l = 0; $l <= $mfl * 10; $l += $this->_unprecision($l)) {
+//print_r (array ($l, $this->Ps ($l, $λ), 2));
+            $plot->addData ($l, $this->Ps ($l, $λ), 1);
+        }
+
+        $reportDir = `pwd` . '/webroot/reports/';
+        
+        $fn = $reportDir . "/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
+        $this->_addToStatus("Saving lambda graph to $fn");
+        $plot->plot($fn);
+
+
+
+        $this->_clearJobTmpDir();
     }
 
     /**
@@ -237,7 +283,7 @@ class Job extends AppModel {
             $this->_addToStatus("Starting processor for job $id");
             $this->bg['startTime'] = microtime (true);
 
-            $this->save (array ('Job' => array ('id' => $id, 'status' => 1)), false);
+            //$this->save (array ('Job' => array ('id' => $id, 'status' => 1)), false);
 
             return true;
         }
@@ -254,7 +300,7 @@ class Job extends AppModel {
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
 
-            $this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
+            //$this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
 
             return true;
         }
@@ -434,9 +480,31 @@ class Job extends AppModel {
     function bgpGetJobFileName ($file = 'pid') {
         $id = $this->field('id');
         if ($id !== FALSE) {
-            $file = TMP . sprintf ("/jobrun/job_%d.%s", $id, $file);
+            $file = TMP . sprintf ("jobrun/job_%d.%s", $id, $file);
         }
         return $file;
+    }
+    /**
+     *
+     * @return mixed path to job's scratch folder if exists/created else false
+     */
+    function _makeJobTmpDir () {
+        $id = $this->field('id');
+        if ($id !== FALSE) {
+            $dir = TMP . sprintf ("jobrun/job_%d", $id);
+            if (!file_exists ($dir) && !is_dir($dir)) {
+                if (!mkdir ($dir, 0777))
+                    return false;
+            }
+            $this->jobDir = $dir;
+            return $dir;
+        }
+        return false;
+    }
+    function _clearJobTmpDir () {
+        if (is_dir ($this->jobDir)) {
+            //return rmdir($this->jobDir);
+        }
     }
     /**
      * Generic function for getting stuff out of one of a jobs possible files
