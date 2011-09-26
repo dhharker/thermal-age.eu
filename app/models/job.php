@@ -250,10 +250,11 @@ class Job extends AppModel {
             $plot->addData ($l, $this->Ps ($l, $λ), 1);
         }
 
-        $reportDir = trim(`pwd`) . '/webroot/reports/';
-        
-        $fn = $reportDir . "lambdas_fragment_lengths_" . $this->field ('id') . ".png";
-        $this->_addToStatus("Saving lambda graph to $fn");
+        $webroot = trim(`pwd`) . '/webroot';
+
+        $n = "/reports/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
+        $fn = $webroot . $n;
+        $this->_addToStatus("Saving lambda graph to $n");
         $plot->plot($fn);
 
 
@@ -523,7 +524,11 @@ class Job extends AppModel {
      */
     function bgpIsRunning ($pid = null) {
         $pid = ($pid == null) ? $this->bgpGetPid() : $pid;
-        return file_exists (sprintf ("/proc/%d", $pid));
+        $n = sprintf ("/proc/%d", $pid);
+        if (file_exists ($n)) {
+            return (posix_getsid (sprintf ("%d", file_get_contents ($n))) === false) ? false : true;
+        }
+        
     }
     /**
      * Bring Out Your Dead
