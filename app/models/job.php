@@ -214,6 +214,7 @@ class Job extends AppModel {
         global $tempDir;
         $tempDir = $this->_makeJobTmpDir() . "/";
 
+        //die ("OH NOES I HAS CRASHED!1\n");
 
         $ta = $args['thermalAge'];
         $taYrs = $args['thermalYears'];
@@ -232,29 +233,38 @@ class Job extends AppModel {
         
 
 
-        $λ = $results['λ'];
+        $lambdas = array (
+            "" => $results['λ'], // the first one is the "real" one, subsequent ones are examples
+            "Fake 1" => 0.1234,
+            "Notareal 1" => 0.0045,
+        );
         
         $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution");
         $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
                 ->setGrid(array ('x','y'))
-                ->setLog(array ('x'))
-                ->setData (sprintf ("λ = %0.6f", $λ), 1, 'x1y1', 'line');
+                ->setLog(array ('x'));
+        $mfl = 100;
+        $labels = array_keys ($lambdas);
+        foreach (array_values($lambdas) as $li => $λ) {
+            if ($li == 0) {
+                $plot->setData (sprintf ("λ = %0.6f", $λ), $li+2, 'x1y1', 'line', '1:2');
+                $mfl = round ((1/$λ)+1);
+                $plot->setData ("Mean Fragment Length = $mfl", 1, 'x1y1', 'points')
+                     ->addData ($mfl, $this->Ps ($mfl, $λ), 1);
+            }
+            else {
+                $plot->setData (sprintf ("%s (λ = %.3f)", $labels[$li], $λ), $li+2, 'x1y1', 'line', '1:2', 'notitle');
+            }
 
-
-        $mfl = round ((1/$λ)+1);
-        $plot->setData ("Mean Fragment Length = $mfl", 2, 'x1y1', 'points')
-             ->addData ($mfl, $this->Ps ($mfl, $λ), 2);
-
-        for ($l = 0; $l <= $mfl * 10; $l += $this->_unprecision($l)) {
-//print_r (array ($l, $this->Ps ($l, $λ), 2));
-            $plot->addData ($l, $this->Ps ($l, $λ), 1);
+            for ($l = 0; $l <= $mfl * 10; $l += $this->_unprecision($l)) {
+                //print_r (array ($l, $this->Ps ($l, $λ), 2));
+                $plot->addData ($l, $this->Ps ($l, $λ), $li+2);
+            }
         }
 
-        $webroot = trim(`pwd`) . '/webroot';
-
-        $n = "/reports/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
-        $fn = $webroot . $n;
-        $this->_addToStatus("Saving lambda graph to $n");
+        $n = "reports/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
+        $fn = WWW_ROOT . $n;
+        $this->_addToStatus("Saving lambda graph to $fn");
         $plot->plot($fn);
 
 
@@ -416,23 +426,16 @@ class Job extends AppModel {
             $rtn = array (
                 'statusCode' => $status,
                 'statusName' => $this->_bgGetStatusName($status),
+                'statusFile' => $this->bgpGetStatusFileSince ($since),
             );
-
-            if ($status == 1) { // Status = Running
-                // Crash detection
-                if ($this->bgpBOYD()) {
-                    // ruh roh
-                    $rtn['statusText'] = sprintf ("Uh oh, it looks like the job has crashed. Stand by for a status update!");
-                }
-                else {
-                    $rtn['statusText'] = sprintf ("Your job is currently being processed.");
-                    $rtn['statusFile'] = $this->bgpGetStatusFileSince ($since);
-
-                }
+            $dead = $this->bgpBOYD();
+            if ($status == 1 && $dead) {
+                $rtn['statusText'] = sprintf ("Uh oh, it looks like the job has crashed. Stand by for a status update!");
+                $rtn['statusCode'] = 3;
                 return $rtn;
             }
             else {
-                return $this->bgGetProgress ();
+                return array_merge ($rtn, $this->bgGetProgress ());
             }
         }
         else {
@@ -525,11 +528,13 @@ class Job extends AppModel {
     function bgpIsRunning ($pid = null) {
         $pid = ($pid == null) ? $this->bgpGetPid() : $pid;
         //$n = sprintf ("/proc/%d", $pid);
-        $n = $this->bgpGetJobFileName('pid');
-
+        
+        $r = false;
         if (file_exists ($n)) {
-            return (posix_getsid (sprintf ("%d", file_get_contents ($n))) === false) ? false : true;
+            $r = (posix_getsid ($pid) === false) ? false : true;
         }
+        $this->_addToStatus("pid is " . (($r == true) ? "" : "not") . "running");
+        return $r;
         
     }
     /**
@@ -538,8 +543,9 @@ class Job extends AppModel {
      * @return boolean has the process running this just exited without cleaning up?
      */
     function bgpBOYD () {
-        if ($this->field ('status') == 1 && $this->bgpGetPid() !== false)
-            if ($this->bgpIsRunning () == false) {
+        $pid = $this->bgpGetPid();
+        if ($this->field ('status') == 1 && $pid !== false)
+            if ($this->bgpIsRunning ($pid) == false) {
                 $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 3)), false);
                 return true;
             }

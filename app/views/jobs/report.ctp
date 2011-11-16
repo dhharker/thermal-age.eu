@@ -11,17 +11,25 @@ if ($jid == 0) {
 }
 ?>
 
+
+
 <div class="grid_6">
     <div class="smartbox">
         <div id="">
-            <?=$results?>
+            <pre><?=$results?></pre>
+            <pre><?=print_r ($status, true)?></pre>
         </div>
     </div>
 </div>
 <div class="grid_6">
     <div class="smartbox">
         <div id="">
-
+            <p>
+                <?=@$status['statusText']?>
+            </p>
+            <p>
+                <?=nl2br(@$status['statusFile'])?>
+            </p>
         </div>
     </div>
 </div>

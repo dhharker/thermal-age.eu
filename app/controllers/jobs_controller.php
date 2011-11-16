@@ -10,6 +10,8 @@ class JobsController extends AppController {
     function report ($id = null) {
         $j = $this->Job->read(null, $id);
         if ($j !== false) {
+            $status = $this->Job->bgpGetStatus ();
+            $this->set ('status', $status);
             $fn = $this->Job->bgpGetJobFileName ('report');
             if (file_exists ($fn))
                 $results = file_get_contents ($fn);
@@ -56,6 +58,8 @@ class JobsController extends AppController {
             $this->redirect(array('action' => 'report', $id));
         elseif ($j['Job']['status'] == 0 && !$async) // job is pending
             $this->Job->tryProcessNext();
+        elseif ($j['Job']['status'] == 1) // job is pending
+            $this->Job->bgpBOYD();
     }
 
 

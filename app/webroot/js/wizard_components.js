@@ -455,10 +455,10 @@ var wc = {
     initReactionForm: function (ele) {
 
         $('input[name$="_name\]"]')
-            .keyup (function () {
+            .blur (function () {
                 $(this).toTitleCase();
             })
-            .trigger ('keyup')
+            .trigger ('blur')
             //.filter ('#ReactionReactionName, #ReactionSubstrateName')
             .keyup(function () {
                     var $me = $(this);
