@@ -243,7 +243,7 @@ class Job extends AppModel {
             '88aa88',
             'aa88aa',
         );
-        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution (with examples for comparison)");
+        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution (with examples for comparison)", 1, 1, "850,520");
         
         $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
                 ->setGrid(array ('x','y'))
@@ -274,7 +274,7 @@ class Job extends AppModel {
         $n = "reports/lambdas_fragment_lengths_" . $this->field ('id') . ".svg";
         $fn = WWW_ROOT . $n;
         $this->_addToStatus("Saving lambda graph to $fn");
-        $plot->set ('size ratio 0.5');
+        
         $plot->plot($fn);
 
         $results['graphs'] = array (

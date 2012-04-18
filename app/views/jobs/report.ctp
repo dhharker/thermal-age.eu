@@ -28,7 +28,7 @@ $this->addScript ($this->Html->script ('job_report'));
             <?php
             if (!empty ($results['graphs']['lambda'])) {
                 ?>
-                <embed src="/<?=$results['graphs']['lambda']?>" style="width: 4px; height: 3px" />
+                <embed src="/<?=$results['graphs']['lambda']?>" style="width: 85px; height: 52px" />
                 <?php
             }
             ?>
