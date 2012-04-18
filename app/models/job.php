@@ -212,9 +212,11 @@ class Job extends AppModel {
     }
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
+        $x = 0;
         global $tempDir;
+        $this->_addToStatus ("Debug RDS: " . $x++);
         $tempDir = $this->_makeJobTmpDir() . "/";
-
+        $this->_addToStatus ("Debug RDS: " . $x++);
         //die ("OH NOES I HAS CRASHED!1\n");
 
         $ta = $args['thermalAge'];
@@ -227,7 +229,7 @@ class Job extends AppModel {
             'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
             'Thermal age' => $taYrs->getValue(),
         );
-        
+        $this->_addToStatus ("Debug RDS: " . $x++);
 
         
 
@@ -243,8 +245,9 @@ class Job extends AppModel {
             '88aa88',
             'aa88aa',
         );
+        $this->_addToStatus ("Debug RDS: " . $x++);
         $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution (with examples for comparison)", 1, 1, "850,520");
-        
+        $this->_addToStatus ("Debug RDS: " . $x++);
         $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
                 ->setGrid(array ('x','y'))
                 ->setLog(array ('x'));
