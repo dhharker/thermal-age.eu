@@ -794,3 +794,13 @@ div.moodSlider.ui-slider-horizontal .sliderLabelInternal {
 .ui-widget-overlay {
     position: static;
 }
+
+.expand-embeds .embed-svg{
+    margin: 0px;
+    width: auto;
+    height: auto;
+}
+.expand-embeds .embed-svg svg {
+    display: block;
+    margin: 0px auto;
+}

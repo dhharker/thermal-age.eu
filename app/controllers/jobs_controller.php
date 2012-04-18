@@ -13,8 +13,12 @@ class JobsController extends AppController {
             $status = $this->Job->bgpGetStatus ();
             $this->set ('status', $status);
             $fn = $this->Job->bgpGetJobFileName ('report');
-            if (file_exists ($fn))
+            if (file_exists ($fn)) {
                 $results = file_get_contents ($fn);
+                $uns = @unserialize($results);
+                if ($uns !== false)
+                    $results = $uns;
+            }
             else
                 $results = "Couldn't find report, sorry!";
             $this->set ('results', $results);

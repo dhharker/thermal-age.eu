@@ -4,7 +4,13 @@ App::import('Sanitize');
 
 class AppController extends Controller {
     var $components = array('Minify.Minify', 'Session', 'RequestHandler');
-    var $helpers = array ('Html','Form','Javascript','Minify.Minify','Session');
+    var $helpers = array (
+        'Html',
+        'Form',
+        'Javascript',
+        'Minify.Minify',
+        'Session'
+    );
     
     function __construct () {
         parent::__construct();
@@ -18,7 +24,9 @@ class AppController extends Controller {
 
         $this->set ('global_minified_javascript',$this->Minify->js(array(
               /*prod:'js/wizard_components.js',*/
-            'js/jquery-1.5.1.min.js',
+            //'js/jquery-1.5.1.js',
+            'js/jquery-1.7.2.min.js',
+            //'js/jquery-1.7.2.js',
             'js/jquery.once.js',
             'js/jquery-ui-1.8.14.custom.min.js',
             'js/jquery.ba-resize.min.js',
