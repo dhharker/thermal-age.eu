@@ -18,6 +18,7 @@ class Job extends AppModel {
      * To be run from CLI. Finds the next job in the queue and runs it.
      */
     function tryProcessNext () {
+        
         if (!$this->_goodToGo())
             return false;
         if (PHP_SAPI !== 'cli')
@@ -235,25 +236,34 @@ class Job extends AppModel {
 
         $lambdas = array (
             "" => $results['λ'], // the first one is the "real" one, subsequent ones are examples
-            "Fake 1" => 0.1234,
+            "100 year egg" => 0.0022,
             "Notareal 1" => 0.0045,
         );
-        
-        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution");
+        $anonLineColours = array (
+            'aaa888',
+            '888aaa',
+            '88aa88',
+            'aa88aa',
+        );
+        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution",.75,.75);
         $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
                 ->setGrid(array ('x','y'))
                 ->setLog(array ('x'));
         $mfl = 100;
+        $pl = 0;
         $labels = array_keys ($lambdas);
         foreach (array_values($lambdas) as $li => $λ) {
-            if ($li == 0) {
+            if ($li == 0) { // The REAL result
+                $pl = $λ;
                 $plot->setData (sprintf ("λ = %0.6f", $λ), $li+2, 'x1y1', 'line', '1:2');
                 $mfl = round ((1/$λ)+1);
-                $plot->setData ("Mean Fragment Length = $mfl", 1, 'x1y1', 'points')
+                $plot->setData ("Mean Fragment Length = $mfl", 1, 'x1y1', 'points pointsize 3')
                      ->addData ($mfl, $this->Ps ($mfl, $λ), 1);
             }
-            else {
-                $plot->setData (sprintf ("%s (λ = %.3f)", $labels[$li], $λ), $li+2, 'x1y1', 'line', '1:2', 'notitle');
+            else { // Example results for context
+                if (abs ($pl - $λ) > 0.002) { // If the line is not too close to the real line
+                    $plot->setData ("(λ of " . $labels[$li] . ")", $li+2, 'x1y1', 'line linecolor rgbcolor "#' . $anonLineColours[$li - 1] . '"', '1:2');//, 'notitle');
+                }
             }
 
             for ($l = 0; $l <= $mfl * 10; $l += $this->_unprecision($l)) {
@@ -262,7 +272,7 @@ class Job extends AppModel {
             }
         }
 
-        $n = "reports/lambdas_fragment_lengths_" . $this->field ('id') . ".png";
+        $n = "reports/lambdas_fragment_lengths_" . $this->field ('id') . ".svg";
         $fn = WWW_ROOT . $n;
         $this->_addToStatus("Saving lambda graph to $fn");
         $plot->plot($fn);
