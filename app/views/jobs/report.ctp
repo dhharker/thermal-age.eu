@@ -13,11 +13,20 @@ if ($jid == 0) {
 
 
 
+<div class="grid_12">
+    <div class="smartbox">
+        <div id="">
+            <embed src="svg_button.svg" width="300" height="100" />
+        </div>
+    </div>
+</div>
+
+
 <div class="grid_6">
     <div class="smartbox">
         <div id="">
             <pre><?=$results?></pre>
-            <pre><?=print_r ($status, true)?></pre>
+            <pre><?=print_r ($job, true)?></pre>
         </div>
     </div>
 </div>

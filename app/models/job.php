@@ -227,9 +227,7 @@ class Job extends AppModel {
             'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
             'Thermal age' => $taYrs->getValue(),
         );
-        $report = $this->bgpGetJobFileName('report');
-        $this->_addToStatus("Saving report to $report");
-        file_put_contents($report, print_r ($results, true));
+        
 
         
 
@@ -276,6 +274,13 @@ class Job extends AppModel {
         $fn = WWW_ROOT . $n;
         $this->_addToStatus("Saving lambda graph to $fn");
         $plot->plot($fn);
+
+
+
+
+        $report = $this->bgpGetJobFileName('report');
+        $this->_addToStatus("Saving report to $report");
+        file_put_contents($report, print_r ($results, true));
 
 
 
