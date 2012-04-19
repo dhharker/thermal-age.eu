@@ -397,7 +397,7 @@ class WizController extends AppController {
         if ($this->Job->save ($job)) {
             // created job ok. reset the wizard and redirect to the job status page.
 // DEBUG
-            //$this->Wizard->reset ();
+            $this->Wizard->reset ();
             $this->Session->Setflash ("Do not close this window!", true);
             $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
         }
