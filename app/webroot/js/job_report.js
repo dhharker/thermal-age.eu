@@ -6,7 +6,7 @@ $(function () {
     var embedIndex = 0;
     $('.expand-embeds').find('embed').each (function () {
             var did = 'embed-svg-' + embedIndex++;
-            var $this = $(this);
+            var $this = $(this).hide();
             var before = {
                 width: $this.width(),
                 height: $this.height()
@@ -18,7 +18,8 @@ $(function () {
             div.insertAfter($this).svg({
                 onLoad: function() {
                     console.log (svg,svgFile,did);
-                    var svg = $('#'+did).svg('get');
+                    var embd = $('#'+did);
+                    var svg = embd.svg('get');
                     svg.load(svgFile, {
                         addTo: false,
                         changeSize: false
@@ -26,12 +27,19 @@ $(function () {
                 },
                 settings: {}
             });
+            
             $this.remove();
 
     });
 
     $('.expand-embeds').resize (function () {
         var $pard = $(this);
+        $('.loading-spinner', $pard.parent()).hide({
+            'effect': 'blind',
+            'duration': 200
+        }, function () {
+            $(this).remove();
+        });
         $pard.find('.embed-svg svg').each (function () {
             var before = {
                 width: $(this).width(),
@@ -46,16 +54,17 @@ $(function () {
 
             
             // For some reason this isn't either working or causing an error
+            
             $(this).animate (after, {
                 duration: 200,
                 complete: function () {
                     $(this).css (after);
+                    
                 },
                 easing: 'linear'
             }).parent().css({height: 'auto', width: 'auto'});
             //*/
-            console.log (this, before, after);
-
+            //console.log (this, before, after);
             //$(this).css(after)
         });
     });

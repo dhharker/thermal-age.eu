@@ -20,32 +20,39 @@ $this->addScript ($this->Html->script ('job_report'));
 
 ?>
 
+<div class="grid_5">
+    <div class="grid_5 alpha">
+        <?=$this->Element ('jobs/traffic_lights', array ('λ' => $results['λ'], 'class' => 'smartbox'));?>
+    </div>
+    <div class="grid_5 alpha">
+        <div class="smartbox">
+            <div id="">
+                <pre><?=print_r ($results, true)?></pre>
+                <pre><?=print_r ($job, true)?></pre>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<div class="grid_12">
+<div class="grid_7">
     <div class="smartbox">
         <div class="expand-embeds">
             <?php
             if (!empty ($results['graphs']['lambda'])) {
                 ?>
-                <embed src="/<?=$results['graphs']['lambda']?>" style="width: 85px; height: 52px" />
+                <embed src="/<?=$results['graphs']['lambda']?>" style="width: 8.5px; height: 5.2px; visibility: hidden; display: none;" />
                 <?php
+                
             }
             ?>
         </div>
+        <?=$this->Element ('loading_spinner', array ('wide' => true))?>
     </div>
 </div>
 
 
-<div class="grid_6">
-    <div class="smartbox">
-        <div id="">
-            <pre><?=$results?></pre>
-            <pre><?=print_r ($job, true)?></pre>
-        </div>
-    </div>
-</div>
-<div class="grid_6">
+
+<div class="grid_7">
     <div class="smartbox">
         <div id="">
             <p>
