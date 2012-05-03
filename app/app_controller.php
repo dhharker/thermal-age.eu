@@ -29,6 +29,7 @@ class AppController extends Controller {
             //'js/jquery-1.7.2.js',
             'js/jquery.once.js',
             'js/jquery-ui-1.8.14.custom.min.js',
+            'js/chosen.jquery.js',
             'js/jquery.ba-resize.min.js',
             'js/jquery.smooth-scroll.js',
             'js/config.js',

@@ -109,7 +109,9 @@ class Job extends AppModel {
 
         $this->_addToStatus("Thermal age: " . $taYrs->getValue());
 
-        return array ('thermalAge' => $ta, 'thermalYears' => $taYrs);
+        $ta->_nukeDataMess();
+
+        return array ('thermalAge' => $ta, 'thermalYears' => $taYrs, 'objects' => array ($ta));
     }
     function _task_dna_screener_parser ($args) {
         $this->_addToStatus ("Parser: DNA Screener");
@@ -220,12 +222,14 @@ class Job extends AppModel {
         $ta = $args['thermalAge'];
         $taYrs = $args['thermalYears'];
         $results = array (
-            'λ' => $ta->getLambda(),
-            '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
-            'k (yr)' => $ta->getKYear (),
-            'k (sec)' => $ta->getKSec (),
-            'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
-            'Thermal age' => $taYrs->getValue(),
+            'summary' => array (
+                'λ' => $ta->getLambda(),
+                '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
+                'k (yr)' => $ta->getKYear (),
+                'k (sec)' => $ta->getKSec (),
+                'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
+                'Thermal age' => $taYrs->getValue(),
+            ),
         );
         
 
@@ -233,8 +237,8 @@ class Job extends AppModel {
 
 
         $lambdas = array (
-            "" => $results['λ'], // the first one is the "real" one, subsequent ones are examples
-            "100 year egg" => 0.0022,
+            "" => $results['summary']['λ'], // the first one is the "real" one, subsequent ones are examples
+            "Complete Destruction" => 1,
             "Notareal 1" => 0.0045,
         );
         $anonLineColours = array (
@@ -261,6 +265,7 @@ class Job extends AppModel {
             }
             else { // Example results for context
                 if (abs ($pl - $λ) > 0.002) { // If the line is not too close to the real line
+                    if ($λ > 1) $λ = 1;
                     $plot->setData ("(λ of " . $labels[$li] . ")", $li+2, 'x1y1', 'line linecolor rgbcolor "#' . $anonLineColours[$li - 1] . '"', '1:2');//, 'notitle');
                 }
             }
@@ -284,6 +289,40 @@ class Job extends AppModel {
         $report = $this->bgpGetJobFileName('report');
         $this->_addToStatus("Saving report to $report");
         file_put_contents($report, serialize ($results));
+        if (1) {
+            $debug = $this->bgpGetJobFileName('debug');
+            
+            $this->_addToStatus("Cleansing debug info");
+            function cleanse ($arrIn, $maxN = 1000, $maxL = 4, $l = 0) {
+                if (is_object($arrIn)) {
+                    foreach ($arrIn as $i => $v) {
+                        // set key => value in a freshly created array because cast maybe kills serializable stuff
+                        // going to bed!
+                    }
+                }
+
+                foreach ($arrIn as $i => &$c) {
+                    if (is_object($c))
+                        $c = (array) $c;
+                    if (is_array ($c)) {
+                        ++$l;
+                        if (count ($c) > 1000 || $l > $maxL)
+                            unset ($arrIn[$i]);
+                        elseif ($l) {
+                            $c = cleanse ($c, $maxN, $maxL, $l);
+                        }
+                        $l--;
+                    }
+                }
+
+                return $arrIn;
+            }
+            $dbg = $args['objects'];
+            $dbg = cleanse ($dbg);
+
+            $this->_addToStatus("Saving debug to $debug");
+            file_put_contents($debug, serialize ($dbg));
+        }
 
 
 

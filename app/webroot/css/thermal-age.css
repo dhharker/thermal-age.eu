@@ -204,10 +204,40 @@ header {
 }
 
 .mobile-layout #container {
-    margin-right: -20px !important;
+    padding-right: -1px !important;
+    padding-left: -1px !important;
+    border-width: 0px;
+    border-bottom-width: 1px;
 }
 .mobile-layout #bg2 {
-    padding-right: -20px !important;
+    
+}
+.mobile-layout .grid_1,
+.mobile-layout .grid_2,
+.mobile-layout .grid_3,
+.mobile-layout .grid_4,
+.mobile-layout .grid_5,
+.mobile-layout .grid_6,
+.mobile-layout .grid_7,
+.mobile-layout .grid_8,
+.mobile-layout .grid_9,
+.mobile-layout .grid_10,
+.mobile-layout .grid_11,
+.mobile-layout .grid_12 {
+    margin-left: -6px;
+    margin-right:-6px;
+    padding: 5px;
+    
+}
+
+.mobile-layout header.grid_12 {
+    margin-left: 20px;
+}
+
+.mobile-layout #wizardContainer fieldset {
+    margin: 0;
+    padding-left: 5px;
+    padding-right: 10px;
 }
 
 /* smartboxes are smart */
@@ -503,6 +533,14 @@ header nav .fg-buttonset {
 }
 form .input {
 	color: #444;
+}
+form div.input {
+	color: #444;
+    
+}
+form div.input select {
+    width: 100%;
+    margin-right: .85em;
 }
 input[disabled], input[readonly], select[disabled], select[readonly], checkbox[disabled], checkbox[readonly], textarea[disabled], textarea[readonly] {
     background-color: #eee;

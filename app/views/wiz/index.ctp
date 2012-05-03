@@ -30,7 +30,30 @@
                 sites, e.g. for choosing which one of two samples to spend limited funds on sampling.
             </p>
         </div>
+
+        <div class="clear"></div>
+
+        <h3 class="sbHeading" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">
+            Spreadsheet Wizard
+        </h3>
+        <?php echo $this->Html->link(
+            "Thermal Age Spreadsheet<br /><span class=\"subtler-text\">Click to Start</span>",
+            array ('controller' => 'wiz', 'action' => 'thermal_age_spreadsheet_tool'),
+            array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+        <div class="spoiler">
+            <p>
+                New: Get lots of thermal ages at once! If you are familiar with the basics and have
+                lots of samples to process then this is much better than using the above wizard.
+            </p>
+            <p>
+                This tool supports nearly all the functions available in the single-sample wizard
+                above. Step-by-step guidance will help you configure a blank spreadsheet with the
+                requisite column headings already in place and example rows to help you get started.
+            </p>
+        </div>
+
     </div>
+    
 </div>
 
 <div class="grid_4">
@@ -63,7 +86,7 @@
             array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
         <div class="spoiler">
             <p>
-                You can work out thermal age two ways, by estimating the temperature history, or by
+                You can work out thermal age two ways; by estimating the temperature history or by
                 extracting the DNA and having a look at it. Knowing where in the world a bone has
                 come from and a little about its burial conditions allows us to work backwards in time,
                 modelling the thermal age until it matches the measured value. The point at which it
@@ -81,4 +104,8 @@
             </p>
         </div>
     </div>
+</div>
+
+<div class="grid_4">
+    
 </div>

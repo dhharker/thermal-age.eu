@@ -19,6 +19,7 @@
         echo $this->Html->css('adapt/text.css') . "\n";
         echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
         echo $this->Html->css('thermal-age.css') . "\n";
+        echo $this->Html->css('chosen.css') . "\n";
 
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Html->css('thermal-age-wizard.css') . "\n";

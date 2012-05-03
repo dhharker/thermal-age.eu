@@ -22,7 +22,7 @@ $this->addScript ($this->Html->script ('job_report'));
 
 <div class="grid_5">
     <div class="grid_5 alpha">
-        <?=$this->Element ('jobs/traffic_lights', array ('λ' => $results['λ'], 'class' => 'smartbox'));?>
+        <?=$this->Element ('jobs/traffic_lights', array ('λ' => $results['summary']['λ'], 'class' => 'smartbox'));?>
     </div>
     <div class="grid_5 alpha">
         <div class="smartbox">

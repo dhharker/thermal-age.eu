@@ -3,7 +3,7 @@
 class WizController extends AppController {
     var $helpers = array ('Html','Form','Javascript','Minify.Minify');
     var $components = array ('Wizard.Wizard');
-    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation', 'Job');
+    var $uses = array('Specimen', 'Reaction', 'Site', 'Temporothermal', 'Citation', 'Job', 'Spreadsheet');
 
     var $amWizard = ''; // contains the name of the current wizard
     var $wizardInfos = array (
@@ -18,9 +18,18 @@ class WizController extends AppController {
                 'storage' => array (),
                 'review' => array (),
             ),
+            'thermal_age_spreadsheet_tool' => array (
+                'spreadsheet_setup' => array (),
+                'reaction' => array (
+                    'showfield' => 'Reaction.showname'
+                ),
+                'spreadsheet_download' => array (),
+                'spreadsheet_upload' => array (),
+            ),
         ),
         'titles' => array (
-            'dna_survival_screening_tool' => 'DNA Survival Tool'
+            'dna_survival_screening_tool' => 'DNA Survival Tool',
+            'thermal_age_spreadsheet_tool' => 'Thermal Age Spreadsheet Tool'
         ),
         "wizardname" => '',
         "wizardtitle" => '',
@@ -253,6 +262,18 @@ class WizController extends AppController {
 
         //$this->Session->setFlash (print_r ($this->data, true));
     }
+    /**
+     * The thermal age spreadsheet tool calculates lots of thermal ages at once and populates a
+     * spreadsheet for the user to download and further analyse.
+     */
+    function thermal_age_spreadsheet_tool ($step = null) {
+        $environmentGood = $this->_initWizardEnvironment(__FUNCTION__);
+
+        if ($environmentGood == true)
+            $this->Wizard->process($step);
+
+        //$this->Session->setFlash (print_r ($this->data, true));
+    }
 
 
     /**
@@ -270,6 +291,11 @@ class WizController extends AppController {
         return false;
     }
 
+    function _xprocessSpreadsheetSetup () {
+        debug ($this->data);
+        die ();
+        //return true;
+    }
 
     /**
      * Reaction input handler
@@ -366,6 +392,17 @@ class WizController extends AppController {
         return $ok;
     }
 
+
+    function _prepareSpreadsheetSetup () {
+        $this->loadModel('Soil');
+        $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
+            'Soil.id',
+            'Soil.name'
+        )));
+        $this->set(compact('soils'));
+    }
+
+
     function _prepareStorage () {
         $ssd = $this->Wizard->read('burial.Temporothermal.startdate_ybp');
         $this->set ('excavatedad', $ssd);
@@ -397,7 +434,7 @@ class WizController extends AppController {
         if ($this->Job->save ($job)) {
             // created job ok. reset the wizard and redirect to the job status page.
 // DEBUG
-            $this->Wizard->reset ();
+            //$this->Wizard->reset ();
             $this->Session->Setflash ("Do not close this window!", true);
             $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
         }

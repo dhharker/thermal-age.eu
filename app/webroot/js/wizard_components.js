@@ -97,6 +97,11 @@ var wc = {
         $('form:first', $me).not('.axfInited').ajaxForm (afOpts).submit (function () {
             return false;
         }).addClass ('axfInited');
+        $('select.make-chosen').chosen ({
+            //style: 'margin-right: .85em'
+        })
+        .removeClass('make-chosen')
+        .addClass('made-chosen');
     },
     initLayerDeleteButtons: function (scope) {
         scope = scope || '#wizardContainer';
@@ -527,6 +532,11 @@ var wc = {
         });
     },
     initReviewForm: function (ele) {
+        ele = ele || '#wizardContainer';
+        var $me = $(ele);
+        // do stuff here.
+    },
+    initSpreadsheetSetupForm: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
         // do stuff here.
