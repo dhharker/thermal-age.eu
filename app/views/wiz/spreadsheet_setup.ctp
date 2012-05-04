@@ -6,7 +6,7 @@ multiselect e.g. soil types
 checkbox constant sine temp cols?
 checkbox multi-period sample example?
 */
-//debug ($this->viewVars);
+
 ?>
 
 <h1 class="sbHeading ui-corner-tl">
@@ -43,14 +43,14 @@ checkbox multi-period sample example?
             ));?>
         </div>
 
-        <div class="grid_4 alpha">
+        <div class="grid_5 alpha">
             <?=$this->Form->input('Spreadsheet.soil_cols_count', array (
                 'label' => 'Max. # Soil Layers',
                 'default' => 1,
                 'placeholder' => '',
             ));?>
             <small>
-                Enter the maximum number of soil layers you will need for any single period of burial.
+                Enter the maximum number of soil layers you will need for any single period of burial (0-5).
             </small>
         </div>
         <div class="grid_5 omega clearfix">
@@ -64,9 +64,37 @@ checkbox multi-period sample example?
                 'style' => 'width: 100%;'
             ));?>
         </div>
-
-        <div class="grid_11">
-            <?= $this->Form->input('Spreadsheet.description', array('label' => 'Description:', 'rows' => 3));?>
+        <div class="clear"></div>
+        <div class="grid_5 alpha">
+            <?=$this->Form->input('Spreadsheet.sine_cols', array (
+                'type' => 'checkbox',
+                'label' => 'Include constant (storage) sine columns?',
+            ));?>
+            <small>
+                Include columns to model some time at a constantly varying temperature (described by
+                the mean and amplitude of a sine wave) e.g. museum storage.
+            </small>
+        </div>
+        <div class="grid_5 omega">
+            <?=$this->Form->input('Spreadsheet.multi_tt_example', array (
+                'type' => 'checkbox',
+                'label' => 'Include multi-period specimen example?',
+            ));?>
+            <small>
+                Include an example showing how to model specimens which have more than one phase of
+                storage temperature information (e.g. buried in-situ then excavated and stored in a
+                museum for a number of years)
+            </small>
+        </div>
+        <div class="grid_5 alpha">
+            <?=$this->Form->input('Spreadsheet.custom_kinetics_cols', array (
+                'type' => 'checkbox',
+                'label' => 'Include columns for customised kinetics values?',
+            ));?>
+            <small>
+                You can use any number of kinetics parameters in a spreadsheet. It is ok to leave this
+                blank as parameters from our database can be used. You can choose which on the next screen.
+            </small>
         </div>
     </fieldset>
 

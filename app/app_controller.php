@@ -17,6 +17,9 @@ class AppController extends Controller {
 
     }
 
+    static function _commonFilenamePrefix () {
+        return "thermal-age.eu_" . date ('Y-m-d_H-i-s_');
+    }
 
     function beforeFilter () {
         parent::beforeFilter();

@@ -291,10 +291,15 @@ class WizController extends AppController {
         return false;
     }
 
-    function _xprocessSpreadsheetSetup () {
-        debug ($this->data);
-        die ();
-        //return true;
+    function _processSpreadsheetSetup () {
+        $this->loadModel('Spreadsheet');
+        $this->Spreadsheet->set ($this->data);
+        
+        if ($this->Spreadsheet->validates() == true) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -401,6 +406,32 @@ class WizController extends AppController {
         )));
         $this->set(compact('soils'));
     }
+    function get_blank_spreadsheet () {
+        $this->autoRender = false;
+        $ssOpts = $this->Wizard->read('spreadsheet_setup.Spreadsheet');
+        $ssOpts['name'] = Inflector::slug ($ssOpts['name']);
+        $ssOpts['Reaction'] = $this->Wizard->read('reaction.Reaction');
+
+        debug ($ssOpts); die();
+        //APP.WEBROOT_DIR;
+        $csv = $this->Spreadsheet->get_blank_spreadsheet ($ssOpts);
+        $fn =  self::_commonFilenamePrefix() . ((empty ($ssOpts['name'])) ? 'unnamed-job' : $ssOpts['name']);
+        
+        header('Content-disposition: attachment; filename=' . $fn . '.csv');
+        echo $csv;
+    }
+    function _prepareSpreadsheetDownload () {
+
+        //echo debug ($this->Wizard->read ('')); die();
+
+        $this->loadModel('Soil');
+        $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
+            'Soil.id',
+            'Soil.name'
+        )));
+        $this->set(compact('soils'));
+    }
+
 
 
     function _prepareStorage () {

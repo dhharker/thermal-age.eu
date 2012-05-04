@@ -84,7 +84,7 @@
 
     display: block;
 
-    z-index: 999 !important;
+    z-index: 1500 !important;
     margin: 0px;
     padding: 0px;
     padding-right: 3px;
@@ -102,6 +102,9 @@
     color: rgba(240,240,240,.9);
     background-color: rgba(12,12,12,.9);*/
        
+}
+.cta-button {
+    z-index: 999 !important;
 }
 
 .mobile-layout #wizardDetailColumn {

@@ -539,8 +539,7 @@ form div.input {
     
 }
 form div.input select {
-    width: 100%;
-    margin-right: .85em;
+    width: 100%;    margin-right: .85em;
 }
 input[disabled], input[readonly], select[disabled], select[readonly], checkbox[disabled], checkbox[readonly], textarea[disabled], textarea[readonly] {
     background-color: #eee;
