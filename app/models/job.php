@@ -178,7 +178,7 @@ class Job extends AppModel {
         if ($addbur == true)
             $tt->setBurial ($bur);
         $parsed['Temporothermals'][] = $tt;
-        
+
 
         // burial temporothermal (inc. site, soils)
         $tt = new \ttkpl\temporothermal();
@@ -192,7 +192,7 @@ class Job extends AppModel {
             $args['site']['Site']['lat_dec'],
             $args['site']['Site']['lon_dec']
         );
-        
+
         $location->desc = $args['site']['Site']['description'];
         $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
         $tt->setLocalisingCorrections ($localisingCorrections);
@@ -201,6 +201,123 @@ class Job extends AppModel {
         //print_r ($parsed);
         return $parsed;
     }
+
+    function _task_thermal_age_multi_processor ($args) {
+        return false;
+    }
+    function _task_thermal_age_csv_reporter ($args) {
+        return false;
+    }
+    function _task_thermal_age_csv_parser ($args) {
+        $this->_addToStatus ("Parser: Thermal Age CSV");
+
+        // load csv file
+
+        $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
+        if (file_exists($fn)) {
+            $this->_addToStatus(basename($fn) . "exists. Trying to open it...");
+            $cp = new \ttkpl\csvData($fn, TRUE);
+            $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
+
+            // slug and then detect headers (not all are required)
+
+
+            // iterate rows
+
+                // add temporothermals indexed by id column to allow composites
+
+        }
+
+        return false;
+
+
+        $parsed = array ();
+        $parsed['Temporothermals'] = array (); // pretty much everything ends up in here
+
+        // reaction
+        $r = $this->_getReaction($args['reaction']['Reaction']['reaction_id']);
+        if ($r !== false) {
+            $kinetics = new \ttkpl\kinetics(
+                $r['Reaction']['ea_kj_per_mol'],
+                $r['Reaction']['f_sec'],
+                $r['Reaction']['name'] . " (Source: {$r['Citation']['name']} [{$r['Citation']['id']}])"
+            );
+        }
+        else {
+            $kinetics = new \ttkpl\kinetics(
+                $args['reaction']['Reaction']['reaction_id'],
+                $args['reaction']['Reaction']['f_sec'],
+                $args['reaction']['Reaction']['name']
+            );
+        }
+        $parsed['kinetics'] = $kinetics;
+
+        $this->_addToStatus("Kinetics: Done");
+
+        // soils
+        $bur = new \ttkpl\burial();
+        $addbur = false;
+        if ($args['burial']['Burial']['numLayers'] > 0) {
+            foreach ($args['burial']['SoilTemporothermal'] as $layer) {
+                $s = $this->_getSoil($layer['soil_id']);
+                if ($s !== false && $layer['thickness_m'] > 0) {
+                    $std = \ttkpl\scalarFactory::makeThermalDiffusivity ($s['Soil']['thermal_diffusivity_m2_day']);
+                    $z = \ttkpl\scalarFactory::makeMetres ($layer['thickness_m']);
+                    $slayer = new \ttkpl\thermalLayer($z, $std, '');
+                    $bur->addThermalLayer($slayer);
+                    $addbur = true;
+                }
+                else {
+                    $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
+                }
+            }
+            $this->_addToStatus("Burial: Done");
+        }
+        else $this->_addToStatus("No burial layers specified");
+
+        // storage temporothermal
+        // @todo needs to support getting temperature data from uploaded CSV file stored in db
+        $tt = new \ttkpl\temporothermal();
+        $tt->setTimeRange(
+            new \ttkpl\palaeoTime($args['storage']['Temporothermal']['startdate_ybp']),
+            new \ttkpl\palaeoTime($args['storage']['Temporothermal']['stopdate_ybp'])
+        );
+        $storageSine = new \ttkpl\sine ();
+        $storageSine->setGenericSine (
+            \ttkpl\scalarFactory::makeCentigradeAbs ($args['storage']['Temporothermal']['temp_mean_c']),
+            \ttkpl\scalarFactory::makeKelvinAnomaly ($args['storage']['Temporothermal']['temp_pp_amp_c']),
+            \ttkpl\scalarFactory::makeDays (0));
+        $storageSine->desc = $args['storage']['Temporothermal']['description'];
+        $tt->setConstantClimate ($storageSine);
+        $this->_addToStatus("Storage temperatures: Done");
+
+        if ($addbur == true)
+            $tt->setBurial ($bur);
+        $parsed['Temporothermals'][] = $tt;
+
+
+        // burial temporothermal (inc. site, soils)
+        $tt = new \ttkpl\temporothermal();
+        $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
+        $tt->setTempSource($temps);
+        $tt->setTimeRange(
+            new \ttkpl\palaeoTime($args['burial']['Temporothermal']['startdate_ybp']),
+            new \ttkpl\palaeoTime($args['specimen']['Temporothermal']['stopdate_ybp'])
+        );
+        $location = new \ttkpl\latLon (
+            $args['site']['Site']['lat_dec'],
+            $args['site']['Site']['lon_dec']
+        );
+
+        $location->desc = $args['site']['Site']['description'];
+        $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
+        $tt->setLocalisingCorrections ($localisingCorrections);
+        $parsed['Temporothermals'][] = $tt;
+        $this->_addToStatus("Burial conditions: Done");
+        //print_r ($parsed);
+        return $parsed;
+    }
+
     /**
      * ignore this if you like, it's just to make the graph render faster in svg by plotting points
      * decresingly often as we approach longer lengths (log graph innit)

@@ -12,26 +12,28 @@ checkbox multi-period sample example?
 <h1 class="sbHeading ui-corner-tl">
     Setup Spreadsheet
 </h1>
-<div class="grid_11 omega paddedCell_10_h">
-    <div class="spoiler">
-        <p>
-            Welcome to the Thermal Age Spreadsheet Tool. This wizard will help you create a blank
-            spreadsheet to insert your values into with all the column headers in place and example
-            rows to help you get started.
-        </p>
-        <p>
-            If you already have a spreadsheet ready to go then
-                <?=$this->Html->link ("click here to skip to the upload screen", array (
-                    'controller' => 'wiz',
-                    'action' => $this->action,
+<div class="grid_7 omega paddedCell_10_h">
+    
+    <p>
+        Welcome to the Thermal Age Spreadsheet Tool. This wizard will help you create a blank
+        spreadsheet to insert your values into with all the column headers in place and example
+        rows to help you get started.
+    </p>
+</div>
+<div class="grid_4 omega paddedCell_10_h">
 
-                ));?>
-        </p>
-        <p>
-            Fields in <span style="font-weight: bold">bold<span style="color: #ee3322">*</span></span> are
-            required.
-        </p>
-    </div>
+    <p>
+        If you already have a spreadsheet ready to go then
+            <?php echo $this->Html->link(
+            "Skip to Upload &raquo;",
+            array (
+                'controller' => 'wiz',
+                'action' => 'tasti_skipupload',
+                $this->action
+            ),
+            array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+    </p>
+    
 </div>
 <div style="clear: both"></div>
 <?php echo $this->Form->create  ('Spreadsheet', array('id' => 'SpreadsheetForm', 'url' => $this->here, 'class' => 'ui-corner-all')); ?>

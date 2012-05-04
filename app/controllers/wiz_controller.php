@@ -19,12 +19,15 @@ class WizController extends AppController {
                 'review' => array (),
             ),
             'thermal_age_spreadsheet_tool' => array (
-                'spreadsheet_setup' => array (),
+                'spreadsheet_setup' => array (
+                    'showfield' => 'Spreadsheet.name'
+                ),
                 'reaction' => array (
                     'showfield' => 'Reaction.showname'
                 ),
                 'spreadsheet_download' => array (),
                 'spreadsheet_upload' => array (),
+                'review' => array (),
             ),
         ),
         'titles' => array (
@@ -301,6 +304,65 @@ class WizController extends AppController {
 
         return false;
     }
+    /*
+     * @TODO make this generic - add a param to accept the name of the wiz action to return to.
+     */
+    function tasti_skipupload ($retact = 'thermal_age_spreadsheet_tool') {
+        $this->Wizard->reset ();
+        
+        $this->Wizard->save ('spreadsheet_setup', array ('Spreadsheet' => array ('name' => '(skipped)')));
+        $this->Wizard->save ('reaction', array ('Reaction' => array ('showname' => '(skipped)')));
+        $this->Wizard->save ('spreadsheet_download', array ('Spreadsheet' => array ('passed_download_step' => 1)));
+
+        $this->redirect(array (
+            'controller' => 'wiz',
+            'action' => $retact,
+            'spreadsheet_upload'
+        ));
+    }
+    function _processSpreadsheetUpload () {
+        if (empty ($this->data['Spreadsheet']['file'])) return false;
+        
+        //debug ($this->data); die();
+        $file = $this->data['Spreadsheet']['file'];
+        if (!$file['error'] == 0 || $file['size'] == 0) {
+            $this->Session->setFlash ('Upload Failed: ERROR ' . $file['error']);
+            return false;
+        }
+        else {
+
+            // copy file to
+            $fn = APP.WEBROOT_DIR.DS . 'spreadsheets/processed-' . time() . '_' . str_replace ("_csv", ".csv", Inflector::slug ($file['name']));
+            if (!copy($file['tmp_name'], $fn)) {
+                $this->Session->setFlash ("Unable to move uploaded file. Check config.");
+                return false;
+            }
+            else {
+                $this->Wizard->save ('spreadsheet_csv', array ('Spreadsheet' => array ('filename' => $fn)));
+                //debug ($this->Wizard->read ('spreadsheet_csv'));die();
+                //debug (array ('spreadsheet_upload', array ('Spreadsheet' => array ('filename' => $fn)))); die();
+
+                // success - setup job in data to override review actions
+                $this->Wizard->save ('set_review', array ('Job' => array (
+                    'parser_name' => 'thermal_age_csv',
+                    'processor_name' => 'thermal_age_multi',
+                    'reporter_name' => 'thermal_age_csv',
+                )));
+
+                return true;
+            }
+
+            //new \ttkpl\csvData(, $tr1)
+            //MAYBE NOT THE  BELOW ACTUALLY JUST GIVE JOB A FILENAME, IT IS A PARSER AFTER ALL
+            //AND CODE IS MORE REUSABLE THIS NEW WAY.
+            // parse the csv file into the data structure used by the one-shot dna screening wizard
+            // this means more parser task code can be reused
+            return false;
+        }
+
+
+        return false;
+    }
 
     /**
      * Reaction input handler
@@ -412,7 +474,7 @@ class WizController extends AppController {
         $ssOpts['name'] = Inflector::slug ($ssOpts['name']);
         $ssOpts['Reaction'] = $this->Wizard->read('reaction.Reaction');
 
-        debug ($ssOpts); die();
+        //debug ($ssOpts); die();
         //APP.WEBROOT_DIR;
         $csv = $this->Spreadsheet->get_blank_spreadsheet ($ssOpts);
         $fn =  self::_commonFilenamePrefix() . ((empty ($ssOpts['name'])) ? 'unnamed-job' : $ssOpts['name']);
@@ -450,6 +512,11 @@ class WizController extends AppController {
 
     function _prepareReview () {
         $this->set ('input', $this->Wizard->read());
+
+        $sr = $this->Wizard->read('set_review');
+        if ($sr) {
+            $this->data['Job'] = $sr['Job'];
+        }
     }
     
 

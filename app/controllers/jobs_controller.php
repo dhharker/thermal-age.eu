@@ -9,6 +9,9 @@ class JobsController extends AppController {
      */
     function report ($id = null) {
         $j = $this->Job->read(null, $id);
+        
+        
+        //debug ($this->view); die();
         if ($j !== false) {
             $status = $this->Job->bgpGetStatus ();
             $this->set ('status', $status);
@@ -27,6 +30,9 @@ class JobsController extends AppController {
         else {
             $this->set ('results', "Error :-(");
         }
+
+        $this->render ($j['Job']['reporter_name'] . '_report');
+
     }
 
     /**

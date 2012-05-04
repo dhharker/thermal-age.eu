@@ -94,7 +94,7 @@ var wc = {
             },
             target: ajaxTarget
         };
-        $('form:first', $me).not('.axfInited').ajaxForm (afOpts).submit (function () {
+        $('form:first', $me).not('.noAjax').not('.axfInited').ajaxForm (afOpts).submit (function () {
             return false;
         }).addClass ('axfInited');
         $('select.make-chosen').chosen ({

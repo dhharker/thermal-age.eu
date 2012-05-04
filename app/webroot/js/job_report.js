@@ -17,7 +17,7 @@ $(function () {
 
             div.insertAfter($this).svg({
                 onLoad: function() {
-                    console.log (svg,svgFile,did);
+                    //console.log (svg,svgFile,did);
                     var embd = $('#'+did);
                     var svg = embd.svg('get');
                     svg.load(svgFile, {
