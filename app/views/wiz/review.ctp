@@ -36,7 +36,7 @@
 </p>
 
 
-<ol style="display: block">
+<ol style="display: none">
 <?php
 
     foreach ($input as $stepName => $models) {

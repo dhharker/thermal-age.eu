@@ -141,6 +141,8 @@ class WizController extends AppController {
     function clearcache () {
         $this->set ('clearedOk', (clearCache ()) ? TRUE : FALSE);
         $this->set ('clearedWizard', ($this->Wizard->reset()) ? TRUE : FALSE);
+        $this->Session->setFlash ("Cleared Cache & Reset Wizard");
+        $this->redirect (array ('controller' => 'wiz', 'action' => 'index'));
     }
 
     /**
@@ -332,7 +334,7 @@ class WizController extends AppController {
         else {
 
             // copy file to
-            $fn = APP.WEBROOT_DIR.DS . 'spreadsheets/processed-' . time() . '_' . str_replace ("_csv", ".csv", Inflector::slug ($file['name']));
+            $fn = APP.WEBROOT_DIR.DS . 'spreadsheets/input-' . time() . '_' . preg_replace ("/_csv$/", ".csv", Inflector::slug ($file['name']));
             if (!copy($file['tmp_name'], $fn)) {
                 $this->Session->setFlash ("Unable to move uploaded file. Check config.");
                 return false;
@@ -532,7 +534,7 @@ class WizController extends AppController {
         if ($this->Job->save ($job)) {
             // created job ok. reset the wizard and redirect to the job status page.
 // DEBUG
-            //$this->Wizard->reset ();
+            $this->Wizard->reset ();
             $this->Session->Setflash ("Do not close this window!", true);
             $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
         }

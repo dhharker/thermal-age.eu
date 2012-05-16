@@ -35,7 +35,7 @@ class Spreadsheet extends AppModel {
             'Kinetics' => array (array ('id' => 1))
         ), $arrOpts);
         
-        $heads = "Specimen ID	Specimen Name	Stop (more recent) Date (AD)	Stop (less recent) Date (b.p.)	Kinetics Name	Kinetics ID	Pre-exponential Factor (s)	Energy of Activation (kJ/mol)	Mean Temp (deg. C)	Temp Range (tMax-tMin) (deg. K)	Site Name	Latitude (decimal)	Longitude (decimal)	Soil Type 1	Thermal Diffusivity (m/s) 1	Thickness (m) 1";
+        $heads = "Specimen ID	Specimen Name	Year Analysed (AD)	Year Excavated (AD)	Year Deposited (b.p)	Kinetics Name	Kinetics ID	Pre-exponential Factor (s)	Energy of Activation (kJ/mol)	Mean Temp (deg. C)	Temp Range (tMax-tMin) (deg. K)	Site Name	Latitude (decimal)	Longitude (decimal)	Soil ID 1	Soil Type 1	Thermal Diffusivity (m2/day) 1	Thickness (m) 1";
         $heads = explode ("\t", str_replace (".", "", $heads));
         $fields = array ();
         foreach ($heads as $hi => $hv) {
