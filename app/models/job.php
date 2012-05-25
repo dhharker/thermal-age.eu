@@ -32,7 +32,7 @@ class Job extends AppModel {
         $next = $this->_getNext ();
         
         if (!$next) {
-            echo "Nothing to do!\n";
+            echo "No more jobs!\n";
             return false; // if there's nothing to do
         }
         
@@ -169,11 +169,14 @@ class Job extends AppModel {
 
     // storage temporothermal
         // @todo needs to support getting temperature data from uploaded CSV file stored in db
+        $this->_addToStatus("Creating new temporothermal:");
         $tt = new \ttkpl\temporothermal();
+        $this->_addToStatus("Setting time range:");
         $tt->setTimeRange(
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['startdate_ybp']),
             new \ttkpl\palaeoTime($args['storage']['Temporothermal']['stopdate_ybp'])
         );
+
         if ($tt->rangeYrs > 0) {
             $this->_addToStatus(sprintf ("Adding %0.1f years of storage", $tt->rangeYrs));
             $storageSine = new \ttkpl\sine ();
@@ -188,49 +191,116 @@ class Job extends AppModel {
         
 
     // burial temporothermal (inc. site, soils)
+        $this->_addToStatus("Burial temporothermal:");
         $tt = new \ttkpl\temporothermal();
+        $this->_addToStatus("Create temperatures:");
         $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
+        $this->_addToStatus("Attach temperatures:");
         $tt->setTempSource($temps);
+        $this->_addToStatus("Set timerange:");
         $tt->setTimeRange(
             new \ttkpl\palaeoTime($args['burial']['Temporothermal']['startdate_ybp']),
             new \ttkpl\palaeoTime($args['specimen']['Temporothermal']['stopdate_ybp'])
         );
+        $this->_addToStatus(sprintf ("Adding %0.1f years deposition pre-excavation", $tt->rangeYrs));
         $location = new \ttkpl\latLon (
             $args['site']['Site']['lat_dec'],
             $args['site']['Site']['lon_dec']
         );
 
         $location->desc = (empty ($args['site']['Site']['description'])) ? 'Location' : $args['site']['Site']['description'];
+        $this->_addToStatus("Get localising corrections:");
         $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
         $tt->setLocalisingCorrections ($localisingCorrections);
 
         if ($addbur == true) {
-            $tt->setBurial ($bur);
-            $this->_addToStatus("Attached burial conditions to burial temporothermal");
+            if ($tt->setBurial ($bur))
+                $this->_addToStatus("Attached burial conditions to burial temporothermal");
+            else
+                $this->_addToStatus("Couldn't attach burial conditions - possible error :-(");
         }
+        else $this->_addToStatus("!! No burial during deposition?");
         $parsed['Temporothermals'][] = $tt;
 
-        
+        //file_put_contents (APP . DS . "dsdbg.txt", print_r ($this->cleanse ($parsed), true));
         //print_r ($parsed);
         return $parsed;
     }
 
     function _task_thermal_age_multi_processor ($args) {
+        //print_r ($this->cleanse ($args)); die();
+        $this->_addToStatus("Processor: Thermal Age Multi-Specimen");
         // This should just run the screener a whole load of times and dump the output
         $results = array ();
-        foreach ($args['parsed'] as $runIt) {
-            $results[] = $this->_task_thermal_age_processor($runIt);
+        $unParsed = array ();
+        $parsed = array ();
+        if (!empty ($args['parsed'])) {
+            foreach ($args['parsed'] as $running => $runIt) {
+                $this->_addToStatus("Deferring to Thermal Age processor for {$args['unParsed'][$running]['specimen']['code']}");
+                //print_r ($this->cleanse ($runIt)); die();
+                $unParsed[] = $args['unParsed'][$running];
+                $parsed[] = $runIt;
+                $results[] = $this->_task_thermal_age_processor($runIt);
+            }
+        }
+        else {
+            $this->_addToStatus("Nothing to do!");
         }
 
+
+        $args['output_spreadsheet_filename'] = preg_replace ('/\/input(\W)/', '/output$1', $args['spreadsheet_csv']['Spreadsheet']['filename']);
+        $this->_addToStatus(sprintf ("Output spreadsheet filename will be: %s", $args['output_spreadsheet_filename']));
         return array (
-            'output_csv_url' => DS.'spreadsheets'.DS.basename ($args['spreadsheet_csv']['Spreadsheet']['filename']),
-            'output_csv_name' => basename ($args['spreadsheet_csv']['Spreadsheet']['filename'])
+            'unParsed' => $unParsed,
+            'parsed' => $parsed,
+            'results' => $results,
+            'output_csv_url' => DS.'spreadsheets'.DS.basename ($args['output_spreadsheet_filename']),
+            'output_csv_name' => basename ($args['output_spreadsheet_filename']),
+            'output_csv_filename' => $args['output_spreadsheet_filename'],
+            'spreadsheet_csv' => $args['spreadsheet_csv']
         );
     }
+    // @TODO: (Braindump:) storage temporothermal isn't being added for some reason (fix this somewhere completely different)
     function _task_thermal_age_csv_reporter ($args) {
-        
-        file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($args));
 
+        $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
+        if (file_exists($fn)) {
+            $this->_addToStatus(basename($fn) . " exists. Trying to open it...");
+            $cp = new \ttkpl\csvData($fn, TRUE);
+            $cp->addColumn("10C Thermal Age");
+            $cp->addColumn("Effective Temperature");
+            $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
+
+            // slug  (-and then detect headers (not all are required)-)
+            $s2e = array ();
+            foreach ($cp->titles as $title)
+                $s2e[strtolower (Inflector::slug($title))] = $title;
+
+            foreach ($args['results'] as $resInd => $res) {
+                $tao = $res['thermalAge'];
+                $cp->setColumn($s2e['10c_thermal_age'], round ($tao->getThermalAge()->getValue(), 4));
+                $cp->setColumn($s2e['effective_temperature'], round ($tao->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 6));
+                if (!$cp->next()) break;
+            }
+            $opfn = $args['output_csv_filename'];
+            try {
+                $ex = $cp->export($opfn);
+                if (!!$ex) {
+                    $this->_addToStatus(sprintf ("Wrote output to %s", basename ($opfn)));
+                }
+                else {
+                    $this->_addToStatus(sprintf ("Unknown error writing to %s (%s)", $opfn, $ex));
+                }
+            }
+            catch (Exception $e) {
+                $this->_addToStatus(sprintf ("Couldn't write output to %s: %s", $opfn, $e->getMessage()));
+            }
+
+
+        }
+
+        file_put_contents ($this->bgpGetJobFileName ('report'), print_r ($this->cleanse ($args, 1000, 10), true));
+        // !!==borken
         return true;
     }
     function _task_thermal_age_csv_parser ($args) {
@@ -252,7 +322,7 @@ class Job extends AppModel {
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug($title))] = $title;
 
-            $this->_addToStatus(print_r ($s2e, true));
+            //$this->_addToStatus(print_r ($s2e, true));
 
             // count soil layer col sets
             $sKeys = array_keys ($s2e);
@@ -263,22 +333,27 @@ class Job extends AppModel {
 
             //$cp->getColumn($s2e[$slug]);
 
+            $unParsed = array ();
             $parsed = array ();
-            $rowCount = 1; // heading
+            $rowCount = 0; // heading
             //$cp->next();
             do {
                 $rowCount++;
                 $row = $cp->current();
                 $sid = $row[$cp->getColumn($s2e['specimen_id'])];
-                
+                $me = array ();
+                //print_r ($row);
+
                 if (empty ($row)) {
                     // empty row, do nothing
+                    $this->_addToStatus("Empty Row " . $rowCount);
                 }
                 elseif (empty ($sid)) {
-                    //$this->_addToStatus("No ID in row " . $rowCount . " - skipping.");
+                    $this->_addToStatus("No ID in row " . $rowCount . "");
                     $row[$cp->getColumn($s2e['specimen_id'])] = 'noid-' . $rowCount;
                 }
-                else {
+
+                if (!empty ($row)) {
                     $me = array (
                         'burial' => array (
                             'Temporothermal' => array ()
@@ -317,20 +392,43 @@ class Job extends AppModel {
                         // site
                         $me['site']['Site'] = array (
                             'name' => $row[$cp->getColumn($s2e['site_name'])],
-                            'lat_dec' => $row[$cp->getColumn($s2e['longitude_decimal'])],
-                            'lon_dec' => $row[$cp->getColumn($s2e['latitude_decimal'])],
+                            'lon_dec' => $row[$cp->getColumn($s2e['longitude_decimal'])],
+                            'lat_dec' => $row[$cp->getColumn($s2e['latitude_decimal'])],
                         );
                         // process burial layers if any
                         for ($ssln = 1; $ssln <= $SLCnum; $ssln++) {
                             if (!isset ($me['burial']['SoilTemporothermal'])) $me['burial']['SoilTemporothermal'] = array ();
                             if (isset ($row[$cp->getColumn($s2e['thickness_m_' . $ssln])]) && $row[$cp->getColumn($s2e['thickness_m_' . $ssln])] > 0) {
                                 // layer is probably set
-                                $me['burial']['SoilTemporothermal'][] = array (
-                                    'soil_id' => $row[$cp->getColumn($s2e['soil_id_' . $ssln])],
-                                    'name' => $row[$cp->getColumn($s2e['soil_type_' . $ssln])],
-                                    'thickness_m' => $row[$cp->getColumn($s2e['thickness_m_' . $ssln])],
-                                    'thermal_diffusivity_m2_day' => $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])],
-                                );
+                                $dbSoil = $this->Soil->findById ($row[$cp->getColumn($s2e['soil_id_' . $ssln])]);
+                                // thermal diffusivity is set; along with length this is all we actually /need/
+                                if (isset ($row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])]) && $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])] > 0) {
+                                    $layr = array (
+                                        'soil_id' => $row[$cp->getColumn($s2e['soil_id_' . $ssln])],
+                                        'name' => $row[$cp->getColumn($s2e['soil_type_' . $ssln])],
+                                        'thickness_m' => $row[$cp->getColumn($s2e['thickness_m_' . $ssln])],
+                                        'thermal_diffusivity_m2_day' => $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])],
+                                    );
+                                }
+                                elseif (!empty ($dbSoil)) {
+                                    // They didn't specify thermal diffusivity but did specify an ID from the database
+                                    $layr = array (
+                                        'soil_id' => $dbSoil['Soil']['id'],
+                                        'name' => $dbSoil['Soil']['name'],
+                                        'thickness_m' => $row[$cp->getColumn($s2e['thickness_m_' . $ssln])],
+                                        'thermal_diffusivity_m2_day' => $dbSoil['Soil']['thermal_diffusivity_m2_day'],
+                                    );
+                                }
+
+                                if (!empty ($dbSoil) && $layr['thermal_diffusivity_m2_day'] != $dbSoil['Soil']['thermal_diffusivity_m2_day']) {
+                                    // thermal diffusivity in spreadsheet and database don't match - remove id from col to prevent ambiguity
+                                    $layr['soil_id'] = '';
+                                    $cp->setColumn('soil_id_' . $ssln, '');
+                                    $cp->setColumn('soil_type_' . $ssln, $row[$cp->getColumn($s2e['soil_type_' . $ssln])] . ' (Modified)');
+                                }
+
+                                
+                                $me['burial']['SoilTemporothermal'][] = $layr;
                                 $me['burial']['Burial']['numLayers']++;
                             }
                         }
@@ -347,17 +445,30 @@ class Job extends AppModel {
                         $me['storage']['Temporothermal']['temp_pp_amp_c'] = $row[$cp->getColumn($s2e['temp_range_tmax_tmin_deg_k'])];
                     }
 
+                    //print_r ($me);
+
                 }
-                $parse = $this->_task_dna_screener_parser ($me);
+                if (!empty ($me)) {
+                    $parse = $this->_task_dna_screener_parser ($me);
+                    //print_r ($this->cleanse ($parse));
+                    $unParsed[] = $me;
+                    $parsed[] = $parse;
+                    $this->_addToStatus ("Parsed row " . $rowCount);
+                }
+                else
+                    $this->_addToStatus ("Nothing to do for this row " . $rowCount);
                 //$this->_addToStatus("<pre>".serialize ($parse)."</pre>");
-                $parsed[] = $parse;
+                
 
             } while ($cp->next());
 
-            return array (
+            $rtn = array (
+                'unParsed' => $unParsed,
                 'parsed' => $parsed,
                 'spreadsheet_csv' => $args['spreadsheet_csv']
             );
+            //file_put_contents (APP . DS . "csvdbg.txt", serialize ($this->cleanse($parsed), true));
+            return $rtn;
         }
         return false;
 
@@ -468,7 +579,7 @@ class Job extends AppModel {
 
         $this->_clearJobTmpDir();
     }
-    function cleanse ($arrIn, $maxN = 1000, $maxL = 5, $l = 0) {
+    function cleanse ($arrIn, $maxN = 1000, $maxL = 6, $l = 0) {
         foreach ($arrIn as $i => &$c) {
             if (is_object($c)) {
                 $d = array ();
@@ -529,7 +640,7 @@ class Job extends AppModel {
             $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
 //DEBUG!!!
-            //$this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
+            $this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
 
             return true;
         }
@@ -540,7 +651,7 @@ class Job extends AppModel {
      * @return bool false if status file doesn't exist or can't be written else true
      */
     function _addToStatus ($message) {
-        if (file_exists ($this->bg['status'])) {
+        if (!empty ($this->bg) && !empty ($this->bg['status']) && file_exists ($this->bg['status'])) {
             $st = file_get_contents ($this->bg['status']);
             $fmsg = sprintf("%f %s\n", microtime (true), $message);
             echo $fmsg;

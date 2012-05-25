@@ -35,7 +35,7 @@ elseif (!@$async) {
                     sc.data('wait', false);
                 });
         };
-        var inter = setInterval (upd, 3000);
+        var inter = setInterval (upd, 1500);
         upd();
     });
 </script>
@@ -49,7 +49,7 @@ else {
             <?=$status['statusText']?>
         </p>
         <p>
-            <?=nl2br(@$status['statusFile'])?>
+            <?=nl2br(@substr($status['statusFile'],0,1000))?>
         </p>
     <?php
 }

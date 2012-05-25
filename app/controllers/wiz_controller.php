@@ -355,8 +355,8 @@ class WizController extends AppController {
             }
 
             //new \ttkpl\csvData(, $tr1)
-            //MAYBE NOT THE  BELOW ACTUALLY JUST GIVE JOB A FILENAME, IT IS A PARSER AFTER ALL
-            //AND CODE IS MORE REUSABLE THIS NEW WAY.
+            // NOT THE  BELOW ACTUALLY JUST GIVE JOB A FILENAME, IT IS A PARSER AFTER ALL
+            // AND CODE IS MORE REUSABLE THIS NEW WAY.
             // parse the csv file into the data structure used by the one-shot dna screening wizard
             // this means more parser task code can be reused
             return false;
