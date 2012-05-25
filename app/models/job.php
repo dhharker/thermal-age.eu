@@ -287,12 +287,13 @@ class Job extends AppModel {
             $opfn = $args['output_csv_filename'];
             try {
                 $ex = $cp->export($opfn);
-                if (!!$ex) {
-                    $this->_addToStatus(sprintf ("Wrote output to %s", basename ($opfn)));
-                }
+                //@TODO: fix return value of export so it works
+                //if ($ex) {
+                $this->_addToStatus(sprintf ("Wrote output to %s", basename ($opfn)));
+                /*}
                 else {
                     $this->_addToStatus(sprintf ("Unknown error writing to %s (%s)", $opfn, $ex));
-                }
+                }*/
             }
             catch (Exception $e) {
                 $this->_addToStatus(sprintf ("Couldn't write output to %s: %s", $opfn, $e->getMessage()));
@@ -300,10 +301,10 @@ class Job extends AppModel {
 
 
         }
-
-        file_put_contents ($this->bgpGetJobFileName ('report'), print_r ($this->cleanse ($args, 1000, 10), true));
+        
+        file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($this->cleanse($args)));
         // !!==borken
-        return true;
+        //return true;
     }
     function _task_thermal_age_csv_parser ($args) {
         $this->_addToStatus ("Parser: Thermal Age CSV");
@@ -566,15 +567,15 @@ class Job extends AppModel {
         $this->_addToStatus("Saving report to $report");
         file_put_contents($report, serialize ($results));
         if (1) {
-            $debug = $this->bgpGetJobFileName('debug');
+            //$debug = $this->bgpGetJobFileName('debug');
             
-            $this->_addToStatus("Cleansing debug info");
+            //$this->_addToStatus("Cleansing debug info");
             
-            $dbg = $args['objects'];
-            $dbg = $this->cleanse ($dbg);
+            //$dbg = $args['objects'];
+            //$dbg = $this->cleanse ($dbg);
 
-            $this->_addToStatus("Saving debug to $debug");
-            file_put_contents($debug, print_r ($dbg, true));
+            //$this->_addToStatus("Saving debug to $debug");
+            //file_put_contents($debug, print_r ($dbg, true));
         }
 
 

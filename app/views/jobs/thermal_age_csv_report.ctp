@@ -1,6 +1,6 @@
 
 <?php
-debug ($this->getVar('status'));
+//debug ($this->getVar('results'));
 if (empty ($results['output_csv_url'])) {
     ?>
     <p>

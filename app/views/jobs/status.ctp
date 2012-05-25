@@ -35,7 +35,7 @@ elseif (!@$async) {
                     sc.data('wait', false);
                 });
         };
-        var inter = setInterval (upd, 1500);
+        var inter = setInterval (upd, 2000);
         upd();
     });
 </script>
