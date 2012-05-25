@@ -120,6 +120,7 @@ class Job extends AppModel {
         return array ('thermalAge' => $ta, 'thermalYears' => $taYrs, 'objects' => array ($ta));
     }
     function _task_dna_screener_parser ($args) {
+        static $temps = null;
         $this->_addToStatus ("Parser: DNA Screener");
         $parsed = array ();
         $parsed['Temporothermals'] = array (); // pretty much everything ends up in here
@@ -194,7 +195,8 @@ class Job extends AppModel {
         $this->_addToStatus("Burial temporothermal:");
         $tt = new \ttkpl\temporothermal();
         $this->_addToStatus("Create temperatures:");
-        $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
+        if ($temps === null) $temps = new \ttkpl\temperatures(); // temperature database (it is literally this easy lol)
+
         $this->_addToStatus("Attach temperatures:");
         $tt->setTempSource($temps);
         $this->_addToStatus("Set timerange:");
