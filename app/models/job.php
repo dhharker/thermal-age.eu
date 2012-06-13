@@ -214,7 +214,7 @@ class Job extends AppModel {
         $this->_addToStatus("Get localising corrections:");
         $localisingCorrections = $temps->getPalaeoTemperatureCorrections ($location);
         $tt->setLocalisingCorrections ($localisingCorrections);
-
+        $tt->setLocation ($location); // This is just used for reporting at present
         if ($addbur == true) {
             if ($tt->setBurial ($bur))
                 $this->_addToStatus("Attached burial conditions to burial temporothermal");
@@ -510,19 +510,38 @@ class Job extends AppModel {
         );
         
 
-        
+        // DRAW GRAPHS
+        $results['graphs'] = array ();
+
+        $this->_addToStatus ("Drawing lambda graph...");
+        $results['graphs']['lambda'] = $this->_draw_lambda_graph(array (
+            'lambda' => $results['summary']['λ'],
+            'file_id' => $this->field ('id')
+        ));
 
 
-        $lambdas = array (
-            "" => $results['summary']['λ'], // the first one is the "real" one, subsequent ones are examples
-            "Complete Destruction" => 1,
-            "Ötzi" => 0.009088,
-        );
+        // draw graphs of each temporothermal
+        $tao = $args['objects'][0]; // thermal age object
+        $this->_addToStatus ("Drawing temporothermal graph(s)...");
+        foreach ($tao->temporothermals as $ttInd => $tt) {
+            if (!$tt->constantClimate) {
+                $results['graphs']['burial'] = $this->_draw_temporothermal_history_graph (array (
+                    'temporothermal' => $tt,
+                    'filename_base' => "temporothermal_{$ttInd}_graph",
+                    'histogram' => $tao->histograms[$ttInd],
+                    'file_id' => $this->field ('id')
+                ));
+            }
+        }
+
+
+/*
         $anonLineColours = array (
-            'aaa888',
-            '888aaa',
-            '88aa88',
-            'aa88aa',
+            '990033',
+            '332222',
+            '7f9900',
+            '009966',
+            '190099',
         );
         $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution (with examples for comparison)", 1, 1, "850,520");
         
@@ -557,11 +576,9 @@ class Job extends AppModel {
         $fn = WWW_ROOT . $n;
         $this->_addToStatus("Saving lambda graph to $fn");
         
-        $plot->plot($fn);
+        $plot->plot($fn);*/
 
-        $results['graphs'] = array (
-            'lambda' => $n
-        );
+        
 
         $report = $this->bgpGetJobFileName('report');
         $this->_addToStatus("Saving report to $report");
@@ -582,6 +599,205 @@ class Job extends AppModel {
 
         $this->_clearJobTmpDir();
     }
+
+    /**
+     * This most definitely needs refactoring into ttkpl at some point!
+     * @param array $arrOpts string indexed array of options to overide the defaults
+     */
+    function _draw_temporothermal_history_graph ($arrOpts = null) {
+        $opts = array_merge ($this->_graphDefaults(), array (
+            'filename_base' => 'temporothermal_graph',
+            'temporothermal' => null,
+            'histogram' => null
+        ), $arrOpts);
+
+        // WARNING: FOLLOWING LIFTED WHOLESALE FROM DEV WORK AND IS PROBABLY INCONSISTENT
+
+
+
+
+        $plot = new \ttkpl\GNUPlot();
+        //$plot->reset();
+
+        // $plot->set ("size 2.5/5.0, 2.5/3.5");
+        // $plot->set ("origin 0.5/5.0, 0.5/3.5");
+
+
+        $plot->setSize( 1.0, 1.0 );
+
+        // $plot->set ("tmargin 0");
+        //$plot->set ("rmargin 10");
+        //$plot->set ("bmargin 30");
+        // $plot->set ("lmargin 0");
+
+        $tt = '';
+        $tt .= "\\n";
+        $tt .= $opts['histogram']->numPoints . " nominal days sampled at " . $opts['temporothermal']->chunkSize . "yr intervals over " . $opts['temporothermal']->stopDate->getYearsBp() . " to " . $opts['temporothermal']->startDate->getYearsBp() . "yrs. b.p.\\n";
+        $mrsp = round ($opts['temporothermal']->meanCorrection->source[1]->regRSqPc (), 2);
+        $tt .= "T at ".$opts['temporothermal']->location."/K = " . round ($opts['temporothermal']->meanCorrection->a, 2) . " * T(global anom.) + " . round ($opts['temporothermal']->meanCorrection->offset->a, 2) . " ($mrsp%)\\n";
+        $arsp = round ($opts['temporothermal']->ampCorrection->source[1]->regRSqPc (), 2);
+        $tt .= "A(p-p) at ".$opts['temporothermal']->location."/K = " . round ($opts['temporothermal']->ampCorrection->a, 2) . " * T(global anom.) + " . round ($opts['temporothermal']->ampCorrection->offset->a, 2) . " ($arsp%)\\n";
+        if (!empty ($opts['temporothermal']->burial)) $tt .= "Burial(z,Dh): " . $opts['temporothermal']->burial;
+
+        $plot->setTitle($tt);
+
+        $plot->set ("autoscale");
+        //$plot->set ("log y");
+        //$plot->set ("log y2");
+        //$plot->set ("xtics rotate by 330");
+        $plot->set ("nolog y");
+        $plot->setTics ("y", 'nomirror');
+        $plot->setTics ("x", 'nomirror');
+        $plot->setTics ("y2", 'nomirror');
+        $plot->setTics ("x2", 'nomirror');
+        $plot->set ("grid noy2tics ytics");
+        $plot->set ("grid nox2tics xtics");
+        $plot->set ('border 3 "black"');
+
+        $plot->setDimLabel ("x2", "Bin temperature/C");
+        $plot->setDimLabel ("y2", "# days at bin temperature");
+        $plot->setDimLabel ("x", "Years b.p.");
+        $plot->setDimLabel ("y", "Absolute or relative temperature/C at time");
+        $plot->set ("key left below");
+        // $plot->set ("key box");
+        $plot->set ("size ratio 0.5");
+
+
+        $deq = "# days";
+        $dH = new \ttkpl\PGData($deq);
+        foreach ($opts['histogram']->bins as $bi => $bc) {
+            $dH->addDataEntry( array(($opts['histogram']->labels[$bi] + \ttkpl\scalarFactory::kelvinOffset), $bc) );
+        }
+        if (isset($opts['temporothermal']->twData['TGraph'])) {
+            $dLS = new \ttkpl\PGData("Local temp range");
+            $dLB = new \ttkpl\PGData("Local temp range (buried)");
+        }
+        if (isset($opts['temporothermal']->twData['teff'])) {
+            $dT = new \ttkpl\PGData("Effective Temperature");
+        }
+        $dM = new \ttkpl\PGData("Local mean (abs)");
+        $da = new \ttkpl\PGData("Local ± amplitude (rel)");
+        $dga = new \ttkpl\PGData("Mean global anomaly (rel, 0bp base)");
+        //die ("\nCT: " . print_r ($opts['temporothermal']->twData, true));
+        foreach ($opts['temporothermal']->twData['mean'] as $years => $mat) {
+            if (isset($opts['temporothermal']->twData['TGraph'])) {
+                $dLS->addDataEntry($opts['temporothermal']->twData['TGraph']['surface'][$years]);
+                $dLB->addDataEntry($opts['temporothermal']->twData['TGraph']['buried'][$years]);
+            }
+            if (isset($opts['temporothermal']->twData['teff'])) {
+                $dT->addDataEntry(array ($years, $opts['temporothermal']->twData['teff'][$years]));
+            }
+            $dM->addDataEntry( array($years, $mat));
+            $da->addDataEntry( array($years, $opts['temporothermal']->twData['amp'][$years]/2) );
+            $ypt = new \ttkpl\palaeoTime ($years);
+            $dga->addDataEntry( array($years, $opts['temporothermal']->temperatures->getGlobalMeanAnomalyAt($ypt)->getScalar()->getValue() ));
+
+        }
+        $plot->plotData( $dH, 'boxes', '1:2', 'x2y2', 'fs solid 0.5 lc rgb "#999999"');
+        if (isset($opts['temporothermal']->twData['TGraph'])) {
+            $plot->set ("style fill transparent solid 0.25 noborder");
+            $plot->plotData( $dLS, 'filledcu', '1:2:3', 'x1y1');
+            $plot->plotData( $dLB, 'filledcu', '1:2:3', 'x1y1');
+        }
+        //$plot->plotData( $dM, 'lines', '1:2', 'x1y1', 'smooth bezier');
+        $plot->plotData( $dM, 'lines', '1:2', 'x1y1');
+        $plot->plotData( $da, 'lines', '1:2', 'x1y1');
+        $plot->plotData( $dga, 'lines', '1:2', 'x1y1'); // */// <-- fix me!
+
+        if (isset($opts['temporothermal']->twData['teff'])) {
+            $plot->plotData( $dT, 'lines', '1:2', 'x1y1');
+        }
+
+        $plot->setRange('x', $opts['temporothermal']->startDate->getYearsBp(), $opts['temporothermal']->stopDate->getYearsBp());
+
+        //$plot->set ("size ratio 0.5");
+        
+        //$plot->export('thermal_age_test.png');
+
+        //$plot->close();
+
+        // BADNESS ENDS.
+
+        $n = $opts['web_uri_path'] . sprintf ("%s_%s.%s", $opts['file_id'], $opts['filename_base'], $opts['file_ext']);
+        $fn = $opts['webroot'] . $n;
+        
+        $plot->export($fn);
+        $this->_addToStatus("Saving temporothermal graph to $fn");
+        $plot->close();
+
+        return (file_exists ($fn)) ? $n : false;
+
+    }
+
+    /**
+     * This most definitely needs refactoring into ttkpl at some point!
+     * @param array $arrOpts string indexed array of options to overide the defaults
+     */
+    function _draw_lambda_graph ($arrOpts = null) {
+        $opts = array_merge ($this->_graphDefaults(), array (
+            'filename_base' => 'lambdas_fragment_lengths',
+            'lambda' => 1, // default to total destruction
+            'example_lambdas' => array (
+                "Complete Destruction" => 1,
+                "Ötzi" => 0.009088,
+            ),
+            'show_examples' => true
+        ), $arrOpts);
+        $opts['lambdas'] = array_merge (array ("" => $opts['lambda']), $opts['example_lambdas']);
+        
+        $plot = new \ttkpl\ttkplPlot("Fragment Length Distribution (with examples for comparison)", 1, 1, "850,520");
+
+        $plot->labelAxes("DNA Fragment Length", "Relative Probability of survival through not-being-depurinated")
+                ->setGrid(array ('x','y'))
+                ->setLog(array ('x'));
+        $mfl = 100;
+        $pl = 0;
+        $labels = array_keys ($opts['lambdas']);
+        foreach (array_values($opts['lambdas']) as $li => $λ) {
+            if ($li == 0) { // The REAL result
+                $pl = $λ;
+                $plot->setData (sprintf ("λ = %0.6f", $λ), $li+2, 'x1y1', 'line', '1:2');
+                $mfl = round ((1/$λ)+1);
+                $plot->setData ("Mean Fragment Length = $mfl", 1, 'x1y1', 'points pointsize 3')
+                     ->addData ($mfl, $this->Ps ($mfl, $λ), 1);
+            }
+            elseif (!!$opts['show_examples']) { // Example results for context
+                if (abs ($pl - $λ) > 0.002) { // If the line is not too close to the real line
+                    if ($λ > 1) $λ = 1;
+                    $plot->setData ("(λ of " . $labels[$li] . ")", $li+2, 'x1y1', 'line linecolor rgbcolor "#' . $opts['colours'][$li - 1] . '"', '1:2');//, 'notitle');
+                }
+            }
+
+            for ($l = 0; $l <= $mfl * 10; $l += $this->_unprecision($l)) {
+                //print_r (array ($l, $this->Ps ($l, $λ), 2));
+                $plot->addData ($l, $this->Ps ($l, $λ), $li+2);
+            }
+        }
+        $n = $opts['web_uri_path'] . sprintf ("%s_%s.%s", $opts['file_id'], $opts['filename_base'], $opts['file_ext']);
+        $fn = $opts['webroot'] . $n;
+        $this->_addToStatus("Saving lambda graph to $fn");
+        $plot->plot($fn);
+        return (file_exists ($fn)) ? $n : false;
+
+    }
+
+    function _graphDefaults () {
+        return array(
+            'web_uri_path' => 'reports/', // with trailing/ not /leading slash <-- bad nerd poetry?
+            'filename_base' => 'user_graph',
+            'file_ext' => 'svg',
+            'file_id' => microtime (1),
+            'webroot' => WWW_ROOT,
+            'colours' => array (
+                '990033',
+                //'332222',
+                '7f9900',
+                '009966',
+                '190099',
+            )
+        );
+    }
+
     function cleanse ($arrIn, $maxN = 1000, $maxL = 6, $l = 0) {
         foreach ($arrIn as $i => &$c) {
             if (is_object($c)) {

@@ -19,6 +19,22 @@
             <div class="smartHr">&nbsp;</div>
             <?= $this->Html->image("lambda_graph_small.png", array("alt" => "graphs of lambda", 'class' => 'lead-image-small')) ?>
             <p>
+                This tool supports nearly all the functions available in the single-sample wizard
+                above. Step-by-step guidance will help you configure a blank spreadsheet with the
+                requisite column headings already in place and example rows to help you get started.
+            </p>
+            <?php echo $this->Html->link(
+                    "DNA Screener Spreadsheet Tool",
+                    array ('controller' => 'wiz', 'action' => 'thermal_age_spreadsheet_tool'),
+                    array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+
+        </div>
+
+        <!--
+        <div class="ui-ish clearfix">
+            <div class="smartHr">&nbsp;</div>
+            <?= $this->Html->image("lambda_graph_small.png", array("alt" => "graphs of lambda", 'class' => 'lead-image-small')) ?>
+            <p>
                 No date? If you've got qualitative DNA data for a sample and you know where it's from, then give
                 our sample dating proxy tool a go!
             </p>
@@ -28,7 +44,8 @@
                     array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
 
         </div>
-
+        -->
+        <!--
         <div class="ui-ish clearfix ui-corner-bottom">
             <div class="smartHr">&nbsp;</div>
             <?= $this->Html->image("ice_cliffs_small.png", array("alt" => "ice cliff", 'class' => 'lead-image-small')) ?>
@@ -42,7 +59,7 @@
                     array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
                     array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)
             ); ?>
-        </div>
+        </div>-->
     </div>
 </div>
 
