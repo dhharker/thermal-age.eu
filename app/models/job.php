@@ -695,7 +695,7 @@ class Job extends AppModel {
         }
         $plot->plotData( $dH, 'boxes', '1:2', 'x2y2', 'fs solid 0.5 lc rgb "#999999"');
         if (isset($opts['temporothermal']->twData['TGraph'])) {
-            $plot->set ("style fill transparent solid 0.25 noborder");
+            $plot->set ("style fill solid 0.25 noborder");
             $plot->plotData( $dLS, 'filledcu', '1:2:3', 'x1y1');
             $plot->plotData( $dLB, 'filledcu', '1:2:3', 'x1y1');
         }
