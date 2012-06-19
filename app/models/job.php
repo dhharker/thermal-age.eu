@@ -509,7 +509,24 @@ class Job extends AppModel {
                 'Thermal age' => $taYrs->getValue(),
             ),
         );
-        
+
+        // get thermal age object - full of juicy data om nom nom!
+        $tao = $args['objects'][0]; // thermal age object
+
+        // log processing speed:
+        $ttStats = array ();
+        foreach ($tao->temporothermals as $ttInd => $tt) {
+            if (!empty ($tt->twData['spl_yrs_sec'])) {
+                $numSpls = floor ($tt->rangeYrs / $tt->chunkSize);
+                $ttStats[] = sprintf ("%d sample yrs at %3.2f spls/sec (~%3.1fs)", $numSpls, $tt->twData['spl_yrs_sec'], $numSpls * $tt->twData['spl_yrs_sec']);
+            }
+        }
+        if (!empty ($ttStats)) {
+            $message = sprintf ("Performance: %s", implode (", ", $ttStats));
+            $this->_addToStatus($message);
+            $results['summary']['performance'] = $message;
+        }
+
 
         // DRAW GRAPHS
         $results['graphs'] = array ();
@@ -522,7 +539,6 @@ class Job extends AppModel {
 
 
         // draw graphs of each temporothermal
-        $tao = $args['objects'][0]; // thermal age object
         $this->_addToStatus ("Drawing temporothermal graph(s)...");
         foreach ($tao->temporothermals as $ttInd => $tt) {
             if (!$tt->constantClimate) {
