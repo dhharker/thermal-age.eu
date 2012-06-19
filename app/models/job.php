@@ -518,7 +518,8 @@ class Job extends AppModel {
         foreach ($tao->temporothermals as $ttInd => $tt) {
             if (!empty ($tt->twData['spl_yrs_sec'])) {
                 $numSpls = floor ($tt->rangeYrs / $tt->chunkSize);
-                $ttStats[] = sprintf ("%d sample yrs at %3.2f spls/sec (~%3.1fs)", $numSpls, $tt->twData['spl_yrs_sec'], $numSpls * $tt->twData['spl_yrs_sec']);
+                $splsPerSec = 1 / $tt->twData['sec_spl_yr'];
+                $ttStats[] = sprintf ("%d sample yrs at %01.5f sec/spl (%01.3f spl/sec or ~%3.1f sec total)", $numSpls, $tt->twData['sec_spl_yr'], $numSpls * $tt->twData['sec_spl_yr']);
             }
         }
         if (!empty ($ttStats)) {
