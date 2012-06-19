@@ -204,6 +204,7 @@ class Job extends AppModel {
             new \ttkpl\palaeoTime($args['burial']['Temporothermal']['startdate_ybp']),
             new \ttkpl\palaeoTime($args['specimen']['Temporothermal']['stopdate_ybp'])
         );
+        $this->_addToStatus(sprintf ("Range of %d years from %d to %d yrs bp. Chunk size: %d yrs", $tt->rangeYrs, $tt->startDate->getValue(), $tt->stopDate->getValue(), $tt->chunkSize));
         $this->_addToStatus(sprintf ("Adding %0.1f years deposition pre-excavation", $tt->rangeYrs));
         $location = new \ttkpl\latLon (
             $args['site']['Site']['lat_dec'],
