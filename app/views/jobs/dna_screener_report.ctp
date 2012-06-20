@@ -30,9 +30,16 @@ $this->addScript ($this->Html->script ('job_report'));
     <div class="smartbox">
         <div class="expand-embeds">
             <?php
+            
             if (!empty ($results['graphs']['lambda'])) {
                 ?>
                 <embed src="/<?=$results['graphs']['lambda']?>" style="width: 8.5px; height: 5.2px; visibility: hidden; display: none;" />
+                <?php
+            }
+            if ($results['summary']['λ'] > 1) {
+                ?>
+                <p><strong>Attention:</strong> Lambda values above 1 cause this graph to go mental and not draw properly.
+                Fortunately, since your sample is so badly degraded, a broken graph is the least of your worries!</p>
                 <?php
             }
             ?>
@@ -46,7 +53,7 @@ $this->addScript ($this->Html->script ('job_report'));
             <?php
             if (!empty ($results['graphs']['burial'])) {
                 ?>
-                <embed src="/<?=$results['graphs']['burial']?>" style="width: 8.5px; height: 5.2px; visibility: hidden; display: none;" />
+                <embed src="/<?=$results['graphs']['burial']?>" style="width: 8.5px; height: 6.7px; visibility: hidden; display: none;" />
                 <?php
             }
             ?>

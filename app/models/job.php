@@ -512,7 +512,7 @@ class Job extends AppModel {
 
         // get thermal age object - full of juicy data om nom nom!
         $tao = $args['objects'][0]; // thermal age object
-
+ 
         // log processing speed:
         $ttStats = array ();
         foreach ($tao->temporothermals as $ttInd => $tt) {

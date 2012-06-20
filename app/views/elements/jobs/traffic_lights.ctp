@@ -6,8 +6,10 @@ if ($λ < .001)
     $colour = 'green';
 elseif ($λ < .04)
     $colour = 'yellow';
-else
+elseif ($λ < 1.0)
     $colour = 'red';
+else
+    $colour = 'bork';
 
 
 $message = sprintf ("Your λ (lambda) value of %0.4f means that ", $λ);
@@ -19,8 +21,14 @@ switch ($colour) {
         $message .= "the DNA is relatively fragmented but of sufficient quality for some types of experiment.";
         break;
     case "red":
-    default:
         $message .= "the DNA is badly damaged. Destructive sampling for DNA amplification should almost certainly be avoided.";
+        break;
+    case "bork":
+        $message .= "unfortunately that your DNA is toast; fallen apart, obliterated, kaput. Any value above 1 indicates total destruction. Any extra above 1 is theoretically meaningless but the higher the number, the more utter the destruction.";
+        break;
+    default:
+        $message .= "(we're not sure - this is an error in the program, please report it.)";
+        
 }
 
 ?>
