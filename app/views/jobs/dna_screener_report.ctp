@@ -38,7 +38,7 @@ $this->addScript ($this->Html->script ('job_report'));
             }
             if ($results['summary']['λ'] > 1) {
                 ?>
-                <p><strong>Attention:</strong> Lambda values above 1 cause this graph to go mental and not draw properly.
+                <p><strong>Attention:</strong> Lambda values above 1 cause this graph to freak out and not draw properly.
                 Fortunately, since your sample is so badly degraded, a broken graph is the least of your worries!</p>
                 <?php
             }
