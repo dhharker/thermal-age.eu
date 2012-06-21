@@ -24,7 +24,7 @@ switch ($colour) {
         $message .= "the DNA is badly damaged. Destructive sampling for DNA amplification should almost certainly be avoided.";
         break;
     case "bork":
-        $message .= "that unfortunately your DNA is toast - disappeared, obliterated, kaput. Any value above 1 indicates total destruction. Any extra above 1 is theoretically meaningless but the higher the number, the more utter the destruction.";
+        $message .= "that unfortunately your DNA is toast - disappeared, obliterated, kaput. A λ of 1 indicates complete destruction, any higher than one is not meaningful in the same way but indicates that more time & temperature quantified depurination has taken place than is required to destroy the DNA completely.";
         break;
     default:
         $message .= "[uh oh - we're not sure - invalid data passed to template? This is an error, by the way.]";

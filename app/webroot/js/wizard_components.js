@@ -125,14 +125,26 @@ var wc = {
             var adName = bpName.substr (0, bpName.length - 3) + 'ad]';
             var newInp = $('<input type="hidden" name="'+bpName+'" />');
             var isBp = $('<span class="isBp"></span>');
-            $i.attr('name', adName);
+            $i.attr('name', adName).attr ('autocomplete', 'off');
             newInp.insertAfter ($i);
             isBp.insertAfter ($i);
-            $i.change (function () {
-                newInp.val (useful.ad2bp ($i.val()));
-                $(this).siblings ('span.isBp').text (' = ' + newInp.val() + ' bp');
-                return true;
-            });
+            $i.keyup (function () {
+                    var $this = $(this);
+                    var lv = $this.data('last_value');
+                    $this.data('last_value', $this.val())
+                    if (lv != $this.val()) {
+                        newInp.val (useful.ad2bp ($i.val()));
+                        if (isNaN (newInp.val()) || "" === $i.val() || $i.val().length == 0) {
+                            $(this).siblings ('span.isBp').text ('(must be a number; years AD)').not(':animated').effect ('highlight', {}, 3000);
+                        }
+                        else {
+                            $(this).siblings ('span.isBp').text (' = ' + newInp.val() + ' bp').not(':animated').effect ('highlight', {}, 3000);
+                        }
+                        return true;
+                    }
+
+                    
+                });
             newInp.change (function () {
 
             });
