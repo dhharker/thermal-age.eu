@@ -12,10 +12,10 @@ else
     $colour = 'bork';
 
 
-$message = sprintf ("Your λ (lambda) value of %0.4f means that ", $λ);
+$message = sprintf ("The λ for this sample of %0.4f means ", $λ);
 switch ($colour) {
     case "green":
-        $message .= "depurination due to heating is unlikely to have fragmented the DNA badly. Good results may be obtainable using smaller sample sizes.";
+        $message .= "depurination due to heating is unlikely to have fragmented the DNA badly. Good results may be obtainable, even using smaller sample sizes.";
         break;
     case "yellow":
         $message .= "the DNA is relatively fragmented but of sufficient quality for some types of experiment.";
@@ -24,10 +24,10 @@ switch ($colour) {
         $message .= "the DNA is badly damaged. Destructive sampling for DNA amplification should almost certainly be avoided.";
         break;
     case "bork":
-        $message .= "unfortunately that your DNA is toast; fallen apart, obliterated, kaput. Any value above 1 indicates total destruction. Any extra above 1 is theoretically meaningless but the higher the number, the more utter the destruction.";
+        $message .= "that unfortunately your DNA is toast - disappeared, obliterated, kaput. Any value above 1 indicates total destruction. Any extra above 1 is theoretically meaningless but the higher the number, the more utter the destruction.";
         break;
     default:
-        $message .= "(we're not sure - this is an error in the program, please report it.)";
+        $message .= "[uh oh - we're not sure - invalid data passed to template? This is an error, by the way.]";
         
 }
 
