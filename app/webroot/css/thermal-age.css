@@ -566,7 +566,7 @@ form .required label:after {
 }
 label {
 	display: block;
-	font-size: 110%;
+	font-size: 100%;
 	margin: 10px 0px 0px .1em;
 	
 }
@@ -606,11 +606,11 @@ option {
 input[type=checkbox] {
 	clear: left;
 	float: left;
-	margin: 0px 6px 7px 2px;
+	margin: 4px 6px 3px 2px;
 	width: auto;
 }
 div.checkbox label {
-	display: inline;
+	
 }
 input[type=radio] {
 	float:left;

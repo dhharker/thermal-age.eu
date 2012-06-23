@@ -24,7 +24,7 @@
             <div class="grid_3 omega">
                 <?=$this->Form->input('Temporothermal.stopdate_ybp', array (
                     'label' => 'Excavated (AD)',
-                    'default' => (-1 * $excavatedad) + 1950,
+                    'default' => $excavatedbp,
                     'disabled' => 'disabled',
                     'div' => 'makeInputAd'
                 ));?>

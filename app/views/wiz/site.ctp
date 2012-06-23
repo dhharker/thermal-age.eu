@@ -31,7 +31,35 @@
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
         </div>
-
+        <div class="grid_3 alpha">
+            <?= $this->Form->input('Site.elevation_dem', array (
+                'label' => 'DEM Elevation (WGS84+m)',
+                'disabled' => 1
+            )); ?>
+        </div>
+        <div class="grid_2">
+            <?= $this->Form->input('Site.lapse_rate', array (
+                'label' => 'Lapse&nbsp;(&deg;C/km)',
+                'value' => '6.4',
+                'disabled' => 1
+            )); ?>
+        </div>
+        <div class="grid_3">
+            <?= $this->Form->input('Site.elevation', array (
+                'label' => 'Site Elevation (WGS84+m)'
+            )); ?>
+        </div>
+        
+        <div class="grid_3 omega">
+            <?= $this->Form->input('Site.lapse_correct', array (
+                'label' => 'Site &raquo; DEM Lapse?',
+                'type' => 'checkbox',
+                'value' => 1
+            )); ?>
+            <small>
+                Correct temperature by: <br /><em>Lapse Rate</em> × (<em>DEM</em> ─ <em>Site Elevation</em>)
+            </small>
+        </div>
         <div id="gMapGridBox" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
             <div id="gMapContainer" class="mapContainer"></div>
         </div>

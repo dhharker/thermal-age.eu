@@ -125,9 +125,14 @@ var wc = {
             var adName = bpName.substr (0, bpName.length - 3) + 'ad]';
             var newInp = $('<input type="hidden" name="'+bpName+'" />');
             var isBp = $('<span class="isBp"></span>');
-            $i.attr('name', adName).attr ('autocomplete', 'off');
+            $i.attr('name', adName).attr ('autocomplete', 'off')
+                .parentsUntil('form').parent().attr ('autocomplete', 'off');
             newInp.insertAfter ($i);
             isBp.insertAfter ($i);
+            // on load, the value will be in bp, so put it in the bp field
+            newInp.val($i.val());
+            $i.val (useful.bp2ad (newInp.val()));
+            
             $i.keyup (function () {
                     var $this = $(this);
                     var lv = $this.data('last_value');
@@ -185,6 +190,7 @@ var wc = {
             create: function (event, ui) {
                 if (wc) wc.reorderLayers (list);
             },
+            revert: 100
         });
         
         this.initLayerDeleteButtons (scope);
@@ -300,14 +306,15 @@ var wc = {
                     
                     return true;
                 },
-                fromBoxen: function () {
+                fromBoxen: function () { // when user types in l/l boxen or lookup's Use button clicked
                     var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 0, parseFloat ($('#SiteLonDec').val()) || 0);
                     wc.local.map.marker.setPosition (latlng);
                     wc.local.map.map.panTo (latlng);
+                    wc.demLookup();
                 },
             };
             
-            $('#SiteLatDec #SiteLonDec').keyup (function () {
+            $('#SiteLatDec, #SiteLonDec').keyup (function () {
                 wc.local.map.fromBoxen();
             });
             
@@ -330,7 +337,7 @@ var wc = {
                     z = Math.ceil (z * 1.15);
                     gmap.setZoom (z);
                 }
-                
+                wc.demLookup();
             };
 
             google.maps.event.addListener (marker, 'dragend', drop);
@@ -349,9 +356,46 @@ var wc = {
         }, 150);
         
     },
+    demLookup: function (lat,lon) {
+        lat = lat || $('#SiteLatDec').val() || 0;
+        lat = parseFloat (lat).toFixed(5);
+        lon = lon || $('#SiteLonDec').val() || 0;
+        lon = parseFloat (lon).toFixed(5);
+
+        var res = $('input#SiteElevationDem');
+
+        var cache = res.data('cache');
+        if (!cache) cache = {};
+        if (cache[lat+'x'+lon])
+            res.val(cache[lat+'x'+lon]);
+        else if (res.data ('lookupStatus') != 'loading') {
+            console.log (lat, lon);
+            res
+                //.loadingAnim()
+                .data ('lookupStatus', 'loading');
+            $.ajax ('/wiz/dem_lookup/', {
+                data: {lat: lat, lon: lon},
+                context: res,
+                success: function (data,status,xhr) {
+                    cache[lat+'x'+lon] = data;
+                    $(this)
+                        //.hide()
+                        .data ('lookupStatus', 'ok')
+                        .val (data)
+                        .data ('cache', cache)
+                        //.show ({effect: 'blind', duration: 300});
+                }
+            });
+
+        }
+        return false;
+    },
     initSiteForm: function (ele) {
         wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
+        $('#SiteLatDec, #SiteLonDec').keyup (function () {
+            wc.demLookup();
+        });
     },
     initSiteChoiceButtons: function (scope) {
         if (!$(scope).attr('id') == 'reverseGeocodeResults') {
@@ -398,6 +442,7 @@ var wc = {
                 $('input#SiteLatDec').val(place.lat);
                 $('input#SiteLonDec').val(place.lng);
                 $('textarea#SiteDescription').val(place.summary + '\n(elevation: '+place.elevation+'m)');
+                $('input#SiteElevation').val(place.elevation);
                 $('.rgsClearResultsButton').click();
                 wc.local.map.fromBoxen ();
                 $.smoothScroll ({

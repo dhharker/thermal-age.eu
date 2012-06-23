@@ -170,6 +170,16 @@ class WizController extends AppController {
     }
 
     /**
+     * Function to get the altitude used in the temperature model from which we draw our 0ka DP
+     * Used to calculate the difference between DEM alt. and alt. of actual site for lapse rate correction.
+     */
+    function dem_lookup () {
+        $place = (!empty ($this->params['form']['lat'])) ? $this->params['form']['lat'] : null;
+        $place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
+
+    }
+
+    /**
      * Each of the wizards should check on pageload whether the client environment cookie is set:
      *  Cookie not set, is a browser        ->      redirect to index
      *  Cookie set, env. good               ->      load wizard
@@ -499,8 +509,8 @@ class WizController extends AppController {
 
 
     function _prepareStorage () {
-        $ssd = $this->Wizard->read('burial.Temporothermal.startdate_ybp');
-        $this->set ('excavatedad', $ssd);
+        $ssd = $this->Wizard->read('burial.Temporothermal.startdate_ybp'); // bp to ad? why is there an ad in a bp field?! gah!
+        $this->set ('excavatedbp', $ssd);
     }
 
     /**

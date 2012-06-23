@@ -2,6 +2,9 @@
 var useful = {
     ad2bp: function (ad) {
         return (ad - 1950) * -1;
+    },
+    bp2ad: function (bp) {
+        return (bp / -1) + 1950;
     }
 };
 

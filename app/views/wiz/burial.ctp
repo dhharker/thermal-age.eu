@@ -53,9 +53,9 @@
                 'value' => $numLayers,
             ));?>
             <div id="burialLayersList" class="smartbox grid_10 alpha" style="clear: both;">
-                <div>
+                <div class="" style="background: url('/img/burial_surface.png') bottom center no-repeat; margin: -4px 0px 0px 0px; height: 54px;">
                     <p class="help">
-                        The soil surface is up here, the sample ends up down by the &quot;Add&quot; button.
+                        The soil surface is up here, the sample is buried down by the &quot;Add Layer&quot; button.
                     </p>
                 </div>
                 <ul class="ui-sortable smartsharp">
@@ -71,7 +71,7 @@
                         <fieldset style="clear: both" class="">
                             <div class="lcButtons">
                                 <?php echo $this->Html->link(
-                                    '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>',
+                                    '<span class="ui-icon ui-icon-carat-2-n-s"></span>',
                                     '#',
                                     array(
                                         'class' => 'fg-button ui-state-default sort-handle',
@@ -116,15 +116,15 @@
                     }
                     ?>
                 </ul>
-                <div>
+                <div style="background: url('/img/burial_sample.png') top right no-repeat; height: 54px; margin-top: 1px;">
                 <?php echo $this->Html->link(
-                    'Add Layer',
+                    '<span><span class="ui-icon ui-icon-arrowthick-1-n" style=" display: inline; top: .325em; margin-left: -3.2em; margin-top: .0em"></span>Add Layer</span>',
                     '',
                     array(
                         'class' => 'fg-button ui-state-default ui-corner-bottom cta-button',
                         'escape' => false,
                         'id' => 'addSoilLayerButton',
-                        'style' => "margin: 0px 20px 10px 20px;"
+                        'style' => "margin: -2px 20px 10px 21px; width: 205px; text-align: center; padding-left: 1.7em; font-weight: normal; border: none; border-top: 1px solid #65735c"
                     ));
                 ?>
                 </div>
