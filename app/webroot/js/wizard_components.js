@@ -239,9 +239,17 @@ var wc = {
             .attr ('href','')
             .click (function () {
                 wc.loadGmapsAsync ("wc.initMap");
-                $(this).hide ('fade', function () {
+                /*$(this).hide ('fade', function () {
                     $(this).remove();
-                }, 250);
+                }, 250);*/
+                $(this)
+                    .attr ('id', 'CentreMapButton')
+                    .unbind ('click')
+                    .click (function () {
+                        wc.local.map.fromBoxen ();
+                        return false;
+                    })
+                    .text ('Centre Map');
                 return false;
             })
         ;

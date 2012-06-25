@@ -31,6 +31,11 @@
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
         </div>
+        
+        <div id="gMapGridBox" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
+            <div id="gMapContainer" class="mapContainer"></div>
+        </div>
+
         <div class="grid_3 alpha">
             <?= $this->Form->input('Site.elevation_dem', array (
                 'label' => 'DEM Elevation (WGS84+m)',
@@ -49,7 +54,7 @@
                 'label' => 'Site Elevation (WGS84+m)'
             )); ?>
         </div>
-        
+
         <div class="grid_3 omega">
             <?= $this->Form->input('Site.lapse_correct', array (
                 'label' => 'Site &raquo; DEM Lapse?',
@@ -60,9 +65,7 @@
                 Correct temperature by: <br /><em>Lapse Rate</em> × (<em>DEM</em> ─ <em>Site Elevation</em>)
             </small>
         </div>
-        <div id="gMapGridBox" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
-            <div id="gMapContainer" class="mapContainer"></div>
-        </div>
+
         <!-- pointless at this time
         <div class="grid_11 alpha">
             <?= $this->Form->input('Site.citation_id'); ?>
