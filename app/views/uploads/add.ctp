@@ -1,5 +1,5 @@
 <div class="uploads form">
-<?php echo $this->Form->create('Upload');?>
+<?php echo $this->Form->create('Upload', array ('type' => 'file'));?>
 	<fieldset>
  		<legend><?php __('Add Upload'); ?></legend>
 	<?php

@@ -17,7 +17,7 @@
             <div class="grid_3 alpha">
                 <?=$this->Form->input('Temporothermal.startdate_ybp', array (
                     'label' => 'Analysed (AD)',
-                    'default' => date ('Y'),
+                    'default' => (date ('Y') - 1950)*-1,
                     'div' => 'makeInputAd'
                 ));?>
             </div>

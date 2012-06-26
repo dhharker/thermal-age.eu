@@ -139,6 +139,20 @@
     margin: 0px;
     border: 1px solid #8a9881;
 }
+#wizardDetailColumnInner ol li .progressStep #keep-alive-timer {
+    display: block;
+    width: 100%;
+    margin: 0px;
+    padding: 0 .35em;
+    font-size: 60%;
+    border: 1px solid #8a9881;
+}
+form div.progressStep div.error-message {
+    float: none;
+    margin: 1px auto;
+    width: 75%;
+}
+
 #wizardDetailColumnInner ol li .progressStep a:hover {
 
 }
@@ -201,7 +215,7 @@
 }
 
 
-.griddedButton {
+.griddedButton, button.griddedButton, button.fg-button.griddedButton  {
     margin-top: 2.8em;
     width: 100%;
 }

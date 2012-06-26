@@ -155,6 +155,7 @@ class WizController extends AppController {
         $environmentGood = $this->_initWizardEnvironment($wizName);
         if (!$environmentGood) die ("Env bad $wizName");
         $this->set ('wizardInfos',$this->wizardInfos);
+        $this->_keepalive();
     }
 
     /**
@@ -164,20 +165,75 @@ class WizController extends AppController {
      */
     function place_search () {
         $place = (!empty ($this->params['form']['place'])) ? $this->params['form']['place'] : null;
-        $place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
+        //$place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
         $places = (strlen ($place) > 0) ? $places = ClassRegistry::init('Geonames')->placeSearch($place) : array ();
+
+        if (!empty ($places['geonames'])) {
+            $this->loadModel('Upload');
+            foreach ($places['geonames'] as &$cpl) {
+                if (!empty ($cpl['thumbnailImg'])) {
+                    $cpl['thumbnailImg'] = $this->Upload->passThrough ($cpl['thumbnailImg']);
+                }
+            }
+        }
+
         $this->set ('places', (array) $places);
+
     }
 
     /**
-     * Function to get the altitude used in the temperature model from which we draw our 0ka DP
+     * Function to get the altitude used in the temperature models from which we draw our 0ka DP
      * Used to calculate the difference between DEM alt. and alt. of actual site for lapse rate correction.
+     * @param string $source currently one of 'pmip2' or 'worldclim' (note the latter is much higher resolution)
      */
-    function dem_lookup () {
+    function dem_lookup ($source = null) {
+        if ($source === null) return false;
         $place = (!empty ($this->params['form']['lat'])) ? $this->params['form']['lat'] : null;
         $place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
-
     }
+    
+    function keepalive () {
+        $this->_keepalive();
+    }
+
+    function _keepalive () {
+        $lastTime = $this->Session->read ('keepalive.last');
+        $firstTime = $this->Session->read ('keepalive.first');
+        if (1) {
+            $time = microtime(true);
+            $this->Session->write ('keepalive.last', $time);
+            if (!$lastTime) {
+                $lastTime = $time;
+            }
+            if (!$firstTime) {
+                $firstTime = $time;
+                $this->Session->write ('keepalive.first', $firstTime);
+            }
+            $this->set('kept_alive_for', $this->_formatSecs ($time - $firstTime));
+            //$this->set('kept_alive_for', );
+        }
+        
+    }
+    
+    function _formatSecs ($s = 0.0) {
+
+        $seconds = 0.0; $minutes = 0.0; $hours = 0.0;
+
+        if ($s >= 60.0) {
+            $seconds = $s % 60.0;
+            $minutes = ($s - $seconds) / 60.0; $m = $minutes;
+        }
+
+        if ($minutes > 60.0) {
+            $minutes = $minutes % 60.0;
+            $hours = ($m - $minutes) / 60.0;
+        }
+        
+        return sprintf ("%02d:%02d:%02d", $hours, $minutes, $seconds);
+        
+    }
+
+
 
     /**
      * Each of the wizards should check on pageload whether the client environment cookie is set:

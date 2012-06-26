@@ -8,11 +8,10 @@ class UploadsController extends AppController {
 	}
 
 	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid upload', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->set('upload', $this->Upload->read(null, $id));
+        if ($id == 0) {
+            die("");
+        }
+		$this->download ($id, 0);
 	}
 
 	function add() {
@@ -33,8 +32,7 @@ class UploadsController extends AppController {
             $this->data['Upload']['name'] = $this->data['Upload']['file']['name'];
             $this->data['Upload']['type'] = $this->data['Upload']['file']['type'];
             $this->data['Upload']['size'] = $this->data['Upload']['file']['size'];
-            $this->data['Upload']['data'] = $fileData;
-
+            $this->data['Upload']['file_contents'] = $fileData;
             if ($this->Upload->save($this->data)) {
 				$this->Session->setFlash(__('The upload has been saved', true));
 				$this->redirect(array('action' => 'index'));
@@ -48,16 +46,19 @@ class UploadsController extends AppController {
 		$this->set(compact('citations', 'users'));
 	}
 
-    function download($id) {
+    function download($id, $force = 1) {
+        if (!$id) {
+			echo ""; return;
+        }
         Configure::write('debug', 0);
         $file = $this->Upload->findById($id);
-
-        header('Content-type: ' . $file['MyFile']['type']);
-        header('Content-length: ' . $file['MyFile']['size']); // some people reported problems with this line (see the comments), commenting out this line helped in those cases
-        header('Content-Disposition: attachment; filename="'.$file['MyFile']['name'].'"');
-        echo $file['Upload']['data'];
-
-        exit();
+        //header('Content-type: ' . $file['Upload']['type']);
+        header('Content-length: ' . $file['Upload']['size']);
+        if ($force) header ('Content-Disposition: attachment; filename="'.$file['Upload']['name'].'"');
+        echo $file['Upload']['file_contents'];
+        $this->autoLayout = false;
+        $this->autoRender = false;
+        return false;
     }
 
 

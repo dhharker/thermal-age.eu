@@ -10,7 +10,7 @@
 			<th><?php echo $this->Paginator->sort('description');?></th>
 			<th><?php echo $this->Paginator->sort('citation_id');?></th>
 			<th><?php echo $this->Paginator->sort('user_id');?></th>
-			<th><?php echo $this->Paginator->sort('file_contents');?></th>
+			
 			<th><?php echo $this->Paginator->sort('file_location');?></th>
 			<th class="actions"><?php __('Actions');?></th>
 	</tr>
@@ -35,10 +35,10 @@
 		<td>
 			<?php echo $this->Html->link($upload['User']['name'], array('controller' => 'users', 'action' => 'view', $upload['User']['id'])); ?>
 		</td>
-		<td><?php echo $upload['Upload']['file_contents']; ?>&nbsp;</td>
+		
 		<td><?php echo $upload['Upload']['file_location']; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $upload['Upload']['id'])); ?>
+			<?php echo $this->Html->link(__('Download', true), array('action' => 'download', $upload['Upload']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $upload['Upload']['id'])); ?>
 			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $upload['Upload']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $upload['Upload']['id'])); ?>
 		</td>

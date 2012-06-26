@@ -8,6 +8,13 @@
                 <h2 class="sbHeading"><?=@$wizardInfos['wizardtitle'];?></h2>
             </div>
         </li>
+        <li>
+            <div class="progressStep ui-ish">
+                <div>
+                    <?=$this->Element ('wiz/keepalive');?>
+                </div>
+            </div>
+        </li>
 
 
         <?php

@@ -124,25 +124,29 @@ var wc = {
             var bpName = $i.attr('name');
             var adName = bpName.substr (0, bpName.length - 3) + 'ad]';
             var newInp = $('<input type="hidden" name="'+bpName+'" />');
-            var isBp = $('<span class="isBp"></span>');
+            var isBp = $('<span class="isBp ui-corner-all" style="padding: .2em;"></span>');
             $i.attr('name', adName).attr ('autocomplete', 'off')
                 .parentsUntil('form').parent().attr ('autocomplete', 'off');
             newInp.insertAfter ($i);
             isBp.insertAfter ($i);
             // on load, the value will be in bp, so put it in the bp field
-            newInp.val($i.val());
-            $i.val (useful.bp2ad (newInp.val()));
-            
+            var ival = $i.val();
+            if (!(isNaN (ival) || '' == ival || ival.length == 0)) {
+                newInp.val($i.val());
+                $i.val (useful.bp2ad (newInp.val()));
+            }
             $i.keyup (function () {
                     var $this = $(this);
                     var lv = $this.data('last_value');
                     $this.data('last_value', $this.val())
                     if (lv != $this.val()) {
-                        newInp.val (useful.ad2bp ($i.val()));
-                        if (isNaN (newInp.val()) || "" === $i.val() || $i.val().length == 0) {
+                        var ival = $i.val();
+                        //newInp.val (useful.ad2bp (ival));
+                        if (isNaN (ival) || '' == ival || ival.length == 0) {
                             $(this).siblings ('span.isBp').text ('(must be a number; years AD)').not(':animated').effect ('highlight', {}, 3000);
                         }
                         else {
+                            newInp.val (useful.ad2bp (ival));
                             $(this).siblings ('span.isBp').text (' = ' + newInp.val() + ' bp').not(':animated').effect ('highlight', {}, 3000);
                         }
                         return true;
@@ -150,10 +154,7 @@ var wc = {
 
                     
                 });
-            newInp.change (function () {
-
-            });
-            $i.change();
+            $i.keyup();
         }).addClass ('inited');
     },
     initBurialForm: function (scope) {
@@ -364,34 +365,51 @@ var wc = {
         }, 150);
         
     },
+    updateDemBoxen: function (data, boxen) {
+        for (box in boxen) {
+            if (!!data[box])
+                boxen[box].val(data[box]);
+        }
+        // DEMs lapse
+        $('input#SiteCoarseFineLapseCorrection').val ( ((data['pmip2'] - data['worldclim']) / 1000) * 6.4 );
+        // Site lapse
+        var siteAlt = $('input#SiteElevation').val ();
+        if (isNaN (siteAlt) || siteAlt === '' || siteAlt === undefined || !$('input:checkbox#SiteLapseCorrect').is(':checked')) {
+            $('input#SiteFineKnownLapseCorrection').val ('');
+        }
+        else {
+            $('input#SiteFineKnownLapseCorrection').val ( ((data['worldclim'] - siteAlt) / 1000) * 6.4 );
+        }
+    },
     demLookup: function (lat,lon) {
         lat = lat || $('#SiteLatDec').val() || 0;
         lat = parseFloat (lat).toFixed(5);
         lon = lon || $('#SiteLonDec').val() || 0;
         lon = parseFloat (lon).toFixed(5);
 
-        var res = $('input#SiteElevationDem');
+        var res = {
+            'pmip2': $('input#SiteElevationDemCoarse'),
+            'worldclim': $('input#SiteElevationDemFine'),
+        };
+        var form = $('form#SiteForm');
 
-        var cache = res.data('cache');
+        var cache = form.data('cache');
+        
         if (!cache) cache = {};
-        if (cache[lat+'x'+lon])
-            res.val(cache[lat+'x'+lon]);
-        else if (res.data ('lookupStatus') != 'loading') {
-            console.log (lat, lon);
-            res
-                //.loadingAnim()
-                .data ('lookupStatus', 'loading');
+        if (!!cache[lat+'x'+lon])
+            wc.updateDemBoxen(cache[lat+'x'+lon], res);
+        else if (form.data ('lookupStatus') != 'loading') {
+            form.data ('lookupStatus', 'loading');
             $.ajax ('/wiz/dem_lookup/', {
                 data: {lat: lat, lon: lon},
-                context: res,
+                context: form,
                 success: function (data,status,xhr) {
+                    data = $.parseJSON(data);
                     cache[lat+'x'+lon] = data;
+                    wc.updateDemBoxen(data, res);
                     $(this)
-                        //.hide()
                         .data ('lookupStatus', 'ok')
-                        .val (data)
-                        .data ('cache', cache)
-                        //.show ({effect: 'blind', duration: 300});
+                        .data ('cache', cache);
                 }
             });
 
@@ -401,9 +419,9 @@ var wc = {
     initSiteForm: function (ele) {
         wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
-        $('#SiteLatDec, #SiteLonDec').keyup (function () {
-            wc.demLookup();
-        });
+        $('#SiteLatDec, #SiteLonDec, #SiteElevation').keyup (wc.demLookup);
+        $('input:checkbox#SiteLapseCorrect').change(wc.demLookup);
+        $('#reverseGeocodeResults').hide();
     },
     initSiteChoiceButtons: function (scope) {
         if (!$(scope).attr('id') == 'reverseGeocodeResults') {
@@ -445,30 +463,37 @@ var wc = {
             var place = event.data;
             
             var dswm = function (place) {
-                wc.local.map.info.close();
+                if (!!wc.local.map.map) {
+                    wc.local.map.info.close();
+                }
                 $('input#SiteName').val(place.placeTitle);
                 $('input#SiteLatDec').val(place.lat);
                 $('input#SiteLonDec').val(place.lng);
                 $('textarea#SiteDescription').val(place.summary + '\n(elevation: '+place.elevation+'m)');
                 $('input#SiteElevation').val(place.elevation);
                 $('.rgsClearResultsButton').click();
-                wc.local.map.fromBoxen ();
-                $.smoothScroll ({
-                    scrollElement: $('#bg2'),
-                    scrollTarget: $('#SiteName'),
-                    offset: -85
-                });
+                if (!!wc.local.map.map) {
+                    wc.local.map.fromBoxen ();
+                    $.smoothScroll ({
+                        scrollElement: $('#bg2'),
+                        scrollTarget: $('#SiteName'),
+                        offset: -85
+                    });
+                }
+                else {
+                    wc.demLookup();
+                }
             };
             
-            if (!wc.local.map.map) {
+            /*if (!wc.local.map.map) {
                 wc.local.mapqueue = function () {
                     dswm (place);
                 };
                 $('#FindLatLonByMapButton').click();
             }
-            else {
+            else {*/
                 dswm (place);
-            }
+            /*}*/
             
             return false;
         };
@@ -498,7 +523,7 @@ var wc = {
             
         });
 
-        return $e;
+
     },
     initLocationLookupButton: function () {
         $("#FindLatLonBySiteNameButton").click (function () {

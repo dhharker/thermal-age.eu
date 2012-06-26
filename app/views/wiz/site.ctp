@@ -7,7 +7,7 @@
             <?= $this->Form->input('Site.name'); ?>
         </div>
         <div class="grid_3 omega">
-            <?= $this->Form->button ('Find Location from Name', array (
+            <?= $this->Form->button ('Search Wikipedia', array (
                 'id' => 'FindLatLonBySiteNameButton',
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
             )); ?>
@@ -20,12 +20,12 @@
                 'label' => 'Latitude (decimal °N)'
             )); ?>
         </div>
-        <div class="grid_5">
+        <div class="grid_4">
             <?= $this->Form->input('Site.lon_dec', array (
                 'label' => 'Longitude (decimal °E)'
             )); ?>
         </div>
-        <div class="grid_2 omega">
+        <div class="grid_3 omega">
             <?= $this->Form->button ('Find on Map', array (
                 'id' => 'FindLatLonByMapButton',
                 'class' => 'fg-button ui-state-default ui-priority-primary ui-corner-all griddedButton'
@@ -35,37 +35,55 @@
         <div id="gMapGridBox" class="grid_11 alpha ui-corner-all smartbox" style="overflow: hidden; clear: both; margin: 20px 0px; display: none;">
             <div id="gMapContainer" class="mapContainer"></div>
         </div>
+        <div class="ui-helper-clearfix"></div>
 
-        <div class="grid_3 alpha">
-            <?= $this->Form->input('Site.elevation_dem', array (
-                'label' => 'DEM Elevation (WGS84+m)',
+        <div class="grid_4 alpha">
+            <?= $this->Form->input('Site.elevation_dem_coarse', array (
+                'label' => 'Coarse (PMIP2) Elevation (m)',
                 'disabled' => 1
             )); ?>
         </div>
+        <div class="grid_4">
+            <?= $this->Form->input('Site.elevation_dem_fine', array (
+                'label' => 'Hi-res (Worldclim) Elevation (m)',
+                'disabled' => 1
+            )); ?>
+        </div>
+        <div class="grid_3 omega">
+            <?= $this->Form->input('Site.coarse_fine_lapse_correction', array (
+                'label' => '&Delta; Coarse &raquo; Hi-res (&deg;C)',
+                'disabled' => 1
+            )); ?>
+        </div>
+
+        <div class="grid_4 alpha">
+            <?= $this->Form->input('Site.elevation', array (
+                'label' => 'Site Elevation (m, WGS84)'
+            )); ?>
+        </div><?php /*
         <div class="grid_2">
             <?= $this->Form->input('Site.lapse_rate', array (
-                'label' => 'Lapse&nbsp;(&deg;C/km)',
+                'label' => 'Lapse (&deg;C/km)',
                 'value' => '6.4',
                 'disabled' => 1
             )); ?>
-        </div>
-        <div class="grid_3">
-            <?= $this->Form->input('Site.elevation', array (
-                'label' => 'Site Elevation (WGS84+m)'
-            )); ?>
-        </div>
-
-        <div class="grid_3 omega">
+        </div>*/ ?>
+        <div class="grid_4">
             <?= $this->Form->input('Site.lapse_correct', array (
-                'label' => 'Site &raquo; DEM Lapse?',
+                'label' => 'DEM &raquo; Site Lapse?',
                 'type' => 'checkbox',
                 'value' => 1
             )); ?>
             <small>
-                Correct temperature by: <br /><em>Lapse Rate</em> × (<em>DEM</em> ─ <em>Site Elevation</em>)
+                Correct temperature by: <br />6.4&deg;C/km × (<em>DEM</em> ─ <em>Site Elevation</em>)
             </small>
         </div>
-
+        <div class="grid_3 omega">
+            <?= $this->Form->input('Site.fine_known_lapse_correction', array (
+                'label' => '&Delta; Hi-res &raquo; Site (&deg;C)',
+                'disabled' => 1
+            )); ?>
+        </div>
         <!-- pointless at this time
         <div class="grid_11 alpha">
             <?= $this->Form->input('Site.citation_id'); ?>
