@@ -397,8 +397,10 @@ var wc = {
             return false;
         }
         for (box in boxen) {
-            if (!!data['data'][box]) {
-                boxen[box].val(data['data'][box]).effect ('highlight', {}, 3000);
+            if (!!data.data[box]) {
+                if (parseFloat(boxen[box].val()).toFixed(4) != parseFloat (data.data[box]).toFixed(4)) {
+                    boxen[box].val(data.data[box]).not(':animated').effect ('highlight', {}, 1500);
+                }
             }
         }
         // DEMs lapse
