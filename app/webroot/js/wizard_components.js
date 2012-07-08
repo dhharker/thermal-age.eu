@@ -250,7 +250,23 @@ var wc = {
                         wc.local.map.fromBoxen ();
                         return false;
                     })
-                    .text ('Centre Map');
+                    .text ('Centre Map')
+                    .removeClass ('ui-corner-all')
+                    .addClass ('no-v-margin ui-corner-top')
+                .clone (1,1)
+                    .attr ('id', 'GmapDemLookupButton')
+                    .unbind ('click')
+                    .click (function () {
+                        var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 58, parseFloat ($('#SiteLonDec').val()) || 9.5);
+                        wc.getElevation (latlng);
+                        return false;
+                    })
+                    .text ('Elevation from Map')
+                    .removeClass ('ui-corner-top')
+                    .addClass ('ui-corner-bottom bump-button-up')
+                    .insertAfter (this)
+                .parent()
+                    .wrapInner ($('<div class="fg-buttonset fg-buttonset-single griddedButton2xContainer"></div>'));
                 return false;
             })
         ;
@@ -265,9 +281,18 @@ var wc = {
             ele = ele || '#gMapContainer';
             var $mc = $(ele);
             var latlng = new google.maps.LatLng(parseFloat ($('#SiteLatDec').val()) || 58, parseFloat ($('#SiteLonDec').val()) || 9.5);
+
             myOptions = {
                 zoom: 3,
                 center: latlng,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                },
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL
+                },
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             var ni = $('.mapContainer').length + 1;
@@ -362,29 +387,35 @@ var wc = {
             $('body').data ('resizeHandler', mapResizeHandler);
             
             $mc.resize (mapResizeHandler);
+            
+            wc.local.map.elevator = new google.maps.ElevationService();
+            
         }, 150);
         
     },
     updateDemBoxen: function (data, boxen) {
+        if (empty (data['data'])) {
+            return false;
+        }
         for (box in boxen) {
-            if (!!data[box])
-                boxen[box].val(data[box]);
+            if (!!data['data'][box])
+                boxen[box].val(data['data'][box]);
         }
         // DEMs lapse
-        $('input#SiteCoarseFineLapseCorrection').val ( ((data['pmip2'] - data['worldclim']) / 1000) * 6.4 );
+        $('input#SiteCoarseFineLapseCorrection').val ( (((data['pmip2'] - data['worldclim']) / 1000) * 6.4).toFixed(4) );
         // Site lapse
         var siteAlt = $('input#SiteElevation').val ();
         if (isNaN (siteAlt) || siteAlt === '' || siteAlt === undefined || !$('input:checkbox#SiteLapseCorrect').is(':checked')) {
             $('input#SiteFineKnownLapseCorrection').val ('');
         }
         else {
-            $('input#SiteFineKnownLapseCorrection').val ( ((data['worldclim'] - siteAlt) / 1000) * 6.4 );
+            $('input#SiteFineKnownLapseCorrection').val ( (((data['worldclim'] - siteAlt) / 1000) * 6.4).toFixed(4) );
         }
     },
-    demLookup: function (lat,lon) {
-        lat = lat || $('#SiteLatDec').val() || 0;
+    demLookup: function () {
+        var lat = $('input#SiteLatDec').val() || 0;
         lat = parseFloat (lat).toFixed(5);
-        lon = lon || $('#SiteLonDec').val() || 0;
+        var lon = $('input#SiteLonDec').val() || 0;
         lon = parseFloat (lon).toFixed(5);
 
         var res = {
@@ -401,7 +432,7 @@ var wc = {
         else if (form.data ('lookupStatus') != 'loading') {
             form.data ('lookupStatus', 'loading');
             $.ajax ('/wiz/dem_lookup/', {
-                data: {lat: lat, lon: lon},
+                data: {'lat': lat, 'lon': lon},
                 context: form,
                 success: function (data,status,xhr) {
                     data = $.parseJSON(data);
@@ -419,9 +450,49 @@ var wc = {
     initSiteForm: function (ele) {
         wc.initMapLoadButton ();
         wc.initLocationLookupButton ();
-        $('#SiteLatDec, #SiteLonDec, #SiteElevation').keyup (wc.demLookup);
+        //wc.initElevator ();
+        $('input#SiteLatDec, input#SiteLonDec, input#SiteElevation').keyup (wc.demLookup);
         $('input:checkbox#SiteLapseCorrect').change(wc.demLookup);
         $('#reverseGeocodeResults').hide();
+        $('input#SiteElevation').change (function () {
+            var $this = $(this);
+            if ($this.data('changedAuto') == true) {
+                $this.data('changedAuto', false);
+            }
+            $('#SiteElevationCitationText').html ($('#SiteElevationSource').val('').val());
+        })
+        if ($('#SiteElevationSource').val() !== '') {
+            $('#SiteElevationCitationText').html ('Source: <em>' + $('#SiteElevationSource').val() + '</em>');
+        }
+        wc.demLookup();
+    },
+    getElevation: function (latLng) {
+        
+        wc.local.map.elevator.getElevationForLocations ({ locations: [ latLng ] }, function(results, status) {
+            console.log (results, status);
+            if (status == google.maps.ElevationStatus.OK) {
+                // Retrieve the first result
+                if (results[0]) {
+                    $.smoothScroll ({
+                        scrollElement: $('#bg2'),
+                        scrollTarget: $('input#SiteElevation')
+                            .val(results[0].elevation.toFixed(4))
+                            .data ('changedAuto', true)
+                            .effect ('highlight', {}, 3000),
+                        offset: -85
+                    });
+                    $('#SiteElevationCitationText').html ('Source: <em style="max-width: 5em;">' + $('#SiteElevationSource').val('Google (' + results[0].resolution.toFixed(1) + 'm res.)').val() + '</em>');
+                }
+                else {
+                    alert("No results found");
+                    return false;
+                }
+            }
+            else {
+                alert("Elevation service failed due to: " + status);
+                return false;
+            }
+        });
     },
     initSiteChoiceButtons: function (scope) {
         if (!$(scope).attr('id') == 'reverseGeocodeResults') {
@@ -466,11 +537,15 @@ var wc = {
                 if (!!wc.local.map.map) {
                     wc.local.map.info.close();
                 }
-                $('input#SiteName').val(place.placeTitle);
-                $('input#SiteLatDec').val(place.lat);
-                $('input#SiteLonDec').val(place.lng);
-                $('textarea#SiteDescription').val(place.summary + '\n(elevation: '+place.elevation+'m)');
-                $('input#SiteElevation').val(place.elevation);
+                $([
+                    $('input#SiteName').val(place.placeTitle),
+                    $('input#SiteLatDec').val(place.lat),
+                    $('input#SiteLonDec').val(place.lng),
+                    $('textarea#SiteDescription').val(place.summary + '\n(elevation: '+place.elevation+'m)'),
+                    $('input#SiteElevation').val(place.elevation.trim()).data ('changedAuto', true)
+                ]).effect ('highlight', {}, 3000);
+                
+                $('#SiteElevationCitationText').html ('Source: <em>' + $('#SiteElevationSource').val('Wikipedia').val() + '</em>');
                 $('.rgsClearResultsButton').click();
                 if (!!wc.local.map.map) {
                     wc.local.map.fromBoxen ();
