@@ -217,11 +217,8 @@ class WizController extends AppController {
                     $pmalt = new \ttkpl\pmip(\ttkpl\PMIP2::ALT_VAR, \ttkpl\PMIP2::T_PRE_INDUSTRIAL_0KA, \ttkpl\PMIP2::MODEL_HADCM3M2);
 
                     $elev = $pmalt->getElevationFromFacet ($loc);
-                    $data['data']['pmip2'] = print_r ($elev->getScalar()->getValue(), 1);
-                    //print_r ($elev);
-                    //die();
-
-
+                    $data['data']['pmip2'] = round ($elev->getValue()->getValue()->getValue(), 4);
+                    
                     $ok = true; if ($source != null) break;
                 case null:
                 case "wordclim":

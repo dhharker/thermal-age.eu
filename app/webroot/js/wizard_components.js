@@ -366,7 +366,6 @@ var wc = {
             var drop = function (event) {
                 udm (event);
                 var z = gmap.getZoom ();
-                console.log ("z=",z);
                 if (z < 16) {
                     z = Math.ceil (z * 1.15);
                     gmap.setZoom (z);
@@ -394,12 +393,13 @@ var wc = {
         
     },
     updateDemBoxen: function (data, boxen) {
-        if (empty (data['data'])) {
+        if (!(data['data'])) {
             return false;
         }
         for (box in boxen) {
-            if (!!data['data'][box])
-                boxen[box].val(data['data'][box]);
+            if (!!data['data'][box]) {
+                boxen[box].val(data['data'][box]).effect ('highlight', {}, 3000);
+            }
         }
         // DEMs lapse
         $('input#SiteCoarseFineLapseCorrection').val ( (((data['pmip2'] - data['worldclim']) / 1000) * 6.4).toFixed(4) );
