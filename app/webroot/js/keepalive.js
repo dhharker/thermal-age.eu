@@ -63,7 +63,7 @@ $(function () {
                 }
             },
             pingError: function (jqXHR, textStatus, errorThrown) {
-                console.log ('keepalive err', textStatus);
+
                 keepaliver.requestPending = false;
                 $(keepaliver.element).html('<div class="ui-corner-all error-message">Connection Error!</div>');
                 keepaliver.startTimer();
