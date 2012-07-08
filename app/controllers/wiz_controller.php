@@ -172,7 +172,9 @@ class WizController extends AppController {
             $this->loadModel('Upload');
             foreach ($places['geonames'] as &$cpl) {
                 if (!empty ($cpl['thumbnailImg'])) {
-                    $cpl['thumbnailImg'] = $this->Upload->passThrough ($cpl['thumbnailImg']);
+                    // DEBUG!!!
+                    //$cpl['thumbnailImg'] = "https://chesapeakejournal.files.wordpress.com/2012/02/muteswan-cygnusolor.jpg"; // <-- swan! \o/
+                    $cpl['thumbnailImg'] = $this->Upload->passThrough ($cpl['thumbnailImg'], $cpl['title']);
                 }
             }
         }
@@ -187,9 +189,55 @@ class WizController extends AppController {
      * @param string $source currently one of 'pmip2' or 'worldclim' (note the latter is much higher resolution)
      */
     function dem_lookup ($source = null) {
-        if ($source === null) return false;
-        $place = (!empty ($this->params['form']['lat'])) ? $this->params['form']['lat'] : null;
-        $place = trim (Sanitize::paranoid($place, array (' ', ',', '-', '\'', '(', ')')));
+        
+        // Load ttkpl
+        App::import ('Vendor', 'ttkpl/lib/ttkpl');
+        ob_clean(); // @TODO remove all echos from ttkpl!
+
+        $source = trim (Sanitize::paranoid($source));
+        if (empty ($source)) $source = null;
+        
+        $data = array ('error' => array(), 'data' => array());
+
+        $lat = (!empty ($this->params['url']['lat'])) ? floatval ($this->params['url']['lat']) : null;
+        $lon = (!empty ($this->params['url']['lon'])) ? floatval ($this->params['url']['lon']) : null;
+        $loc = new \ttkpl\latLon(0,0);
+        if ($lat === null || $lon === null || ($lat + 90) > 180 || ($lon + 180) > 360) {
+            $data['error'][] = "Unparseable lat/lon.";
+        }
+        elseif ($loc->setLatLon($lat, $lon) == false) {
+            $data['error'][] = "Unloadable lat/lon.";
+        }
+        else {
+            $ok = false;
+            switch ($source) {
+                case null:
+                case "pmip2":
+
+                    $pmalt = new \ttkpl\pmip(\ttkpl\PMIP2::ALT_VAR, \ttkpl\PMIP2::T_PRE_INDUSTRIAL_0KA, \ttkpl\PMIP2::MODEL_HADCM3M2);
+
+                    $elev = $pmalt->getElevationFromFacet ($loc);
+                    $data['data']['pmip2'] = print_r ($elev->getScalar()->getValue(), 1);
+                    //print_r ($elev);
+                    //die();
+
+
+                    $ok = true; if ($source != null) break;
+                case null:
+                case "wordclim":
+
+
+
+                    $ok = true; if ($source != null) break;
+                default:
+                    if (!$ok) $data['error'][] = "Invalid source.";
+
+            }
+        }
+
+        $this->set (compact ('data'));
+        $this->layout = 'ajax';
+        
     }
     
     function keepalive () {
