@@ -74,11 +74,11 @@ class Upload extends AppModel {
      * Downloads a resource from $url and saves it, returning the new local URL
      * @param string $url URL of the resource to cache
      */
-    function passThrough ($url) {
+    function passThrough ($url, $title = null) {
 
         $filename = basename ($url);
         $urlHash = sha1 ($url);
-        $dbFilename = $urlHash . $filename;
+        $dbFilename = $urlHash . '-' . $filename;
 
         $existing = $this->find('first', array (
             'conditions' => array (
@@ -100,7 +100,7 @@ class Upload extends AppModel {
             }
             catch (Exception $e) {
                 // @TODO smarten this up
-                $nid = '';
+                $nid = '0';
             }
             restore_error_handler();
 
@@ -109,20 +109,33 @@ class Upload extends AppModel {
             // did it work?
             if ($rawLen > 0) {
                 // yes..?
-                $this->save(array (
+
+                $mime = false; // default no mime type
+                if (preg_match ("/^.*?\/([^\/]+?)(\.[a-z0-9]{1,5})?$/", $url, $m) > 0) {
+                    $testfn = TMP . sha1 ($dbFilename) . $m[2];
+                    //die ($testfn);
+                    file_put_contents($testfn, $fileRaw);
+                    $finfo = new finfo;
+                    $mime = $finfo->file($testfn, FILEINFO_MIME);
+                    unlink ($testfn);
+                }
+                
+                $this->create(array (
                     'Upload' => array (
                         'name' => $dbFilename,
                         'size' => $rawLen,
+                        'mime_type' => $mime,
                         'file_contents' => $fileRaw,
-                        'title' => $url,
+                        'title' => ($title === null) ? $url : $title,
                         'description' => 'Downloaded to local cache on ' . date ('Y-m-d H:i:s') . ' from ' . $url
                     )
                 ));
+                $this->save();
                 $nid = $this->getLastInsertID ();
             }
             else {
                 // badness :-(
-                $nid = '';
+                $nid = '0';
             }
             
 

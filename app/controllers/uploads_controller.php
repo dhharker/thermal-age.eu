@@ -9,7 +9,7 @@ class UploadsController extends AppController {
 
 	function view($id = null) {
         if ($id == 0) {
-            die("");
+            $id = -1;
         }
 		$this->download ($id, 0);
 	}
@@ -30,7 +30,14 @@ class UploadsController extends AppController {
                                      $this->data['Upload']['file']['size']);
 
             $this->data['Upload']['name'] = $this->data['Upload']['file']['name'];
-            $this->data['Upload']['type'] = $this->data['Upload']['file']['type'];
+
+
+            $finfo = new finfo;
+            $mime = $finfo->file($this->data['Upload']['file']['tmp_name'], FILEINFO_MIME);
+            //$this->data['Upload']['type'] = $this->data['Upload']['file']['type'];
+            $this->data['Upload']['mime_type'] = $mime;
+
+
             $this->data['Upload']['size'] = $this->data['Upload']['file']['size'];
             $this->data['Upload']['file_contents'] = $fileData;
             if ($this->Upload->save($this->data)) {
@@ -50,10 +57,25 @@ class UploadsController extends AppController {
         if (!$id) {
 			echo ""; return;
         }
+        elseif ($id == -1) {
+            // display error image
+            $errfile = APP.WEBROOT_DIR.DS.'img'.DS.'test-fail-icon.png';
+            $file = array (
+                'Upload' => array (
+                    'file_contents' => file_get_contents ($errfile),
+                    'name' => basename ($errfile),
+                    'size' => filesize ($errfile),
+                    'mime_type' => 'image/png'
+                )
+            );
+        }
+        else {
+            $file = $this->Upload->findById($id);
+        }
         Configure::write('debug', 0);
-        $file = $this->Upload->findById($id);
-        //header('Content-type: ' . $file['Upload']['type']);
-        header('Content-length: ' . $file['Upload']['size']);
+        
+        if (!empty ($file['Upload']['mime_type'])) header('Content-type: ' . $file['Upload']['mime_type']);
+        if (!empty ($file['Upload']['size'])) header('Content-length: ' . $file['Upload']['size']);
         if ($force) header ('Content-Disposition: attachment; filename="'.$file['Upload']['name'].'"');
         echo $file['Upload']['file_contents'];
         $this->autoLayout = false;

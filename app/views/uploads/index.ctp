@@ -1,3 +1,9 @@
+<style>
+    div.uploads.index td {
+        max-width: 10em;
+        overflow: hidden;
+    }
+</style>
 <div class="uploads index">
 	<h2><?php __('Uploads');?></h2>
 	<table cellpadding="0" cellspacing="0">

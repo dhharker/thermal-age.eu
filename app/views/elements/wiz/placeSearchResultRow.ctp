@@ -6,7 +6,7 @@ if (!empty ($placeInfo['summary'])) {
         <?php
         if (strlen (@$placeInfo['thumbnailImg']) > 0) {
             ?>
-        <img src="<?=$placeInfo['thumbnailImg']?>" style="margin: 5px; float: right;">
+        <img src="<?=$placeInfo['thumbnailImg']?>" class="ui-corner-allz" style="margin: 0px; float: right; max-width: 120px; max-height: 120px;">
             <?php
         }
         ?>
