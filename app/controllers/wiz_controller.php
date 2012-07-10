@@ -215,7 +215,6 @@ class WizController extends AppController {
                 case "pmip2":
 
                     $pmalt = new \ttkpl\pmip(\ttkpl\PMIP2::ALT_VAR, \ttkpl\PMIP2::T_PRE_INDUSTRIAL_0KA, \ttkpl\PMIP2::MODEL_HADCM3M2);
-
                     $elev = $pmalt->getElevationFromFacet ($loc);
                     $data['data']['pmip2'] = round ($elev->getValue()->getValue()->getValue(), 4);
                     
@@ -223,7 +222,10 @@ class WizController extends AppController {
                 case null:
                 case "wordclim":
 
-
+                    $wcalt = new \ttkpl\worldclim (\ttkpl\worldclim::ALT_VAR);
+                    //$elev = $wcalt->getElevationFromFacet ($loc);
+                    //$data['data']['worldclim'] = round ($elev->getValue()->getValue()->getValue(), 4);
+                    $data['data']['worldclim'] = round ($wcalt->getRealValueFromFacet($loc), 4);
 
                     $ok = true; if ($source != null) break;
                 default:
