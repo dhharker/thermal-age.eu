@@ -25,7 +25,7 @@
         <div class="grid_11 alpha">
             <?= $this->Form->input('Specimen.name', array(
                 'label' => 'Specimen Name:',
-                'placeholder' => 'e.g. "Neolithic cave burial, N. Germany, grave III"',
+                'placeholder' => 'e.g. "Neolithic burial, N. Germany, grave III"',
             ));?>
         </div>
 
