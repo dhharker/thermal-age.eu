@@ -223,10 +223,12 @@ class WizController extends AppController {
                 case "wordclim":
 
                     $wcalt = new \ttkpl\worldclim (\ttkpl\worldclim::ALT_VAR);
-                    //$elev = $wcalt->getElevationFromFacet ($loc);
-                    //$data['data']['worldclim'] = round ($elev->getValue()->getValue()->getValue(), 4);
-                    $data['data']['worldclim'] = round ($wcalt->getRealValueFromFacet($loc), 4);
-
+                    $elev = $wcalt->getElevationFromFacet ($loc);
+                    $data['data']['worldclim'] = round ($elev->getValue()->getValue()->getValue(), 4);
+                    //$data['data']['worldclim'] = round ($wcalt->getElevationFromFacet($loc), 4);
+                    //debug ($wcalt->importer->_latToBILDPO($wcalt->importer->currentHeader['ULYMAP']));
+                    //debug ($wcalt->importer->_latToBILDPO(-90));
+                    $data['error'] = array_merge ($data['error'], $wcalt->importer->error);
                     $ok = true; if ($source != null) break;
                 default:
                     if (!$ok) $data['error'][] = "Invalid source.";

@@ -39,13 +39,13 @@
         <div class="smallForm">
             <div class="grid_4 alpha">
                 <?= $this->Form->input('Site.elevation_dem_coarse', array (
-                    'label' => 'Coarse (PMIP2) Elevation (m)',
+                    'label' => 'Coarse (1°, PMIP2) Elevation (m)',
                     'disabled' => 1
                 )); ?>
             </div>
             <div class="grid_4">
                 <?= $this->Form->input('Site.elevation_dem_fine', array (
-                    'label' => 'Hi-res (Worldclim) Elevation (m)',
+                    'label' => 'Hi-res (0°05\',Worldclim) Elevation (m)',
                     'disabled' => 1
                 )); ?>
             </div>
