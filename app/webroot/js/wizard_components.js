@@ -361,20 +361,31 @@ var wc = {
                 marker.setPosition (event.latLng);
                 $('#SiteLatDec').val(event.latLng.lat())
                 $('#SiteLonDec').val(event.latLng.lng())
-                gmap.panTo (event.latLng);
+                gmap.panTo (marker.getPosition());
+                console.log ("UDM",event);
+            };
+            var udmnm = function (event) {
+                marker.setPosition (event.latLng);
+                $('#SiteLatDec').val(event.latLng.lat())
+                $('#SiteLonDec').val(event.latLng.lng())
             };
             var drop = function (event) {
                 udm (event);
-                var z = gmap.getZoom ();
+                /*var z = gmap.getZoom ();
                 if (z < 16) {
                     z = Math.ceil (z * 1.15);
                     gmap.setZoom (z);
-                }
+                }// don't do the above actually because it conflicts with the default zoom on double click behaviour which won't go away as easily as it might */
                 wc.demLookup();
+            };
+            var dblclick = function (event) {
+                udmnm (event);
+                wc.demLookup()
             };
 
             google.maps.event.addListener (marker, 'dragend', drop);
-            google.maps.event.addListener (gmap, 'click', drop);
+            google.maps.event.addListener (gmap, 'dblclick', dblclick);
+            //google.maps.event.addListener (gmap, 'click', function () { return false; });
             
             google.maps.event.addListener (gmap, 'resize', function () {
                 gmap.setCenter (marker.getPosition());
@@ -397,21 +408,27 @@ var wc = {
             return false;
         }
         for (box in boxen) {
-            if (!!data.data[box]) {
-                if (parseFloat(boxen[box].val()).toFixed(4) != parseFloat (data.data[box]).toFixed(4)) {
-                    boxen[box].val(data.data[box]).not(':animated').effect ('highlight', {}, 1500);
+            if (data.data[box] === 0) {
+                if (parseFloat(boxen[box].val()).toFixed(3) != parseFloat (data.data[box]).toFixed(3)) {
+                    boxen[box].val(data.data[box].toFixed(3)).not(':animated').effect ('highlight', {}, 1500);
+                }
+            }
+            else if (!!data.data[box]) {
+                if (parseFloat(boxen[box].val()).toFixed(3) != parseFloat (data.data[box]).toFixed(3)) {
+                    boxen[box].val(data.data[box].toFixed(3)).not(':animated').effect ('highlight', {}, 1500);
                 }
             }
         }
         // DEMs lapse
-        $('input#SiteCoarseFineLapseCorrection').val ( (((data['pmip2'] - data['worldclim']) / 1000) * 6.4).toFixed(4) );
+        var cflc = (((data.data['pmip2'] - data.data['worldclim']) / 1000) * 6.4).toFixed(4);
+        $('input#SiteCoarseFineLapseCorrection').val ((isNaN(cflc)) ? '' : cflc);
         // Site lapse
         var siteAlt = $('input#SiteElevation').val ();
         if (isNaN (siteAlt) || siteAlt === '' || siteAlt === undefined || !$('input:checkbox#SiteLapseCorrect').is(':checked')) {
             $('input#SiteFineKnownLapseCorrection').val ('');
         }
         else {
-            $('input#SiteFineKnownLapseCorrection').val ( (((data['worldclim'] - siteAlt) / 1000) * 6.4).toFixed(4) );
+            $('input#SiteFineKnownLapseCorrection').val ( (((data.data['worldclim'] - siteAlt) / 1000) * 6.4).toFixed(4) );
         }
     },
     demLookup: function () {
