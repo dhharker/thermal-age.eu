@@ -67,7 +67,9 @@
 </head>
 
 <body>
-    <div id="bg1"><div id="bg2"><div id="container" class="container_12 ui-corner-bottom">
+    <div id="bg1"></div> <div id="bg2"></div>
+
+    <div id="container" class="container_12 ui-corner-bottom">
 
         <header class="grid_12 smart ui-corner-bottom" style="clear: both;">
             <div class="grid_4 alpha clearfix no-v-margin">
@@ -154,7 +156,7 @@
             </div>
         </footer>
         
-    </div></div></div>
+    </div>
 
 
 </body>

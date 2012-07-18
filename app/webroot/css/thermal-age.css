@@ -100,17 +100,12 @@ li {
   margin-bottom: 5px;
 }
 
-/* The background comes in 2 layers;  */
+/* The background comes in 2 layers;
+Adapted from: http://www.willsloan.com/blog/design/full-page-backgrounds/ - thanks!
+
+*/
 #bg1 {
-    position: fixed;
-    overflow: auto;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    width: 100%;
-    height: 100%;
-    
+
     background: #b6d4b0; /* Old browsers */
     background: -moz-linear-gradient(top, #b6d4b0 0%, #a0aac1 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b6d4b0), color-stop(100%,#a0aac1)); /* Chrome,Safari4+ */
@@ -119,21 +114,39 @@ li {
     background: -ms-linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* IE10+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b6d4b0', endColorstr='#a0aac1',GradientType=0 ); /* IE6-9 */
     background: linear-gradient(top, #b6d4b0 0%,#a0aac1 100%); /* W3C */
-}
-#bg2 {
-    position: fixed;
-    overflow: auto;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-    background: url('/img/bg_spiral.png') transparent center center no-repeat;
+
+    -webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: -2;
 
 }
+#bg2 {
+    
+    background: url('/img/bg_spiral.png') transparent center center no-repeat;
+
+    /* Uncomment to scale background (doesn't look as good with current bg which is designed to crop)
+    -webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+    */
+	
+    position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: -1;
+
+}
+
 
 
 

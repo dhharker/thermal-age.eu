@@ -130,10 +130,15 @@ var wc = {
             newInp.insertAfter ($i);
             isBp.insertAfter ($i);
             // on load, the value will be in bp, so put it in the bp field
-            var ival = $i.val();
-            if (!(isNaN (ival) || '' == ival || ival.length == 0)) {
+            var ival = $i.attr('value');
+            if (!( isNaN (ival) || '' === ival || ival.length == 0 )) {
+                console.log ("ival is a number", ival);
                 newInp.val($i.val());
                 $i.val (useful.bp2ad (newInp.val()));
+                
+            }
+            else {
+                console.log ("ival is not a number", ival);
             }
             $i.keyup (function () {
                     var $this = $(this);
@@ -274,7 +279,7 @@ var wc = {
     initMap: function (ele) {
         $('#gMapGridBox').show ('blind', function () {
             $.smoothScroll ({
-                scrollElement: $('#bg2'),
+                //scrollElement: $('#bg2'),
                 scrollTarget: $('#gMapGridBox'),
                 offset: -85
             });
@@ -493,7 +498,7 @@ var wc = {
                 // Retrieve the first result
                 if (results[0]) {
                     $.smoothScroll ({
-                        scrollElement: $('#bg2'),
+                        //scrollElement: $('#bg2'),
                         scrollTarget: $('input#SiteElevation')
                             .val(results[0].elevation.toFixed(4))
                             .data ('changedAuto', true)
@@ -542,7 +547,7 @@ var wc = {
                 wc.local.map.showPlace (event.data);
             }
             $.smoothScroll ({
-                scrollElement: $('#bg2'),
+                //scrollElement: $('#bg2'),
                 scrollTarget: $('#gMapGridBox'),
                 offset: -85
             });
@@ -569,7 +574,7 @@ var wc = {
                 if (!!wc.local.map.map) {
                     wc.local.map.fromBoxen ();
                     $.smoothScroll ({
-                        scrollElement: $('#bg2'),
+                        //scrollElement: $('#bg2'),
                         scrollTarget: $('#SiteName'),
                         offset: -85
                     });
