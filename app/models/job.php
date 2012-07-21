@@ -18,7 +18,7 @@ class Job extends AppModel {
      * To be run from CLI. Finds the next job in the queue and runs it.
      */
     function tryProcessNext () {
-        echo "Trying to process next job...\n";
+        //echo "Trying to process next job...\n";
         if (!$this->_goodToGo()) {
             echo "Not good to go :-(\n";
             return false;
@@ -115,7 +115,7 @@ class Job extends AppModel {
 
         $this->_addToStatus("Thermal age: " . $taYrs->getValue());
 
-        //$ta->_nukeDataMess();
+        //$this->cleanse ($ta);
 
         return array ('thermalAge' => $ta, 'thermalYears' => $taYrs, 'objects' => array ($ta));
     }
@@ -241,9 +241,17 @@ class Job extends AppModel {
             foreach ($args['parsed'] as $running => $runIt) {
                 $this->_addToStatus("Deferring to Thermal Age processor for {$args['unParsed'][$running]['specimen']['code']}");
                 //print_r ($this->cleanse ($runIt)); die();
-                $unParsed[] = $args['unParsed'][$running];
-                $parsed[] = $runIt;
-                $results[] = $this->_task_thermal_age_processor($runIt);
+                //$unParsed[] = $args['unParsed'][$running];
+                //$parsed[] = $runIt;
+                $stime = microtime(1);
+                $res = $this->_task_thermal_age_processor($runIt);
+                $this->_addToStatus (sprintf ("Took %04.2fs", microtime(1) - $stime));
+                $results[] = array (
+                    '10c_thermal_age' => round ($res['thermalAge']->getThermalAge()->getValue(), 0),
+                    'effective_temperature' => round ($res['thermalAge']->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 2)
+
+                );
+                unset ($res);
             }
         }
         else {
@@ -254,8 +262,8 @@ class Job extends AppModel {
         $args['output_spreadsheet_filename'] = preg_replace ('/\/input(\W)/', '/output$1', $args['spreadsheet_csv']['Spreadsheet']['filename']);
         $this->_addToStatus(sprintf ("Output spreadsheet filename will be: %s", $args['output_spreadsheet_filename']));
         return array (
-            'unParsed' => $unParsed,
-            'parsed' => $parsed,
+            //'unParsed' => $unParsed,
+            //'parsed' => $parsed,
             'results' => $results,
             'output_csv_url' => DS.'spreadsheets'.DS.basename ($args['output_spreadsheet_filename']),
             'output_csv_name' => basename ($args['output_spreadsheet_filename']),
@@ -274,15 +282,19 @@ class Job extends AppModel {
             $cp->addColumn("Effective Temperature");
             $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
 
-            // slug  (-and then detect headers (not all are required)-)
+            // slug  (and then detect headers (not all are required))
             $s2e = array ();
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug($title))] = $title;
 
             foreach ($args['results'] as $resInd => $res) {
-                $tao = $res['thermalAge'];
+                foreach ($res as $col => $val) {
+                    $cp->setColumn($col, $val);
+                }
+                /*$tao = $res['thermalAge'];
                 $cp->setColumn($s2e['10c_thermal_age'], round ($tao->getThermalAge()->getValue(), 4));
                 $cp->setColumn($s2e['effective_temperature'], round ($tao->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 6));
+                 */
                 if (!$cp->next()) break;
             }
             $opfn = $args['output_csv_filename'];
@@ -405,6 +417,7 @@ class Job extends AppModel {
                             if (isset ($row[$cp->getColumn($s2e['thickness_m_' . $ssln])]) && $row[$cp->getColumn($s2e['thickness_m_' . $ssln])] > 0) {
                                 // layer is probably set
                                 $dbSoil = $this->Soil->findById ($row[$cp->getColumn($s2e['soil_id_' . $ssln])]);
+                                $layr = false;
                                 // thermal diffusivity is set; along with length this is all we actually /need/
                                 if (isset ($row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])]) && $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])] > 0) {
                                     $layr = array (
@@ -431,9 +444,10 @@ class Job extends AppModel {
                                     $cp->setColumn('soil_type_' . $ssln, $row[$cp->getColumn($s2e['soil_type_' . $ssln])] . ' (Modified)');
                                 }
 
-                                
-                                $me['burial']['SoilTemporothermal'][] = $layr;
-                                $me['burial']['Burial']['numLayers']++;
+                                if ($layr) {
+                                    $me['burial']['SoilTemporothermal'][] = $layr;
+                                    $me['burial']['Burial']['numLayers']++;
+                                }
                             }
                         }
                         $me['burial']['Temporothermal']['startdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_excavated_ad'])]);
@@ -713,17 +727,17 @@ class Job extends AppModel {
         }
         $plot->plotData( $dH, 'boxes', '1:2', 'x2y2', 'fs solid 0.5 lc rgb "#999999"');
         if (isset($opts['temporothermal']->twData['TGraph'])) {
-            $plot->set ("style fill solid 0.25 noborder");
+            $plot->set ("style fill solid 0.1 noborder");
             $plot->plotData( $dLS, 'filledcu', '1:2:3', 'x1y1');
             $plot->plotData( $dLB, 'filledcu', '1:2:3', 'x1y1');
         }
         //$plot->plotData( $dM, 'lines', '1:2', 'x1y1', 'smooth bezier');
-        $plot->plotData( $dM, 'lines', '1:2', 'x1y1');
-        $plot->plotData( $da, 'lines', '1:2', 'x1y1');
-        $plot->plotData( $dga, 'lines', '1:2', 'x1y1'); // */// <-- fix me!
+        $plot->plotData( $dM, 'lines', '1:2', 'x1y1', 'lw 2');
+        $plot->plotData( $da, 'lines', '1:2', 'x1y1', 'lw 1');
+        $plot->plotData( $dga, 'lines', '1:2', 'x1y1', 'lw 1'); // */// <-- fix me!
 
         if (isset($opts['temporothermal']->twData['teff'])) {
-            $plot->plotData( $dT, 'lines', '1:2', 'x1y1');
+            $plot->plotData( $dT, 'lines', '1:2', 'x1y1', 'lw 2');
         }
 
         $plot->setRange('x', $opts['temporothermal']->startDate->getYearsBp(), $opts['temporothermal']->stopDate->getYearsBp());
@@ -974,7 +988,7 @@ class Job extends AppModel {
             return $this->find('count', array (
                 'conditions' => array (
                     'Job.id <' => $id,
-                    'Job.status <=' => 1,
+                    'Job.status' => array (0, 1),
                 )
             ));
         }
@@ -1015,7 +1029,7 @@ class Job extends AppModel {
      */
     function bgpGetPid () {
         $pid = $this->_bgpGetJobFileContent('pid');
-        return ($pid == false) ? sprintf ("%d", $pid) : false;
+        return ($pid != false) ? sprintf ("%d", $pid) : false;
     }
     /**
      * Reads status file a line at a time from the top and stops once the timestamp
@@ -1111,6 +1125,7 @@ class Job extends AppModel {
      */
     function bgpBOYD () {
         $pid = $this->bgpGetPid();
+        
         if ($this->field ('status') == 1 && $pid !== false)
             if ($this->bgpIsRunning ($pid) == false) {
                 $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 3)), false);
