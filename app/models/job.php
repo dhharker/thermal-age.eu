@@ -850,7 +850,7 @@ class Job extends AppModel {
      */
     function cleanse ($arrIn, $maxN = 1000, $maxL = 6, $l = 0) {
         if (!\is_object($arrIn) && !\is_array($arrIn)) return $arrIn;
-        if ($l == 0) $arrIn = array ($arrIn);
+        if ($l == 0) $arrIn = (array) clone $arrIn;
         foreach ($arrIn as $i => &$c) {
             if (is_object($c)) {
                 $d = array ();
