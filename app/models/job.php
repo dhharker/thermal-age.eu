@@ -91,10 +91,20 @@ class Job extends AppModel {
             $name = $this->_task ($this->field('processor_name'), $type, array ("get_" . $type));
         }
         $meth = "_task_{$name}_{$type}";
-        if (method_exists($this, $meth))
-            return $this->$meth ($args);
-        $this->_addToStatus("Error: Unknown task.");
-        return false;
+        if (method_exists($this, $meth)) {
+            try {
+                $res = $this->$meth ($args);
+            }
+            catch (\Exception $e) {
+                $this->_addToStatus (sprintf ("!! TTKPL Fatal Error (%s):\n%s\nLine: %d %s", $e->getCode(), $e->getMessage(), $e->getLine(), basename($e->getFile())));
+                return false;
+            }
+            return $res;
+        }
+        else {
+            $this->_addToStatus("Error: Unknown task.");
+            return false;
+        }
     }
 
     function _task_thermal_age_processor ($args) {
@@ -830,7 +840,17 @@ class Job extends AppModel {
         );
     }
 
+    /** Filters massive arrays of data out of objects being dumped during debugging/logging
+     *
+     * @param <type> $arrIn
+     * @param <type> $maxN
+     * @param <type> $maxL
+     * @param <type> $l
+     * @return <type>
+     */
     function cleanse ($arrIn, $maxN = 1000, $maxL = 6, $l = 0) {
+        if (!\is_object($arrIn) && !\is_array($arrIn)) return $arrIn;
+        if ($l == 0) $arrIn = array ($arrIn);
         foreach ($arrIn as $i => &$c) {
             if (is_object($c)) {
                 $d = array ();
@@ -840,7 +860,7 @@ class Job extends AppModel {
             }
             if (is_array ($c)) {
                 ++$l;
-                if (count ($c) > 1000 || $l > $maxL)
+                if (count ($c) > $maxN || $l > $maxL)
                     unset ($arrIn[$i]);
                 elseif ($l) {
                     $c = $this->cleanse ($c, $maxN, $maxL, $l);
@@ -851,6 +871,9 @@ class Job extends AppModel {
 
         return $arrIn;
     }
+
+
+
     /**
      * Creates runtime files etc.
      * @return bool success
