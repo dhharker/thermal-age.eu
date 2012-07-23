@@ -22,7 +22,7 @@ if ($jid == 0) {
             $this->error (500, 'Error', "Unfortunately the job has crashed.");
         }
         elseif (!is_array ($results) || empty ($results['output_csv_url'])) {
-            $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful.");
+            $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful. ($results)");
         }
         else {
             ?>
