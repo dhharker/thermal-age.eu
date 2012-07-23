@@ -325,7 +325,7 @@ class Job extends AppModel {
 
         }
         
-        file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($this->cleanse($args)));
+        file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($args));
         // !!==borken
         //return true;
     }
@@ -850,7 +850,6 @@ class Job extends AppModel {
      */
     function cleanse ($arrIn, $maxN = 1000, $maxL = 6, $l = 0) {
         if (!\is_object($arrIn) && !\is_array($arrIn)) return $arrIn;
-        if ($l == 0) $arrIn = (array) clone $arrIn;
         foreach ($arrIn as $i => &$c) {
             if (is_object($c)) {
                 $d = array ();
