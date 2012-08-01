@@ -256,11 +256,20 @@ class Job extends AppModel {
                 $stime = microtime(1);
                 $res = $this->_task_thermal_age_processor($runIt);
                 $this->_addToStatus (sprintf ("Took %04.2fs", microtime(1) - $stime));
+                $ta = $res['thermalAge'];
                 $results[] = array (
-                    '10c_thermal_age' => round ($res['thermalAge']->getThermalAge()->getValue(), 0),
-                    'effective_temperature' => round ($res['thermalAge']->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 2)
-
+                    'λ' => $ta->getLambda(),
+                    '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
+                    'k (yr)' => $ta->getKYear (),
+                    'k (sec)' => $ta->getKSec (),
+                    'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
+                    '10C Thermal age' => $ta->getThermalAge()->getValue(),
                 );
+                /*$results[] = array (
+                    '10c_thermal_age' => round ($res['thermalAge']->getThermalAge()->getValue(), 0),
+                    'effective_temperature' => round ($res['thermalAge']->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 2),
+
+                );*/
                 unset ($res);
             }
         }
@@ -288,8 +297,8 @@ class Job extends AppModel {
         if (file_exists($fn)) {
             $this->_addToStatus(basename($fn) . " exists. Trying to open it...");
             $cp = new \ttkpl\csvData($fn, TRUE);
-            $cp->addColumn("10C Thermal Age");
-            $cp->addColumn("Effective Temperature");
+            //$cp->addColumn("10C Thermal Age");
+            //$cp->addColumn("Effective Temperature");
             $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
 
             // slug  (and then detect headers (not all are required))
@@ -346,7 +355,7 @@ class Job extends AppModel {
             // slug  (-and then detect headers (not all are required)-)
             $s2e = array ();
             foreach ($cp->titles as $title)
-                $s2e[strtolower (Inflector::slug($title))] = $title;
+                $s2e[strtolower (Inflector::slug(str_replace (".","",$title)))] = $title;
 
             //$this->_addToStatus(print_r ($s2e, true));
 
@@ -380,6 +389,7 @@ class Job extends AppModel {
                 }
 
                 if (!empty ($row)) {
+                    //print_r ($s2e); die();
                     $me = array (
                         'burial' => array (
                             'Temporothermal' => array ()
@@ -388,19 +398,25 @@ class Job extends AppModel {
                             'name' => @$row[$cp->getColumn($s2e['specimen_name'])],
                             'code' => @$row[$cp->getColumn($s2e['specimen_id'])],
                         ),
-                        'reaction' => array (
+                    );
+                    if ($row[$cp->getColumn($s2e['kinetics_id'])] > 0) {
+                        $r = $this->_getReaction($row[$cp->getColumn($s2e['kinetics_id'])]);
+                        if ($r) {
+                            $me['reaction'] = $r;
+                            $me['reaction']['Reaction']['reaction_id'] = $r['Reaction']['id'];
+                        }
+                    }
+                    elseif (isset ($s2e['energy_of_activation_kj_mol']) && isset ($s2e['pre_exponential_factor_s'])) {
+                        $me['reaction'] = array (
                             'Reaction' => array (
                                 'reaction_id' => $row[$cp->getColumn($s2e['kinetics_id'])],
                                 'ea_kj_per_mol' => $row[$cp->getColumn($s2e['energy_of_activation_kj_mol'])],
                                 'f_sec' => $row[$cp->getColumn($s2e['pre_exponential_factor_s'])],
                                 'name' => $row[$cp->getColumn($s2e['kinetics_name'])]
                             )
-                        )
-                    );
+                        );
+                    }
                     
-
-
-
                     // deposition date
                     $me['specimen']['Temporothermal']['stopdate_ybp'] = $row[$cp->getColumn($s2e['year_deposited_bp'])];
                     
@@ -431,7 +447,7 @@ class Job extends AppModel {
                                 // thermal diffusivity is set; along with length this is all we actually /need/
                                 if (isset ($row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])]) && $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])] > 0) {
                                     $layr = array (
-                                        'soil_id' => $row[$cp->getColumn($s2e['soil_id_' . $ssln])],
+                                        'soil_id' => '-1',//$row[$cp->getColumn($s2e['soil_id_' . $ssln])],
                                         'name' => $row[$cp->getColumn($s2e['soil_type_' . $ssln])],
                                         'thickness_m' => $row[$cp->getColumn($s2e['thickness_m_' . $ssln])],
                                         'thermal_diffusivity_m2_day' => $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])],
@@ -460,18 +476,31 @@ class Job extends AppModel {
                                 }
                             }
                         }
-                        $me['burial']['Temporothermal']['startdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_excavated_ad'])]);
+                        
                         $me['burial']['Temporothermal']['stopdate_ybp'] =  ($row[$cp->getColumn($s2e['year_deposited_bp'])]);
-                    }
+                        if (isset ($s2e['year_excavated_ad']) && isset ($row[$cp->getColumn($s2e['year_excavated_ad'])]) && $row[$cp->getColumn($s2e['year_excavated_ad'])] > 0) {
+                            // storage
+                            $me['burial']['Temporothermal']['startdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_excavated_ad'])]);
 
+                            $me['storage']['Temporothermal']['startdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_analysed_ad'])]);
+                            $me['storage']['Temporothermal']['stopdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_excavated_ad'])]);
+                            $me['storage']['Temporothermal']['temp_mean_c'] = $row[$cp->getColumn($s2e['mean_temp_deg_c'])];
+                            $me['storage']['Temporothermal']['temp_pp_amp_c'] = $row[$cp->getColumn($s2e['temp_range_tmax_tmin_deg_k'])];
+                        }
+                        else {
+                            $me['burial']['Temporothermal']['startdate_ybp'] =  ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_analysed_ad'])]);
+                            // @TODO Fix so no need for this
+                            // Setting time range of 0 prevents running storage temporothermal and pointless error
+                            $me['storage']['Temporothermal']['startdate_ybp'] = 0;
+                            $me['storage']['Temporothermal']['stopdate_ybp'] = 0;
+                        }
 
-                    if (1) {
-                        // deposition date
-                        $me['storage']['Temporothermal']['startdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_analysed_ad'])]);
-                        $me['storage']['Temporothermal']['stopdate_ybp'] = ttkpl\scalarFactory::ad2bp ($row[$cp->getColumn($s2e['year_excavated_ad'])]);
-                        $me['storage']['Temporothermal']['temp_mean_c'] = $row[$cp->getColumn($s2e['mean_temp_deg_c'])];
-                        $me['storage']['Temporothermal']['temp_pp_amp_c'] = $row[$cp->getColumn($s2e['temp_range_tmax_tmin_deg_k'])];
+                        
                     }
+                    //print_r ($me); die();
+                    
+
+                    
 
                     //print_r ($me);
 
@@ -486,7 +515,7 @@ class Job extends AppModel {
                 else
                     $this->_addToStatus ("Nothing to do for this row " . $rowCount);
                 //$this->_addToStatus("<pre>".serialize ($parse)."</pre>");
-                
+                //die();
 
             } while ($cp->next());
 

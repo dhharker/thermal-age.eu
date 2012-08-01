@@ -592,18 +592,50 @@ class WizController extends AppController {
         $ssOpts['name'] = Inflector::slug ($ssOpts['name']);
         $ssOpts['Reaction'] = $this->Wizard->read('reaction.Reaction');
 
+        if (count ($ssOpts['example_soils']) > 0) {
+            $this->loadModel('Soil');
+            $this->Soil->recursive = -1;
+            $soils = $this->Soil->find('all', array (
+                'fields' => array (
+                    'Soil.id',
+                    'Soil.name',
+                    'Soil.thermal_diffusivity_m2_day'
+                ),
+                'conditions' => array (
+                    'Soil.id' => $ssOpts['example_soils']
+                )
+            ));
+            $ssOpts['example_soils'] = $soils;
+        }
+        if ($ssOpts['Reaction']['reaction_id'] > 0) {
+            $this->loadModel ('Reaction');
+            $this->Reaction->recursive = -1;
+            $reaction = $this->Reaction->find ('first', array (
+                'fields' => array (
+                    'Reaction.id',
+                    'Reaction.name',
+                    'Reaction.ea_kj_per_mol',
+                    'Reaction.f_sec',
+                ),
+                'conditions' => array (
+                    'Reaction.id' => $ssOpts['Reaction']['reaction_id']
+                )
+            ));
+            $ssOpts = array_merge($ssOpts, $reaction);
+        }
         //debug ($ssOpts); die();
         //APP.WEBROOT_DIR;
         $csv = $this->Spreadsheet->get_blank_spreadsheet ($ssOpts);
         $fn =  self::_commonFilenamePrefix() . ((empty ($ssOpts['name'])) ? 'unnamed-job' : $ssOpts['name']);
         
-        header('Content-disposition: attachment; filename=' . $fn . '.csv');
+        //header('Content-disposition: attachment; filename=' . $fn . '.csv');
         echo $csv;
     }
     function _prepareSpreadsheetDownload () {
 
         //echo debug ($this->Wizard->read ('')); die();
 
+        // @TODO is this redundant?!
         $this->loadModel('Soil');
         $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
             'Soil.id',

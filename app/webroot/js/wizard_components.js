@@ -686,6 +686,7 @@ var wc = {
                                 .val ($('input#ReactionName').val ().replace ($('input#ReactionName').data ('lastSet'), combinedName))
                                 .data ('lastSet', combinedName);
                         }
+                        // @TODO showname is not updated when a custom reaction is used!
                         $('input#ReactionShowname').val ($('input#ReactionName').val());
                     }
                     $me.data(llk, $me.val().length);
@@ -728,9 +729,26 @@ var wc = {
     initSpreadsheetSetupForm: function (ele) {
         ele = ele || '#wizardContainer';
         var $me = $(ele);
-        // do stuff here.
+        
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

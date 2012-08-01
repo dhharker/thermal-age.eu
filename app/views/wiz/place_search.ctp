@@ -1,4 +1,3 @@
-
 <?php
 if (empty ($places['geonames'])) {
     ?>
@@ -41,3 +40,4 @@ else {
     <?php
 }
 
+?>
