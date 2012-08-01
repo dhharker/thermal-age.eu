@@ -55,6 +55,15 @@
                     'disabled' => 1
                 )); ?>
             </div>
+            <div class="grid_11 alpha omega">
+                <small>
+                    Temperature decreases with altitude. Enter the known elevation of your site, or
+                    use values from search tool above or map to find it from Wikipedia or Google.
+                    You must load the map to lookup temperature from Google. If you do not enter the
+                    elevation of your site, we will look up elevation from the Worldclim dataset and
+                    use this to improve the accuracy of your results. 
+                </small>
+            </div>
         </div>
 
         <div class="grid_4 alpha">
@@ -76,7 +85,7 @@
         </div>*/ ?>
         <div class="grid_4">
             <?= $this->Form->input('Site.lapse_correct', array (
-                'label' => 'Hi-res &lt; Site Lapse?',
+                'label' => 'Coarse &lt; Site Lapse?',
                 'type' => 'checkbox',
                 'value' => 1
             )); ?>
@@ -85,8 +94,8 @@
             </small>
         </div>
         <div class="grid_3 omega">
-            <?= $this->Form->input('Site.fine_known_lapse_correction', array (
-                'label' => 'Hi-res &lt; Site (&deg;C&Delta;)',
+            <?= $this->Form->input('Site.coarse_known_lapse_correction', array (
+                'label' => 'Coarse &lt; Site (&deg;C&Delta;)',
                 'disabled' => 1,
             )); ?>
         </div>

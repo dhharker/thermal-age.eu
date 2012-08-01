@@ -210,6 +210,8 @@ class WizController extends AppController {
         }
         else {
             $ok = false;
+            // @TODO refactor this block somewhere sensible and update the equivalent lookups
+            // during job processing.
             switch ($source) {
                 case null:
                 case "pmip2":

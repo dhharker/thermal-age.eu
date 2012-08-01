@@ -233,6 +233,30 @@ class Job extends AppModel {
                 $this->_addToStatus("Couldn't attach burial conditions - possible error :-(");
         }
         else $this->_addToStatus("!! No burial during deposition?");
+
+        // elevation correction
+        $bestSiteElev = null;
+        $bseSource = "";
+        if (isset ($args['site']['Site']['lapse_correct']) && $args['site']['Site']['lapse_correct'] == 1) {
+            // the lapse correct box applies to the known elev field, if its unchecked or value is
+            // garbage then we lookup from worldclim anyway
+            if (is_numeric ($args['site']['Site']['elevation'])) {
+                // we have a known elevation, w00t!
+                $bestSiteElev = $args['site']['Site']['elevation'];
+                $bseSource = $args['site']['Site']['elevation_source'];
+            }
+        }
+        if ($bestSiteElev === null) {
+            // not managed to get an elevation - get it from worldclim
+            $wcalt = new \ttkpl\worldclim (\ttkpl\worldclim::ALT_VAR);
+            $elev = $wcalt->getElevationFromFacet ($location);
+            $bestSiteElev = round ($elev->getValue()->getValue()->getValue(), 4);
+            $bseSource = "Worldclim";
+        }
+        
+
+
+
         $parsed['Temporothermals'][] = $tt;
 
         //file_put_contents (APP . DS . "dsdbg.txt", print_r ($this->cleanse ($parsed), true));
@@ -436,6 +460,7 @@ class Job extends AppModel {
                             'name' => $row[$cp->getColumn($s2e['site_name'])],
                             'lon_dec' => $row[$cp->getColumn($s2e['longitude_decimal'])],
                             'lat_dec' => $row[$cp->getColumn($s2e['latitude_decimal'])],
+                            'elevation' => $row[$cp->getColumn($s2e['elevation_wgs84'])],
                         );
                         // process burial layers if any
                         for ($ssln = 1; $ssln <= $SLCnum; $ssln++) {
