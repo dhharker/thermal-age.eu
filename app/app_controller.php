@@ -24,7 +24,7 @@ class AppController extends Controller {
     function beforeFilter () {
 
         // This while proper security comes slowly along
-        if (!in_array ($this->name, array ('Wiz', 'Pages', 'Jobs')) || in_array($this->action, array ('edit', 'delete'))) {
+        if (in_array ($this->name, array ('Soils', 'Reactions', 'Sites', 'Users', 'Citations', 'Feedbacks', 'Jobs', 'Uploads', 'Groups', 'Pages', 'Specimens')) && in_array ($this->action, array ('edit', 'delete', 'index'))) {
 
             $this->cakeError('error404');
         }
