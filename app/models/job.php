@@ -244,6 +244,8 @@ class Job extends AppModel {
                 // we have a known elevation, w00t!
                 $bestSiteElev = $args['site']['Site']['elevation'];
                 $bseSource = $args['site']['Site']['elevation_source'];
+                if (strlen($bseSource) == 0)
+                    $bseSource = "(user supplied)";
             }
         }
         if ($bestSiteElev === null) {
@@ -471,6 +473,8 @@ class Job extends AppModel {
                             'lon_dec' => $row[$cp->getColumn($s2e['longitude_decimal'])],
                             'lat_dec' => $row[$cp->getColumn($s2e['latitude_decimal'])],
                             'elevation' => $row[$cp->getColumn($s2e['elevation_wgs84'])],
+                            'elevation_source' => "(user supplied in spreadsheet)",
+                            'lapse_correct' => 1,
                         );
                         // process burial layers if any
                         for ($ssln = 1; $ssln <= $SLCnum; $ssln++) {
