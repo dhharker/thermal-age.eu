@@ -432,13 +432,13 @@ var wc = {
         //if (isNaN (siteAlt) || siteAlt === '' || siteAlt === undefined || !$('input:checkbox#SiteLapseCorrect').is(':checked')) {
         if (isNaN (siteAlt) || siteAlt === '' || siteAlt === undefined) {
             $('input#SiteCoarseKnownLapseCorrection').val ('');
-            if (!$('input:checkbox#SiteLapseCorrect').is(':checked')) {
+            if ($('input:checkbox#SiteLapseCorrect').is(':checked')) {
                 $('input:checkbox#SiteLapseCorrect').attr('checked', false);
             }
         }
         else {
             $('input:checkbox#SiteLapseCorrect').attr('checked', true);
-            $('input#SiteCoarseKnownLapseCorrection').val ( (((data.data['worldclim'] - siteAlt) / 1000) * 6.4).toFixed(4) );
+            $('input#SiteCoarseKnownLapseCorrection').val ( (((data.data['pmip2'] - siteAlt) / 1000) * 6.4).toFixed(4) );
         }
     },
     demLookup: function () {

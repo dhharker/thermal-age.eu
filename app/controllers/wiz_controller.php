@@ -630,7 +630,7 @@ class WizController extends AppController {
         $csv = $this->Spreadsheet->get_blank_spreadsheet ($ssOpts);
         $fn =  self::_commonFilenamePrefix() . ((empty ($ssOpts['name'])) ? 'unnamed-job' : $ssOpts['name']);
         
-        //header('Content-disposition: attachment; filename=' . $fn . '.csv');
+        header('Content-disposition: attachment; filename=' . $fn . '.csv');
         echo $csv;
     }
     function _prepareSpreadsheetDownload () {

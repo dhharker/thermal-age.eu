@@ -253,9 +253,19 @@ class Job extends AppModel {
             $bestSiteElev = round ($elev->getValue()->getValue()->getValue(), 4);
             $bseSource = "Worldclim";
         }
-        
+        // Get coarse elevation from pmip2 data
+        $pmalt = new \ttkpl\pmip(\ttkpl\PMIP2::ALT_VAR, \ttkpl\PMIP2::T_PRE_INDUSTRIAL_0KA, \ttkpl\PMIP2::MODEL_HADCM3M2);
+        $elev = $pmalt->getElevationFromFacet ($location);
+        $coarseSiteElev = round ($elev->getValue()->getValue()->getValue(), 4);
 
-
+        if ($coarseSiteElev != $bestSiteElev) {
+            $tt->setAltitudeLapse($coarseSiteElev, $bestSiteElev);
+            $tt->elevCorrection->desc .= " Site elevation source: $bseSource";
+            $this->_addToStatus ("Applying elevation correction: " . $tt->elevCorrection->desc);
+        }
+        else {
+            $this->_addToStatus("Unable to find any better site altitudes - not performing correction.");
+        }
 
         $parsed['Temporothermals'][] = $tt;
 
