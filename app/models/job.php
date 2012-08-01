@@ -849,7 +849,7 @@ class Job extends AppModel {
             'lambda' => 1, // default to total destruction
             'example_lambdas' => array (
                 "Complete Destruction" => 1,
-                "Ötzi" => 0.009088,
+                "Ötzi" => 0.001893,
             ),
             'show_examples' => true
         ), $arrOpts);

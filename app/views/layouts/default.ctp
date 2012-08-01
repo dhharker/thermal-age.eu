@@ -41,7 +41,8 @@
         
 
     <?php
-        echo $this->Minify->js_link($global_minified_javascript) . "\n";
+        if (isset ($global_minified_javascript))
+            echo $this->Minify->js_link($global_minified_javascript) . "\n";
         if (isset ($minified_javascript))
             echo $this->Minify->js_link($minified_javascript) . "\n";
 

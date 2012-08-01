@@ -1,4 +1,4 @@
-<div class="grid_8"><div class="smartbox">
+<div class="grid_7"><div class="smartbox">
     <h1 class="sbHeading">About thermal-age.eu</h1>
     <p>
         Thermal-age.eu is the development site for <a href="http://www.synthesys.info/II_JRA_1.htm">JRA 1: PrediCtoR</a> A novel decision-making software tool being developed within the framework of SYNTHESYS, the European Union-funded Integrated Activities project designed to help collections managers and users to quantify the risks associated with destructive analysis of specimens. Thermal.age.eu intends to simplify the calculation of thermal ages (1) to enable researchers to predict the likely survival of DNA and other molecules in archaeological and fossil samples.
@@ -31,37 +31,42 @@
 
 </div></div>
 
-<div class="grid_4"><div class="smartbox">
+<div class="grid_5"><div class="smartbox">
         <h2 class="sbHeading">
             What?
         </h2>
         <ul>
             <li>
-                Primer of TA model w/pics
+                <em>A computer model and web interface for quantifying chemical reactions in archaeological specimens.</em>
             </li>
             <li>
-                Overview of datasources used
+                Temperature and elevation data sourced from:
+                <a target="_blank" href="http://pmip2.lsce.ipsl.fr/">PMIP2</a>,
+                <a target="_blank" href="http://www.worldclim.org/">Worldclim</a>,
+                <a target="_blank" href="http://www.nature.com/nature/journal/v437/n7055/abs/nature03975.html">Bintanja, R. (05)</a>,
+                and
+                <a target="_blank" href="http://en.wikipedia.org/">Wikipedia</a>.
             </li>
         </ul>
 </div></div>
 
-<div class="grid_4"><div class="smartbox">
+<div class="grid_5"><div class="smartbox">
         <h2 class="sbHeading">
             Who?
         </h2>
         <ul>
             <li>
-                Funded by SYNTHII & is JRA 1
+                Funded by the EU as <a target="_blank" href="http://www.synthesys.info/II_JRA_1.htm">part of</a> the <a target="_blank" href="http://www.synthesys.info/">SYNTHESYS</a> project.
             </li>
             <li>
-                Written by dhharker etc.
+                Model developed by <a target="_blank" href="http://www.york.ac.uk/archaeology/staff/academic-staff/matthew-collins/">Matthew Collins</a> and <a target="_blank" href="http://dhharker.co.uk">David Harker</a>, University of York.
             </li>
             <li>
-                @SB, so you might like zooms etc.
+                Software developed by David Harker at <a target="_blank" href="https://sites.google.com/a/palaeo.eu/xtnl-bioarch/Home">BioArCh</a>.
             </li>
         </ul>
 </div></div>
-
+<!--
 <div class="grid_4"><div class="smartbox">
         <h2 class="sbHeading">
             Technology
@@ -88,3 +93,4 @@
 
 </div></div>
 
+-->

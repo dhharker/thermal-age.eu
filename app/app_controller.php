@@ -22,6 +22,13 @@ class AppController extends Controller {
     }
 
     function beforeFilter () {
+
+        // This while proper security comes slowly along
+        if (!in_array ($this->name, array ('Wiz', 'Pages', 'Jobs')) || in_array($this->action, array ('edit', 'delete'))) {
+
+            $this->cakeError('error404');
+        }
+
         parent::beforeFilter();
         $this->set ('isMobile', $this->RequestHandler->isMobile());
 

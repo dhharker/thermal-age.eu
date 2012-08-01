@@ -8,8 +8,9 @@
 </div></div>
 
 <div class="grid_4">
+
     <div class="smartbox cleafix">
-        <h2 class="sbHeading">
+        <!--<h2 class="sbHeading">
             Thermal Age
         </h2>
 
@@ -33,9 +34,10 @@
 
         <div class="clear"></div>
 
-        <h3 class="sbHeading" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">
+        <h3 class="sbHeading" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">-->
+        <h2 class="sbHeading">
             Spreadsheet Wizard
-        </h3>
+        </h2>
         <?php echo $this->Html->link(
             "Thermal Age Spreadsheet<br /><span class=\"subtler-text\">Click to Start</span>",
             array ('controller' => 'wiz', 'action' => 'thermal_age_spreadsheet_tool'),
@@ -80,7 +82,10 @@
         <h2 class="sbHeading">
             Kinetic Dating
         </h2>
-        <?php echo $this->Html->link(
+        <div style="text-align: center; color: #a00; font-size: 150%; font-style: italic; margin: 1.2em;">
+            Coming soon!
+        </div>
+        <?php  $this->Html->link(
             "Date Proxy Wizard<br /><span class=\"subtler-text\">Click to Start</span>",
             array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
             array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
@@ -100,7 +105,6 @@
             <p>
                 We believe this technique has exciting potential as a dating proxy using other
                 molecules than DNA, so we'll perhaps be making announcements about this in the future.
-                It's here for your entertainment until then!
             </p>
         </div>
     </div>
