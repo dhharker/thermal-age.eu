@@ -1016,7 +1016,16 @@ class Job extends AppModel {
      */
     function _goodToGo () {
         // if running threads < maxThreads return true
-        return true;
+        return ($this->_bgpCountRunningProcesses() >= $this->maxThreads) ? false : true;
+    }
+
+    function _bgpCountRunningProcesses () {
+        $runningJobs = $this->_bgpGetRunningJobs();
+        $numProcs = count ($runningJobs);
+        foreach ($runningJobs as $j)
+            if (!$this->bgpIsRunning($this->bgpGetPid($j['Job']['id'])))
+                $numProcs--;
+        return $numProcs;
     }
 
     /**
@@ -1228,8 +1237,8 @@ class Job extends AppModel {
         return $this->save (array ('Job' => array ('id' => $job_id, 'status' => 3)), false);
     }
 
-    function bgpGlobalCorpseCollection () {
-        $runningStatus = $this->find('all', array (
+    function _bgpGetRunningJobs () {
+        return $this->find('all', array (
             'conditions' => array (
                 'Job.status' => 3
             ),
@@ -1237,6 +1246,10 @@ class Job extends AppModel {
                 'Job.id'
             ),
         ));
+    }
+
+    function bgpGlobalCorpseCollection () {
+        $runningStatus = $this->_bgpGetRunningJobs();
 
         if (empty ($runningStatus)) return false;
 
