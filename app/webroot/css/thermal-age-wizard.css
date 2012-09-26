@@ -425,17 +425,28 @@ span.isBp {
 @media handheld, only screen and (max-width: 760px) {
 
     /* Burial Layers */
-    .mobile-layout .burialLayer .deleteLayerButton {
+    .mobile-layout #wizardContainer .burialLayer .deleteLayerButton {
         margin-right: -11px;
     }
-    .mobile-layout .burialLayer .reorderLayerButton {
+    .mobile-layout #wizardContainer .burialLayer .reorderLayerButton {
         margin-left: -6px;
         margin-right: 3px;
     }
 
     
-    .mobileLayers .grid_3 {
+    #wizardContainer .mobileLayers .grid_3 {
         margin-top: 0;
         margin-bottom: 0;
+        
+        padding-bottom: 0;
+    }
+    #burialLayersList div.input.checkbox {
+        float: left;
+        display: block;
+        min-width: 40%;
+        margin-top: .2em;
+    }
+    #burialLayersList div.input.checkbox label {
+        margin-top: 2px;
     }
 }
