@@ -37,8 +37,7 @@ class Job extends AppModel {
         $next = $this->_getNext ();
         
         if (!$next) {
-            if (PHP_SAPI == 'cli') echo "No more jobs to process.\n";
-            return false; // if there's nothing to do
+            if (PHP_SAPI == 'cli') $this->_addToStatus ("No more jobs to process.\n");
         }
         else {
 
@@ -57,8 +56,8 @@ class Job extends AppModel {
         }
 
         // once complete, start a new process (to process the next job, if any) and exit
-// DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
-// @todo implement checking whether max number of processor threads has been reached.
+        // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
+        $this->_addToStatus("Wating {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
         sleep ($this->sleepyTime);
         $this->_forkToBackground();
         exit (0);
@@ -1012,13 +1011,16 @@ class Job extends AppModel {
      * Spawns a background process to run tryProcessNext
      */
     function _forkToBackground () {
-        $command = "php -q " . trim (`pwd`) . "/../../cake/console/cake.php --app " . APP . " background";
+        $this->_addToStatus("Forking new worker thread...");
+        $command = "php -q " . APP . "../cake/console/cake.php --app " . APP . " background";
         //die ("nohup $command > /dev/null 2>&1 & echo $!");
         $pid = shell_exec ("nohup $command > /dev/null 2>&1 & echo $!");
+        $this->_addToStatus("Started with PID $pid");
         return ($pid);
     }
     /**
-     * Run by tryProcessNext prior to doing any work; initialises
+     * Run by tryProcessNext prior to doing any work; checks for jobs with status=running and a
+     * process which is running (and not crashed) and compares against maxThreads
      * @return bool is it ok to create another bg processing thread
      */
     function _goodToGo () {
@@ -1248,10 +1250,8 @@ class Job extends AppModel {
         if ($this->read ('Job.status', $job_id)) {
             $this->_addToStatus("Updating status of $job_id to 'crashed'");
             $d = array ('Job' => array ('id' => $job_id, 'status' => 3));
-            print_r ($this->save ($d, array ('Job.status, Job.id'), false));
-            
-            
-            print_r ($this->read ('Job.status', $job_id));
+            $this->save ($d, array ('Job.status, Job.id'), false);
+            return true;
         }
         return false;
     }
