@@ -69,7 +69,7 @@ class JobsController extends AppController {
         elseif ($j['Job']['status'] == 0 && !$async) // job is pending
             $this->Job->tryProcessNext();
         elseif ($j['Job']['status'] == 1) // job is running
-            $this->Job->bgpBOYD(); // check for crashed jobs
+            $this->Job->bgpBOYD(); // check if *this job* has crashed
     }
 
 
