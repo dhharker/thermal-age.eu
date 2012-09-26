@@ -75,7 +75,7 @@
                                     '<span class="ui-icon ui-icon-carat-2-n-s"></span>',
                                     '#',
                                     array(
-                                        'class' => 'fg-button ui-state-default sort-handle',
+                                        'class' => 'fg-button ui-state-default sort-handle reorderLayerButton',
                                         'escape' => false,
                                     ));
                                 ?>
