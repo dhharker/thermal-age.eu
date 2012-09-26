@@ -418,3 +418,24 @@ span.isBp {
 .griddedButton2xContainer {
     margin-top: 1.4em;
 }
+
+
+
+/* Mobile tweaks */
+@media handheld, only screen and (max-width: 760px) {
+
+    /* Burial Layers */
+    .mobile-layout .burialLayer .deleteLayerButton {
+        margin-right: -11px;
+    }
+    .mobile-layout .burialLayer .reorderLayerButton {
+        margin-left: -6px;
+        margin-right: 3px;
+    }
+
+    
+    .mobileLayers .grid_3 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
