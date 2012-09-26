@@ -18,9 +18,13 @@ class Job extends AppModel {
      * To be run from CLI. Finds the next job in the queue and runs it.
      */
     function tryProcessNext () {
+
+        // Global cleanup of crashed processes before we start
+        $this->bgpGlobalCorpseCollection();
+
         //echo "Trying to process next job...\n";
         if (!$this->_goodToGo()) {
-            echo "Not good to go :-(\n";
+            if (PHP_SAPI == 'cli') echo "Process already running?\n";
             return false;
         }
         if (PHP_SAPI !== 'cli') {
@@ -32,28 +36,30 @@ class Job extends AppModel {
         $next = $this->_getNext ();
         
         if (!$next) {
-            echo "No more jobs!\n";
+            if (PHP_SAPI == 'cli') echo "No more jobs to process.\n";
             return false; // if there's nothing to do
         }
-        
-        $this->read (null, $next['Job']['id']);
-        
+        else {
 
-        $this->_startProcessing();
-        $input = unserialize ($this->field('data'));
-        // the parser loads user input in whatever-ass format into the ttkpl object model
-        $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
-        // the processor takes this bunch of objects and makes them work
-        $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
-        // assuming nothing went wrong with the above steps, the reporter makes nice graphs and pdfs
-        $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
-        $this->_stopProcessing();
+
+            $this->read (null, $next['Job']['id']);
+
+            $this->_startProcessing();
+            $input = unserialize ($this->field('data'));
+            // the parser loads user input in whatever-ass format into the ttkpl object model
+            $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
+            // the processor takes this bunch of objects and makes them work
+            $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
+            // assuming nothing went wrong with the above steps, the reporter makes nice graphs and pdfs
+            $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
+            $this->_stopProcessing();
+        }
 
         // once complete, start a new process (to process the next job, if any) and exit
 // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
 // @todo implement checking whether max number of processor threads has been reached.
-        //sleep (1);
-        //$this->_forkToBackground();
+        sleep (1);
+        $this->_forkToBackground();
         exit (0);
 
     }
@@ -992,10 +998,10 @@ class Job extends AppModel {
      * @return bool false if status file doesn't exist or can't be written else true
      */
     function _addToStatus ($message) {
+        $fmsg = sprintf("%f %s\n", microtime (true), $message);
+        if (PHP_SAPI == 'cli') echo $fmsg;
         if (!empty ($this->bg) && !empty ($this->bg['status']) && file_exists ($this->bg['status'])) {
             $st = file_get_contents ($this->bg['status']);
-            $fmsg = sprintf("%f %s\n", microtime (true), $message);
-            echo $fmsg;
             $st = $fmsg . $st;
             return file_put_contents ($this->bg['status'], $st);
         }
@@ -1015,11 +1021,12 @@ class Job extends AppModel {
      * @return bool is it ok to create another bg processing thread
      */
     function _goodToGo () {
+        $this->_addToStatus("G2G");
         // if running threads < maxThreads return true
-        return ($this->_bgpCountRunningProcesses() >= $this->maxThreads) ? false : true;
+        return ($this->_bgpCountRunningJobProcesses() >= $this->maxThreads) ? false : true;
     }
 
-    function _bgpCountRunningProcesses () {
+    function _bgpCountRunningJobProcesses () {
         $runningJobs = $this->_bgpGetRunningJobs();
         $numProcs = count ($runningJobs);
         foreach ($runningJobs as $j)
@@ -1127,7 +1134,9 @@ class Job extends AppModel {
      * @return mixed int pid if pidfile exists else null
      */
     function bgpGetPid ($job_id = null) {
+        //$this->_addToStatus("Get PID for job $job_id");
         $pid = $this->_bgpGetJobFileContent('pid', $job_id);
+        //$this->_addToStatus("...is $pid");
         return ($pid != false) ? sprintf ("%d", $pid) : false;
     }
     /**
@@ -1213,7 +1222,7 @@ class Job extends AppModel {
         if (file_exists ($n)) {
             $r = (posix_getsid ($pid) === false) ? false : true;
         }
-        $this->_addToStatus("pid is " . (($r == true) ? "" : "not") . "running");
+        $this->_addToStatus("pid $pid is " . (($r == true) ? "" : "not ") . "running");
         return $r;
         
     }
@@ -1234,13 +1243,22 @@ class Job extends AppModel {
     }
 
     function _bgpProcessCrashed ($job_id) {
-        return $this->save (array ('Job' => array ('id' => $job_id, 'status' => 3)), false);
+        $this->recursive = 0;
+        if ($this->read ('Job.status', $job_id)) {
+            $this->_addToStatus("Updating status of $job_id to 'crashed'");
+            $d = array ('Job' => array ('id' => $job_id, 'status' => 3));
+            print_r ($this->save ($d, array ('Job.status, Job.id'), false));
+            
+            
+            print_r ($this->read ('Job.status', $job_id));
+        }
+        return false;
     }
 
     function _bgpGetRunningJobs () {
         return $this->find('all', array (
             'conditions' => array (
-                'Job.status' => 3
+                'Job.status' => '1'
             ),
             'fields' => array (
                 'Job.id'
@@ -1249,19 +1267,21 @@ class Job extends AppModel {
     }
 
     function bgpGlobalCorpseCollection () {
+        $this->_addToStatus("GCC");
         $runningStatus = $this->_bgpGetRunningJobs();
 
         if (empty ($runningStatus)) return false;
 
         $numCorpses = 0;
         foreach ($runningStatus as $job) {
-            if (!$this->bgpIsRunning($job['Job']['id'])) {
+            if (!$this->bgpIsRunning($this->bgpGetPid($job['Job']['id']))) {
                 // Job has crashed
                 // @TODO (above true unless it finished normally in between DB query above and process running test immediately above - provision)
                 $numCorpses++;
                 $this->_bgpProcessCrashed($job['Job']['id']);
             }
         }
+        $this->_addToStatus("Collected $numCorpses corpses.");
         return $numCorpses;
     }
     
