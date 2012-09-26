@@ -138,7 +138,7 @@ var wc = {
                 
             }
             else {
-                console.log ("ival is not a number", ival);
+                //console.log ("ival is not a number", ival);
             }
             $i.keyup (function () {
                     var $this = $(this);
