@@ -1117,8 +1117,8 @@ class Job extends AppModel {
      *
      * @return mixed int pid if pidfile exists else null
      */
-    function bgpGetPid () {
-        $pid = $this->_bgpGetJobFileContent('pid');
+    function bgpGetPid ($job_id = null) {
+        $pid = $this->_bgpGetJobFileContent('pid', $job_id);
         return ($pid != false) ? sprintf ("%d", $pid) : false;
     }
     /**
@@ -1152,8 +1152,8 @@ class Job extends AppModel {
      * @param string $file extension of file e.g. pid, status, log etc.
      * @return string
      */
-    function bgpGetJobFileName ($file = 'pid') {
-        $id = $this->field('id');
+    function bgpGetJobFileName ($file = 'pid', $job_id = null) {
+        $id = ($job_id === null) ? $this->field('id') : $job_id;
         if ($id !== FALSE) {
             $file = TMP . sprintf ("jobrun/job_%d.%s", $id, $file);
         }
@@ -1183,11 +1183,11 @@ class Job extends AppModel {
     }
     /**
      * Generic function for getting stuff out of one of a jobs possible files
-     * @param <type> $file see bgpGetJobFile
+     * @param string $file see bgpGetJobFile
      * @return string file content or false if doesn't exist
      */
-    function _bgpGetJobFileContent ($file = 'pid') {
-        $fn = $this->bgpGetJobFileName($file);
+    function _bgpGetJobFileContent ($file = 'pid', $job_id = null) {
+        $fn = $this->bgpGetJobFileName($file, $job_id);
         return (file_exists ($fn)) ? file_get_contents ($fn) : false;
     }
 
@@ -1218,10 +1218,38 @@ class Job extends AppModel {
         
         if ($this->field ('status') == 1 && $pid !== false)
             if ($this->bgpIsRunning ($pid) == false) {
-                $this->save (array ('Job' => array ('id' => $this->data['Job']['id'], 'status' => 3)), false);
+                $this->_bgpProcessCrashed($this->data['Job']['id']);
                 return true;
             }
         return false;
+    }
+
+    function _bgpProcessCrashed ($job_id) {
+        return $this->save (array ('Job' => array ('id' => $job_id, 'status' => 3)), false);
+    }
+
+    function bgpGlobalCorpseCollection () {
+        $runningStatus = $this->find('all', array (
+            'conditions' => array (
+                'Job.status' => 3
+            ),
+            'fields' => array (
+                'Job.id'
+            ),
+        ));
+
+        if (empty ($runningStatus)) return false;
+
+        $numCorpses = 0;
+        foreach ($runningStatus as $job) {
+            if (!$this->bgpIsRunning($job['Job']['id'])) {
+                // Job has crashed
+                // @TODO (above true unless it finished normally in between DB query above and process running test immediately above - provision)
+                $numCorpses++;
+                $this->_bgpProcessCrashed($job['Job']['id']);
+            }
+        }
+        return $numCorpses;
     }
     
 
