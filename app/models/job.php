@@ -12,6 +12,7 @@ class Job extends AppModel {
     var $statusCodes = array ('pending', 'running', 'finished', 'error');
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
+    var $sleepyTime = 10; // number of seconds to wait before restarting to check for new jobs
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
     /**
@@ -58,7 +59,7 @@ class Job extends AppModel {
         // once complete, start a new process (to process the next job, if any) and exit
 // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
 // @todo implement checking whether max number of processor threads has been reached.
-        sleep (1);
+        sleep ($this->sleepyTime);
         $this->_forkToBackground();
         exit (0);
 
