@@ -1,4 +1,5 @@
-<h1 class="sbHeading ui-corner-tl">
+<?=$this->element('wiz/wizardControlBarTop',  array ('wizardInfos' => $wizardInfos));?>
+<h1 class="sbHeading">
     Storage
 </h1>
 <?php echo $this->Form->create('Storage', array('id' => 'StorageForm', 'url' => $this->here)); ?>

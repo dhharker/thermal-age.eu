@@ -1,4 +1,5 @@
-<h1 class="sbHeading ui-corner-tl">
+<?=$this->element('wiz/wizardControlBarTop',  array ('wizardInfos' => $wizardInfos));?>
+<h1 class="sbHeading">
     Review
 </h1>
 

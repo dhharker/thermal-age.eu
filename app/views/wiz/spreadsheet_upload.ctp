@@ -8,8 +8,8 @@ checkbox multi-period sample example?
 */
 
 ?>
-
-<h1 class="sbHeading ui-corner-tl">
+<?=$this->element('wiz/wizardControlBarTop',  array ('wizardInfos' => $wizardInfos));?>
+<h1 class="sbHeading">
     Setup Spreadsheet
 </h1>
 

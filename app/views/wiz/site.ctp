@@ -1,4 +1,5 @@
-<h1 class="sbHeading ui-corner-tl">
+<?=$this->element('wiz/wizardControlBarTop',  array ('wizardInfos' => $wizardInfos));?>
+<h1 class="sbHeading">
     Site Info
 </h1>
 <?php echo $this->Form->create('Site', array('id' => 'SiteForm', 'url' => $this->here)); ?>
