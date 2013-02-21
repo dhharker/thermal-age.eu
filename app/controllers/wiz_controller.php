@@ -192,7 +192,7 @@ class WizController extends AppController {
         
         // Load ttkpl
         App::import ('Vendor', 'ttkpl/lib/ttkpl');
-        ob_clean(); // @TODO remove all echos from ttkpl!
+        @ob_clean(); // @TODO remove all echos from ttkpl!
 
         $source = trim (Sanitize::paranoid($source));
         if (empty ($source)) $source = null;
