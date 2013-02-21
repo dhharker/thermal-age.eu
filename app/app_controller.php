@@ -3,7 +3,7 @@
 App::import('Sanitize');
 
 class AppController extends Controller {
-    var $components = array('Minify.Minify', 'Session', 'RequestHandler');
+    var $components = array('Cookie','Minify.Minify', 'Session', 'RequestHandler');
     var $helpers = array (
         'Html',
         'Form',
@@ -22,7 +22,10 @@ class AppController extends Controller {
     }
 
     function beforeFilter () {
-
+        
+        // Rename cookie
+        $this->Cookie->name = 'taeu';
+        
         // This while proper security comes slowly along
         if (in_array ($this->name, array ('Soils', 'Reactions', 'Sites', 'Users', 'Citations', 'Feedbacks', 'Jobs', 'Uploads', 'Groups', 'Pages', 'Specimens')) && in_array ($this->action, array ('edit', 'delete', 'index'))) {
 
@@ -32,25 +35,29 @@ class AppController extends Controller {
         parent::beforeFilter();
         $this->set ('isMobile', $this->RequestHandler->isMobile());
 
-        $this->set ('global_minified_javascript',$this->Minify->js(array(
+        $scripts = array(
               /*prod:'js/wizard_components.js',*/
             //'js/jquery-1.5.1.js',
-            'js/jquery-1.7.2.min.js',
+            '/js/jquery-1.7.2.min.js',
             //'js/jquery-1.7.2.js',
-            'js/jquery.once.js',
-            'js/jquery-ui-1.8.14.custom.min.js',
-            'js/chosen.jquery.js',
-            'js/jquery.ba-resize.min.js',
-            'js/jquery.smooth-scroll.js',
-            'js/config.js',
+            '/js/jquery.once.js',
+            '/js/jquery-ui-1.8.14.custom.min.js',
+            '/js/chosen.jquery.js',
+            '/js/jquery.ba-resize.min.js',
+            '/js/jquery.smooth-scroll.js',
+            '/js/config.js',
             //prod:'js/ui.js', // basic interaction stuffs
-            'js/jqf/jquery.form.js',
-            'js/jquery.titlecase2.js',
+            '/js/jqf/jquery.form.js',
+            '/js/jquery.titlecase2.js',
             //'js/pageslide/jquery.pageslide.min.js',
             //'js/adapt/adapt.js',
-            
-            
-        )));
+        );
+        if (0)
+            $this->set ('global_minified_javascript',$this->Minify->js($scripts));
+        else
+            $this->set ('global_javascript',$scripts);
+            //$this->set ('scripts_for_layout', $scripts);
+            //$this->helpers->javascript->link($scripts);
     }
 
     function redirect ($url, $status = null, $exit = true) {
