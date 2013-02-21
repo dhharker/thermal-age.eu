@@ -59,7 +59,7 @@ class Job extends AppModel {
         // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
         $this->_addToStatus("Wating {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
         sleep ($this->sleepyTime);
-        $this->_forkToBackground();
+        //$this->_forkToBackground();
         exit (0);
 
     }
