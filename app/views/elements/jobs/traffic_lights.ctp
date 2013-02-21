@@ -2,13 +2,23 @@
 
 if (empty ($λ)) $λ = 2;
 
-if ($λ < .001)
+if ($λ < .0001) //.0022
     $colour = 'green';
-elseif ($λ < .04)
+elseif ($λ < 0.025641026) // 40bp
     $colour = 'yellow';
-elseif ($λ < 1.0)
+elseif ($λ < 0.111111111) // 10bp
     $colour = 'red';
 else
+    $colour = 'bork';
+
+
+if ($λ < 0.025641026) // >40bp
+    $colour = 'green';
+elseif ($λ < 0.111111111) // >10bp
+    $colour = 'yellow';
+elseif ($λ < 0.25) // >5bp (fucked, really)
+    $colour = 'red';
+else // traffic lights == explode
     $colour = 'bork';
 
 
