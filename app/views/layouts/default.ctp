@@ -45,9 +45,12 @@
             echo $this->Minify->js_link($global_minified_javascript) . "\n";
         if (isset ($minified_javascript))
             echo $this->Minify->js_link($minified_javascript) . "\n";
-
-		echo $scripts_for_layout . "\n";
-
+        
+        
+        //$this->addScript ($global_javascript);
+        echo $this->Html->script($global_javascript);
+        echo $scripts_for_layout;
+        
         //when debugging: (prod add to minify)
         //$this->addScript($this->Javascript->link('jqf/jquery.form.js'));
 
