@@ -12,7 +12,7 @@ class Job extends AppModel {
     var $statusCodes = array ('pending', 'running', 'finished', 'error');
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
-    var $sleepyTime = 10; // number of seconds to wait before restarting to check for new jobs
+    var $sleepyTime = 5; // number of seconds to wait before restarting to check for new jobs
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
     /**
@@ -57,9 +57,9 @@ class Job extends AppModel {
 
         // once complete, start a new process (to process the next job, if any) and exit
         // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
-        $this->_addToStatus("Wating {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
+        $this->_addToStatus("Waiting {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
         sleep ($this->sleepyTime);
-        //$this->_forkToBackground();
+        $this->_forkToBackground();
         exit (0);
 
     }
@@ -176,6 +176,7 @@ class Job extends AppModel {
                     $addbur = true;
                 }
                 else {
+                    if (!isset ($layer['order'])) $layer['order'] = 0;
                     $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
                 }
             }
@@ -290,13 +291,27 @@ class Job extends AppModel {
         $unParsed = array ();
         $parsed = array ();
         if (!empty ($args['parsed'])) {
+            $lastfp = "X";
             foreach ($args['parsed'] as $running => $runIt) {
                 $this->_addToStatus("Deferring to Thermal Age processor for {$args['unParsed'][$running]['specimen']['code']}");
                 //print_r ($this->cleanse ($runIt)); die();
                 //$unParsed[] = $args['unParsed'][$running];
                 //$parsed[] = $runIt;
                 $stime = microtime(1);
-                $res = $this->_task_thermal_age_processor($runIt);
+                //print_r ($args['unParsed'][$running]);
+                
+                $fingerprint = serialize (array (
+                    $args['unParsed'][$running]['site']['Site'],
+                    $args['unParsed'][$running]['reaction']['Reaction'],
+                    $args['unParsed'][$running]['burial']
+                ));
+                
+                if (strlen ($fingerprint) > 0 && $fingerprint  === @$lastfp)
+                    $this->_addToStatus ("Skipping processing - parameters are the same!");
+                else
+                    $res = $this->_task_thermal_age_processor($runIt);
+                $lastfp = $fingerprint;
+                
                 $this->_addToStatus (sprintf ("Took %04.2fs", microtime(1) - $stime));
                 $ta = $res['thermalAge'];
                 $results[] = array (
