@@ -162,7 +162,24 @@
         
     </div>
 
+    
+    <?php if (configure::read('debug') >= 2) { ?> 
+    <div id='sqldebugtoggle'> 
+        <a id="dbgtoggle">[Expand/Collapse SQL]</a> 
+        <script language="javascript"><!-- 
+        (function ($) {
+            $('table.cake-sql-log').hide();
+            $('#dbgtoggle').click(function () {
+                $('table.cake-sql-log').toggle();
+            });
+        }(jQuery));
+        --></script> 
+    </div> 
+    <?php echo $this->element('sql_dump'); ?>
 
+    <?php } ?> 
+    
+    
 </body>
 
 </html>
