@@ -120,8 +120,14 @@ class Job extends AppModel {
         
         $ta = new \ttkpl\thermalAge();
         $ta->setKinetics($args['kinetics']);
-        foreach ($args['Temporothermals'] as $tt)
-            $ta->addTemporothermal ($tt);
+        foreach ($args['Temporothermals'] as $tt) {
+            if ($tt->rangeYrs > 0) {
+                $ta->addTemporothermal ($tt);
+            }
+            else {
+                $this->_addToStatus("Skipping temporothermal with zero timerange.");
+            }
+        }
 
         //print_r ($this->cleanse ($args));
 
@@ -136,13 +142,16 @@ class Job extends AppModel {
         return array ('thermalAge' => $ta, 'thermalYears' => $taYrs, 'objects' => array ($ta));
     }
     function _task_dna_screener_parser ($args) {
+        $abort = false;
         static $temps = null;
         $this->_addToStatus ("Parser: DNA Screener");
         $parsed = array ();
         $parsed['Temporothermals'] = array (); // pretty much everything ends up in here
 
         // reaction
-        $r = $this->_getReaction($args['reaction']['Reaction']['reaction_id']);
+        $r = false;
+        if (isset ($args['reaction']) && isset ($args['reaction']['Reaction']) && isset ($args['reaction']['Reaction']['reaction_id']))
+            $r = $this->_getReaction($args['reaction']['Reaction']['reaction_id']);
         if ($r !== false) {
             $kinetics = new \ttkpl\kinetics(
                 $r['Reaction']['ea_kj_per_mol'],
@@ -150,12 +159,16 @@ class Job extends AppModel {
                 $r['Reaction']['name'] . " (Source: {$r['Citation']['name']} [{$r['Citation']['id']}])"
             );
         }
-        else {
+        elseif (isset ($args['reaction'])) {
             $kinetics = new \ttkpl\kinetics(
                 $args['reaction']['Reaction']['ea_kj_per_mol'],
                 $args['reaction']['Reaction']['f_sec'],
                 $args['reaction']['Reaction']['name']
             );
+        }
+        else {
+            $this->_addToStatus("No valid kinetics, can't process this one");
+            return false;
         }
         $parsed['kinetics'] = $kinetics;
 
@@ -206,6 +219,7 @@ class Job extends AppModel {
             $tt->setConstantClimate ($storageSine);
             $this->_addToStatus("Storage temperatures: Done");
         }
+        $parsed['Temporothermals'][] = $tt;
         
 
     // burial temporothermal (inc. site, soils)
@@ -247,7 +261,7 @@ class Job extends AppModel {
         if (isset ($args['site']['Site']['lapse_correct']) && $args['site']['Site']['lapse_correct'] == 1) {
             // the lapse correct box applies to the known elev field, if its unchecked or value is
             // garbage then we lookup from worldclim anyway
-            if (is_numeric ($args['site']['Site']['elevation'])) {
+            if (isset ($args['site']['Site']['elevation']) && is_numeric ($args['site']['Site']['elevation'])) {
                 // we have a known elevation, w00t!
                 $bestSiteElev = $args['site']['Site']['elevation'];
                 $bseSource = $args['site']['Site']['elevation_source'];
@@ -277,7 +291,9 @@ class Job extends AppModel {
         }
 
         $parsed['Temporothermals'][] = $tt;
-
+        
+        if ($abort) return false;
+        
         //file_put_contents (APP . DS . "dsdbg.txt", print_r ($this->cleanse ($parsed), true));
         //print_r ($parsed);
         return $parsed;
@@ -291,43 +307,44 @@ class Job extends AppModel {
         $unParsed = array ();
         $parsed = array ();
         if (!empty ($args['parsed'])) {
-            $lastfp = "X";
+            
             foreach ($args['parsed'] as $running => $runIt) {
-                $this->_addToStatus("Deferring to Thermal Age processor for {$args['unParsed'][$running]['specimen']['code']}");
-                //print_r ($this->cleanse ($runIt)); die();
-                //$unParsed[] = $args['unParsed'][$running];
-                //$parsed[] = $runIt;
-                $stime = microtime(1);
-                //print_r ($args['unParsed'][$running]);
+                if ($runIt == false) {
+                    $this->_addToStatus ("Couldn't process {$args['unParsed'][$running]['specimen']['code']} as it failed to parse.");
+                    
+                }
+                else {
+                    //print_r ($this->cleanse($runIt));
+                }
                 
-                $fingerprint = serialize (array (
-                    $args['unParsed'][$running]['site']['Site'],
-                    $args['unParsed'][$running]['reaction']['Reaction'],
-                    $args['unParsed'][$running]['burial']
-                ));
-                
-                if (strlen ($fingerprint) > 0 && $fingerprint  === @$lastfp)
-                    $this->_addToStatus ("Skipping processing - parameters are the same!");
-                else
-                    $res = $this->_task_thermal_age_processor($runIt);
-                $lastfp = $fingerprint;
-                
-                $this->_addToStatus (sprintf ("Took %04.2fs", microtime(1) - $stime));
-                $ta = $res['thermalAge'];
-                $results[] = array (
-                    'λ' => $ta->getLambda(),
-                    '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
-                    'k (yr)' => $ta->getKYear (),
-                    'k (sec)' => $ta->getKSec (),
-                    'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
-                    '10C Thermal age' => $ta->getThermalAge()->getValue(),
-                );
-                /*$results[] = array (
-                    '10c_thermal_age' => round ($res['thermalAge']->getThermalAge()->getValue(), 0),
-                    'effective_temperature' => round ($res['thermalAge']->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 2),
+                if (!!$runIt) {
 
-                );*/
-                unset ($res);
+                    $this->_addToStatus("Deferring to Thermal Age processor for {$args['unParsed'][$running]['specimen']['code']}");
+                    //print_r ($this->cleanse ($runIt)); die();
+                    //$unParsed[] = $args['unParsed'][$running];
+                    //$parsed[] = $runIt;
+                    $stime = microtime(1);
+                    //print_r ($args['unParsed'][$running]);
+
+                    $res = $this->_task_thermal_age_processor($runIt);
+
+                    $this->_addToStatus (sprintf ("Took %04.2fs", microtime(1) - $stime));
+                    $ta = $res['thermalAge'];
+                    $results[$running] = array (
+                        'λ' => $ta->getLambda(),
+                        '(1/λ)+1' => 1 + (1 / $ta->getLambda()),
+                        'k (yr)' => $ta->getKYear (),
+                        'k (sec)' => $ta->getKSec (),
+                        'Teff' => \ttkpl\scalarFactory::makeCentigradeAbs ($ta->getTeff ())->getValue(),
+                        '10C Thermal age' => $ta->getThermalAge()->getValue(),
+                    );
+                    /*$results[] = array (
+                        '10c_thermal_age' => round ($res['thermalAge']->getThermalAge()->getValue(), 0),
+                        'effective_temperature' => round ($res['thermalAge']->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 2),
+
+                    );*/
+                    unset ($res);
+                }
             }
         }
         else {
@@ -340,6 +357,7 @@ class Job extends AppModel {
         return array (
             //'unParsed' => $unParsed,
             //'parsed' => $parsed,
+            'xref' => $args['xref'],
             'results' => $results,
             'output_csv_url' => DS.'spreadsheets'.DS.basename ($args['output_spreadsheet_filename']),
             'output_csv_name' => basename ($args['output_spreadsheet_filename']),
@@ -362,17 +380,38 @@ class Job extends AppModel {
             $s2e = array ();
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug($title))] = $title;
-
-            foreach ($args['results'] as $resInd => $res) {
-                foreach ($res as $col => $val) {
-                    $cp->setColumn($col, $val);
+            
+            // Invert the xref index for quick searching
+            //print_r (array_keys ($args)); die();
+            $xref = array();
+            foreach ($args['xref'] as $fpt => $dups) {
+                foreach ($dups as $did => $dup) {
+                    if ($did == 0) continue;
+                    $xref[$dup] = $dups[0];
                 }
-                /*$tao = $res['thermalAge'];
-                $cp->setColumn($s2e['10c_thermal_age'], round ($tao->getThermalAge()->getValue(), 4));
-                $cp->setColumn($s2e['effective_temperature'], round ($tao->getTEff()->getValue() + ttkpl\scalarFactory::kelvinOffset, 6));
-                 */
-                if (!$cp->next()) break;
             }
+            
+            do {
+                $do = true;
+                if (isset ($args['results'][$cp->key()])) {
+                    // Is not a dupe/is first of dupes
+                    $cResult = $args['results'][$cp->key()];
+                }
+                elseif (isset ($xref[$cp->key()]) && isset ($args['results'][$xref[$cp->key()]])) {
+                    $cResult = $args['results'][$xref[$cp->key()]];
+                    $this->_addToStatus("Adding duplicate of row " . $xref[$cp->key()] + 1 . " to row " . $cp->key()) + 1;
+                }
+                else {
+                    $do = false;
+                    $this->_addToStatus("No valid results found for row " . $cp->key() + 1);
+                }
+                
+                if (!!$do)
+                    foreach ($cResult as $col => $val)
+                        $cp->setColumn($col, $val);
+                
+            } while ($cp->next());
+            
             $opfn = $args['output_csv_filename'];
             try {
                 $ex = $cp->export($opfn);
@@ -427,7 +466,11 @@ class Job extends AppModel {
 
             $unParsed = array ();
             $parsed = array ();
+            $xref = array (/*
+                cache key => 
+            */);
             $rowCount = 0; // heading
+            
             //$cp->next();
             do {
                 $rowCount++;
@@ -493,10 +536,16 @@ class Job extends AppModel {
                             'name' => $row[$cp->getColumn($s2e['site_name'])],
                             'lon_dec' => $row[$cp->getColumn($s2e['longitude_decimal'])],
                             'lat_dec' => $row[$cp->getColumn($s2e['latitude_decimal'])],
-                            'elevation' => $row[$cp->getColumn($s2e['elevation_wgs84'])],
-                            'elevation_source' => "(user supplied in spreadsheet)",
                             'lapse_correct' => 1,
                         );
+                        
+                        // cond elev
+                        if (isset ($s2e['elevation_wgs84']) && !empty ($row[$cp->getColumn($s2e['elevation_wgs84'])])) {
+                            $me['site']['Site']['elevation'] = $row[$cp->getColumn($s2e['elevation_wgs84'])];
+                            $this->_addToStatus("Add elev m: " . $row[$cp->getColumn($s2e['elevation_wgs84'])]);
+                            $me['site']['Site']['elevation_source'] = "(user supplied in spreadsheet)";
+                        }
+                        
                         // process burial layers if any
                         for ($ssln = 1; $ssln <= $SLCnum; $ssln++) {
                             if (!isset ($me['burial']['SoilTemporothermal'])) $me['burial']['SoilTemporothermal'] = array ();
@@ -566,11 +615,14 @@ class Job extends AppModel {
 
                 }
                 if (!empty ($me)) {
-                    $parse = $this->_task_dna_screener_parser ($me);
-                    //print_r ($this->cleanse ($parse));
-                    $unParsed[] = $me;
-                    $parsed[] = $parse;
-                    $this->_addToStatus ("Parsed row " . $rowCount);
+                    // Generate a unique "fingerprint". If these match we won't recalculate the row
+                    $ck = preg_replace('/[^0-9.:-]/','',serialize($this->_stripVerbal($me)));
+                    if (!isset ($xref[$ck])) {
+                        $xref[$ck] = array ();
+                    }
+                    $unParsed[$cp->key()] = $me;
+                    $unParsed[$cp->key()]['fingerprint'] = $ck;
+                    $xref[$ck][] = $cp->key();
                 }
                 else
                     $this->_addToStatus ("Nothing to do for this row " . $rowCount);
@@ -578,9 +630,22 @@ class Job extends AppModel {
                 //die();
 
             } while ($cp->next());
-
+            
+            //print_r ($xref);
+            //die();
+            
+            foreach ($unParsed as $rowkey => $up) {
+                if ($xref[$up['fingerprint']][0] == $rowkey) {
+                    $parse = $this->_task_dna_screener_parser ($up);
+                    $parsed[$rowkey] = $parse;
+                    $pl = (count ($xref[$up['fingerprint']]) > 1) ? 's' : '';
+                    $this->_addToStatus ("Parsed row{$pl} " . implode(" ", array_map (function ($a) { return $a+1; }, $xref[$up['fingerprint']])));
+                }
+            }
+            
             $rtn = array (
                 'unParsed' => $unParsed,
+                'xref' => $xref,
                 'parsed' => $parsed,
                 'spreadsheet_csv' => $args['spreadsheet_csv']
             );
@@ -590,6 +655,19 @@ class Job extends AppModel {
         return false;
 
 
+    }
+    
+    function _stripVerbal ($arrIn) {
+        $arrOut = array ();
+        foreach ($arrIn as $k => $v) {
+            if (in_array ($k, array ('User', 'Citation')))
+                continue;
+            elseif (is_array ($v))
+                $arrOut[$k] = $this->_stripVerbal ($v);
+            elseif (is_numeric($v))
+                $arrOut[$k] = $v;
+        }
+        return $arrOut;
     }
 
     /**
