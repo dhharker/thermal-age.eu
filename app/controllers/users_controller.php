@@ -27,7 +27,7 @@ class UsersController extends AppController {
     }
     
     // After user has been oauth'd by google, do stuff.
-    function oacb () {
+    function oacb ($strategy) {
         $this->_loadOpauth();
         
         $response = null;

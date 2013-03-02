@@ -45,7 +45,7 @@ $config = array(
 		'Google' => array (
                     'client_id' => '1017893960545-kkd0pq7kp16is7m7513jcfqq7iei2ncu.apps.googleusercontent.com',
                     'client_secret' => 'yZ2dW2E6sDibLv8OP-IzpBgF',
-                    'redirect_uri' => 'http://beta.thermal-age.eu/users/oacb/google/',
+                    'redirect_uri' => 'http://beta.thermal-age.eu/users/oacb/google/oauth2callback',
                 )
 	),
 );
