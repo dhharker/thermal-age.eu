@@ -2,7 +2,7 @@
 class UsersController extends AppController {
 
 	var $name = 'Users';
-        var $components = array ('Auth');
+        //var $components = array ('Auth');
 
     function login() {
        //Auth Magic
