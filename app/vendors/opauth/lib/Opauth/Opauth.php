@@ -136,7 +136,7 @@ class Opauth {
 				$this->env['params'][] = $match;
 			}
 		}
-		print_r ($this->env); die();
+		print_r ($this->env); 
 		if (!empty($this->env['params'][0])) {
 			$this->env['params']['strategy'] = $this->env['params'][0];
 		}
