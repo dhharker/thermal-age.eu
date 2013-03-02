@@ -81,7 +81,8 @@ class UsersController extends AppController {
         * Auth response dump
         */
         $this->set(compact('response'));
-        
+        die();
+        $this->redirect($this->Auth->logout());
         // See if local user account exists
         // Create it if not
         // Log the user in
