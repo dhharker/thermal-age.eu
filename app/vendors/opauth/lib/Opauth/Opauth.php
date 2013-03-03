@@ -147,8 +147,8 @@ class Opauth {
                 // Hack to fix WHATTHEFUCK the fact that this can't handle a / in the query string for some reason.
                 // ...possibly a cake related reason but possibly not.
                 
-                if (preg_match ("/([^\/]+)\/?\?code=(.+)/", $this->env['request'], $m)) {
-                    $this->env['params']['strategy'] = $m[1];
+                if (preg_match ("/([^\/]+)\/?\?code=(.+)$/", $this->env['request'], $m)) {
+                    $this->env['params']['strategy'] = $m[1] . "RLY????";
                     //$this->env['params']['action'] = $m[2];
                 }
 	}
