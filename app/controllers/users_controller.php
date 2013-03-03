@@ -11,7 +11,7 @@ class UsersController extends AppController {
        $this->redirect($this->Auth->logout());
     }
     
-    private function _loadOpauth () {
+    private function _loadOpauth ($run = true;) {
         require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'opauth.conf.php');
         require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'Opauth.php');
 
@@ -28,7 +28,7 @@ class UsersController extends AppController {
     
     // After user has been oauth'd by google, do stuff.
     function oacb ($strategy) {
-        $this->_loadOpauth();
+        $this->_loadOpauth(false);
         
         $response = null;
 
