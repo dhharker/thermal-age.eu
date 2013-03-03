@@ -26,6 +26,8 @@ $config = array(
  */
 	'security_salt' => 'q3tn978ywoa83gfhaqo4btq834afBNY8LOBG7UILQ3CFRq234tbvfhk\zasybgftibiYUV768IOWE4VTB79OW3G',
 		
+    // Worth a shot...
+        'callback_transport' => 'post',
 /**
  * Strategy
  * Refer to individual strategy's documentation on configuration requirements.

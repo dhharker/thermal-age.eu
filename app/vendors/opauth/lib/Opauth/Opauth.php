@@ -254,7 +254,10 @@ class Opauth {
 		}
 		
 		
-		if (array_key_exists('error', $response)) {  // Check if it's an error callback
+		if ($response === null) {
+			echo '<strong style="color: red;">Authentication error: </strong> No response :-(.'."<br>\n";
+		}
+                elseif (array_key_exists('error', $response)) {  // Check if it's an error callback
 			echo '<strong style="color: red;">Authentication error: </strong> Opauth returns error auth response.'."<br>\n";
 		} else { // No it isn't. Proceed with auth validation
 			if (empty($response['auth']) || empty($response['timestamp']) || empty($response['signature']) || empty($response['auth']['provider']) || empty($response['auth']['uid'])) {
