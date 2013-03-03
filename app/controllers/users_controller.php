@@ -82,7 +82,7 @@ class UsersController extends AppController {
         */
         $this->set(compact('response'));
         die();
-        $this->redirect($this->Auth->logout());
+        $this->redirect("/about");
         // See if local user account exists
         // Create it if not
         // Log the user in
