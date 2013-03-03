@@ -11,14 +11,14 @@ class UsersController extends AppController {
        $this->redirect($this->Auth->logout());
     }
     
-    private function _loadOpauth ($run = true;) {
+    private function _loadOpauth ($run = true) {
         require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'opauth.conf.php');
         require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'Opauth.php');
 
         //define('CONF_FILE', dirname(__FILE__).'/'.'opauth.conf.php');
         //define('OPAUTH_LIB_DIR', dirname(dirname(__FILE__)).'/lib/Opauth/');
 
-        $Opauth = new Opauth( $config );
+        $Opauth = new Opauth( $config, $run );
     }
     
     // Redirect user to google oauth login
