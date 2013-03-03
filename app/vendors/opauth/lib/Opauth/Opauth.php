@@ -148,8 +148,8 @@ class Opauth {
                 // ...possibly a cake related reason but possibly not.
                 
                 if (preg_match ("/([^\/]+)\/?\?code=(.+)$/", $this->env['request'], $m)) {
-                    $this->env['params']['strategy'] = $m[1] . "RLY????";
-                    //$this->env['params']['action'] = $m[2];
+                    $this->env['params']['strategy'] = $m[1];
+                    $this->env['params'][0] = $m[2];
                 }
 	}
 	
