@@ -17,8 +17,9 @@ $config = array(
 
 /**
  * Callback URL: redirected to after authentication, successful or otherwise
+ * NB it must have "callback" at the end because this is hard coded (might be spec, might be hax, who cares, need make work!)
  */
-	'callback_url' => '/users/oacb/google',
+	'callback_url' => '/users/oacb/google/callback',
 	
 /**
  * A random string used for signing of $auth response.
