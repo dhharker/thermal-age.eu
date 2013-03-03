@@ -18,7 +18,9 @@ class UsersController extends AppController {
         //define('CONF_FILE', dirname(__FILE__).'/'.'opauth.conf.php');
         //define('OPAUTH_LIB_DIR', dirname(dirname(__FILE__)).'/lib/Opauth/');
 
-        return new Opauth( $config, $run );
+        
+        $Opauth = new Opauth( $config, $run );
+        return $Opauth;
     }
     
     // Redirect user to google oauth login
