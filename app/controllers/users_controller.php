@@ -18,7 +18,7 @@ class UsersController extends AppController {
         //define('CONF_FILE', dirname(__FILE__).'/'.'opauth.conf.php');
         //define('OPAUTH_LIB_DIR', dirname(dirname(__FILE__)).'/lib/Opauth/');
 
-        $Opauth = new Opauth( $config, $run );
+        return new Opauth( $config, $run );
     }
     
     // Redirect user to google oauth login
@@ -28,7 +28,7 @@ class UsersController extends AppController {
     
     // After user has been oauth'd by google, do stuff.
     function oacb ($strategy) {
-        $this->_loadOpauth(false);
+        $Opauth = $this->_loadOpauth(false);
         
         $response = null;
 
