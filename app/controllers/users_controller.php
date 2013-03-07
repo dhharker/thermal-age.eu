@@ -94,11 +94,16 @@ class UsersController extends AppController {
             ));
             $egu = $this->User->read (null,$this->User->getLastInsertID());
         }
-        $this->Auth->login($egu);
-        
-        
         $err = $client->error;
-        $this->set(compact('success','err','userInfo'));
+        
+        if (strlen ($err) > 0) {
+            $this->Session->setFlash(__('Login Error: ' . $err, true));
+            $this->redirect(array('action' => 'login'));
+        }
+        else {
+            $this->Auth->login($egu);
+            $this->redirect(array('action' => 'profile'));
+        }
     }
     
     
