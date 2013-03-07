@@ -866,7 +866,7 @@ class AuthComponent extends Object {
 		if (is_array($user) && (isset($user[$this->fields['username']]) || isset($user[$model->alias . '.' . $this->fields['username']]))) {
 			if (isset($user[$this->fields['username']]) && !empty($user[$this->fields['username']])  && !empty($user[$this->fields['password']])) {
 				if (trim($user[$this->fields['username']]) == '=' || trim($user[$this->fields['password']]) == '=') {
-					return false;
+					return "X1";
 				}
 				$find = array(
 					$model->alias.'.'.$this->fields['username'] => $user[$this->fields['username']],
@@ -874,14 +874,14 @@ class AuthComponent extends Object {
 				);
 			} elseif (isset($user[$model->alias . '.' . $this->fields['username']]) && !empty($user[$model->alias . '.' . $this->fields['username']])) {
 				if (trim($user[$model->alias . '.' . $this->fields['username']]) == '=' || trim($user[$model->alias . '.' . $this->fields['password']]) == '=') {
-					return false;
+					return "X2";
 				}
 				$find = array(
 					$model->alias.'.'.$this->fields['username'] => $user[$model->alias . '.' . $this->fields['username']],
 					$model->alias.'.'.$this->fields['password'] => $user[$model->alias . '.' . $this->fields['password']]
 				);
 			} else {
-				return false;
+				return "X3";
 			}
 			$data = $model->find('first', array(
 				'conditions' => array_merge($find, $conditions),
