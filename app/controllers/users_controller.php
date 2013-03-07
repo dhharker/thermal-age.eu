@@ -13,7 +13,10 @@ class UsersController extends AppController {
         if ($this->Session->check('Auth.User')) {
             $this->redirect(array ('action' => 'profile'));
         }
-       //Auth Magic
+        $of = $this->Session->read('oauth.fail');
+        if (is_array($of)) $this->set(compress('of'));
+        
+        //Auth Magic
     }
     function logout() {
        $this->redirect($this->Auth->logout());
@@ -73,6 +76,7 @@ class UsersController extends AppController {
         
         if (!$success) {
             $this->Session->setFlash(__('Login Error', true));
+            $this->Session->write('oauth.fail',array("Error",$err));
             $this->redirect(array('action' => 'login'));
         }
         else {
@@ -99,8 +103,7 @@ class UsersController extends AppController {
                 ));
                 $egu = $this->User->read (null,$this->User->getLastInsertID());
             }
-            $err = $client->error;
-        
+            
             $this->Auth->login($egu);
             $this->redirect(array('action' => 'profile'));
         }

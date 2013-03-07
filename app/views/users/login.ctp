@@ -19,12 +19,12 @@
 <div class="grid_5"><div class="smartbox">
 <h2>External</h2>
 <?php
-if (isset($response))
-    var_dump ($response);
-else
-    echo $this->Html->link ("Login with Google", array (
-        'controller' => 'users',
-        'action' => 'oauth'
-    ));
+if (isset($of))
+    var_dump ($of);
+
+echo $this->Html->link ("Login with Google", array (
+    'controller' => 'users',
+    'action' => 'oauth'
+));
 ?>
 </div></div>
