@@ -691,7 +691,7 @@ class AuthComponent extends Object {
 			$this->_loggedIn = true;
 		}
 		return $this->_loggedIn;
-	}
+	} 
 
 /**
  * Logs a user out, and returns the login action to redirect to.
