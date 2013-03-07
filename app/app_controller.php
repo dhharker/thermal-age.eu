@@ -31,8 +31,9 @@ class AppController extends Controller {
 
             //$this->cakeError('error404');
         }
-
-        parent::beforeFilter();
+        App::import('Model', 'User');
+        User::store($this->Auth->user());
+        
         $this->set ('isMobile', $this->RequestHandler->isMobile());
 
         $scripts = array(
@@ -58,6 +59,8 @@ class AppController extends Controller {
             $this->set ('global_javascript',$scripts);
             //$this->set ('scripts_for_layout', $scripts);
             //$this->helpers->javascript->link($scripts);
+        
+        parent::beforeFilter();
     }
 
     function redirect ($url, $status = null, $exit = true) {

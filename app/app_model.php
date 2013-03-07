@@ -12,5 +12,14 @@ class AppModel extends Model {
         )) > 0) ? TRUE : FALSE;
     }
 
+    
+    function beforeSave() {
+        $exists = $this->exists();
+        if ( !$exists && $this->hasField('user_id') && empty($this->data[$this->alias]['user_id']) ) {
+            $this->data[$this->alias]['user_id'] = User::get('id');
+        }
+        
+        return true;
+    }
 
 }
