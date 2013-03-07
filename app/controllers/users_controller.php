@@ -18,7 +18,7 @@ class UsersController extends AppController {
             $this->set(compact('of'));
             $this->Session->delete('oauth.fail');
         }
-        set ('data',array());
+        
         
         //Auth Magic
     }
@@ -37,22 +37,31 @@ class UsersController extends AppController {
         $jobs = $this->Job->find('all',array (
             'conditions' => array (
                 'Job.user_id' => $user['User']['id']
+            ),
+            'order' => array (
+                'Job.id' => 'DESC'
             )
         ));
-        if (!!$jobs) foreach ($jobs as $jin => $job) {
-            if (!$this->Job->read(null, $job['Job']['id'])) continue;
-            $fn = $this->Job->bgpGetJobFileName ('report');
-            if (file_exists ($fn)) {
-                $results = file_get_contents ($fn);
-                $uns = @unserialize($results);
-                if ($uns !== false)
-                    $jobs[$jin]['Job']['results_file'] = $uns;
-                else
-                    $jobs[$jin]['Job']['results_file'] = array ('error', 'couldn\'t find results file');
+        $nJobs = array ();
+        if (!!$jobs) {
+            foreach ($jobs as $jin => $job) {
+                if (!$this->Job->read(null, $job['Job']['id'])) continue;
+                $nJobs[$jin] = $job;
+                $fn = $this->Job->bgpGetJobFileName ('report');
+                if (file_exists ($fn)) {
+
+                    $results = file_get_contents ($fn);
+                    $uns = @unserialize($results);
+                    if ($uns !== false)
+                        $nJobs[$jin]['Job']['results_file'] = $uns;
+                    else
+                        $nJobs[$jin]['Job']['results_file'] = array ('error', 'couldn\'t read results file');
+                }
+                else 
+                    $nJobs[$jin]['Job']['results_file'] = array ('error' => 'couldn\'t find results file', 'file' => $fn);
             }
-            die (print_r($jobs,true));
+            $jobs = $nJobs;
         }
-        
         
         $JSCs = $this->Job->statusCodes;
         $this->set(compact('user','jobs','JSCs'));

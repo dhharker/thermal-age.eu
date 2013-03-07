@@ -10,6 +10,11 @@ class FeedbacksController extends AppController {
 
     }
 
+    public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow(array ('index','add','thanks'));
+    }
+    
 	function index() {
 		$this->Feedback->recursive = 0;
 		$this->set('feedbacks', $this->paginate());

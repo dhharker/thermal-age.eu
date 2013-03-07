@@ -4,7 +4,7 @@
 </div></div>
 <div class="grid_5"><div class="smartbox">
 <h2 class="sbHeading">Recent Jobs</h2>
-<ul>
+<ul class="objectList">
 <?php
 $status_colours = array (
     "#4cc8a1", // pending
@@ -16,12 +16,19 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
     foreach ($jobs as $job) {
         $note = "";
         $status_str = (isset ($JSCs[$job['Job']['status']])) ? $JSCs[$job['Job']['status']] : $job['Job']['status'];
-        $status_colour = (isset ($status_colours[10+$job['Job']['status']])) ? $status_colours[$job['Job']['status']] : "#888888";
-        //$jd = unserialize($job['Job']['data']);
-        $jd = unserialize($job['Job']['results_file']);
-        if (!$jd) $note = "No data found in job!";
-        elseif ($job['Job']['status'] == 2 && isset ($jd['spreadsheet_csv']) && isset ($jd['spreadsheet_csv']['Spreadsheet']) && isset ($jd['spreadsheet_csv']['Spreadsheet']['filename'])) {
+        $status_colour = (isset ($status_colours[$job['Job']['status']])) ? $status_colours[$job['Job']['status']] : "#888888";
+        //print_r ($job);die();
+        $jd = unserialize($job['Job']['data']);
+        $jr = (isset ($job['Job']['results_file']) && is_array ($job['Job']['results_file'])) ? 
+            $job['Job']['results_file'] : 
+            false; 
+        $download = '';
+        if (!$jd) $note .= "No data found in job!<br />";
+        if (!$jr) $note .= "Couldn't find results file.<br />";
+        elseif ($job['Job']['status'] == 2 && isset ($jd['spreadsheet_csv']) && isset ($jd['spreadsheet_csv']['Spreadsheet']) && isset ($jd['spreadsheet_csv']['Spreadsheet']['filename']) && isset ($jr['output_csv_name'])) {
             // It is a completed spreadsheet job
+            $download = $this->Html->link ("Download","/".$jr['output_csv_url']);
+                
         }
         ?>
         <li>
@@ -32,8 +39,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
             
             <?php
             unset ($job['Job']['data']);
-            //var_dump($job['Job']);
-            
+            echo @$download;
             ?>
         </li>
         <?php
