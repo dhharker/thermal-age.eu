@@ -33,7 +33,9 @@ class UsersController extends AppController {
 
         $client = new oauth_client_class;
 	$client->server = 'Google';
+        $client->debug = true;
 	$client->redirect_uri = "http://beta.thermal-age.eu".$this->here."/callback";
+        //die ($client->redirect_uri);
 	//$client->redirect_uri = Router::url($this->here, true);
 
 	//$client->client_id = '1017893960545-kkd0pq7kp16is7m7513jcfqq7iei2ncu.apps.googleusercontent.com';
