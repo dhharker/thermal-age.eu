@@ -122,11 +122,12 @@ class UsersController extends AppController {
                         'oauth_linked' => $client->server . "#" . $userInfo->id
                     )
                 ));
+                $this->User->recursive = 0;
                 $egu = $this->User->read (null,$this->User->getLastInsertID());
             }
             
             //$this->Auth->login($egu);
-            var_dump(array ($egu, $this->Auth->login($egu)));
+            var_dump(array ($egu, $this->Auth->login($egu['User'])));
             exit;
             //$this->redirect(array('action' => 'profile'));
         }
