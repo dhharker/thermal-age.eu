@@ -1842,9 +1842,21 @@ class oauth_client_class
 						$url))));
 					if($this->debug)
 						$this->OutputDebug('Redirecting to OAuth Dialog '.$url);
-					Header('HTTP/1.0 302 OAuth Redirection');
-					Header('Location: '.$url);
-					$this->exit = true;
+                                        
+                                        // Added by David Harker 2013-3-7 david@wtds.co.uk
+                                        // Hack to provide protection from potential infinite redirect loop on cake acl error.
+                                        if (isset ($this->dontGoDialogAgainKthx) && $this->dontGoDialogAgainKthx === true) {
+                                            // Seems we're stuck in a redirect loop. Unstick.
+                                            return($this->SetError('Redirect loop detected.'));
+                                        }
+                                        else {
+                                            // orig
+                                            Header('HTTP/1.0 302 OAuth Redirection');
+                                            Header('Location: '.$url);
+                                            $this->exit = true;
+                                            // /orig
+                                        }
+                                        // /hack
 				}
 				break;
 

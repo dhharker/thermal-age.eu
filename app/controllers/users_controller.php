@@ -45,11 +45,16 @@ class UsersController extends AppController {
     }
     
     // Redirect user to google oauth login
-    function oauth () {
+    function oauth ($cbflag=null) {
         if ($this->Session->check('Auth.User')) {
             $this->redirect(array ('action' => 'profile'));
         }
         $client = $this->_loadOAuth();
+        
+        // Prevents an possible infinite loop
+        if ($cbflag == 'callback')
+            $client->dontGoDialogAgainKthx = true;
+        
         $client->scope = 'https://www.googleapis.com/auth/userinfo.email '.
 		'https://www.googleapis.com/auth/userinfo.profile ' .
                 'https://www.googleapis.com/auth/plus.login';
