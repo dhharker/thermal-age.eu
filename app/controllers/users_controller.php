@@ -37,7 +37,8 @@ class UsersController extends AppController {
         $client = new oauth_client_class;
 	$client->server = 'Google';
         $client->debug = true;
-	$client->redirect_uri = "http://beta.thermal-age.eu".$this->here."/callback";
+	//$client->redirect_uri = "http://beta.thermal-age.eu".$this->here."/callback";
+	$client->redirect_uri = "http://beta.thermal-age.eu".$this->here;
         //die ($client->redirect_uri);
 	//$client->redirect_uri = Router::url($this->here, true);
 
@@ -58,9 +59,10 @@ class UsersController extends AppController {
         $client = $this->_loadOAuth();
         
         // Prevents an possible infinite loop
-        if ($cbflag == 'callback')
+        if ($cbflag == 'callback' || $this->Session->check('oauth.dgdak'))
             $client->dontGoDialogAgainKthx = true;
-        
+        $this->Session->write('oauth.dgdak', true);
+                
         $client->scope = 'https://www.googleapis.com/auth/userinfo.email '.
 		'https://www.googleapis.com/auth/userinfo.profile ' .
                 'https://www.googleapis.com/auth/plus.login';
