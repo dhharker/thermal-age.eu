@@ -127,7 +127,7 @@ class UsersController extends AppController {
             }
             
             //$this->Auth->login($egu);
-            var_dump(array ($egu, $this->Auth->login($egu['User'])));
+            var_dump(array ($egu, $this->Auth->login($egu)));
             exit;
             //$this->redirect(array('action' => 'profile'));
         }
