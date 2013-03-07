@@ -2,98 +2,105 @@
 class UsersController extends AppController {
 
     var $name = 'Users';
-    var $components = array ('Auth');
 
 
     public function beforeFilter() {
-        $this->Auth->allow('*');
+        parent::beforeFilter();
+        $this->Auth->allow(array ('login','oauth'));
     }
         
     function login() {
+        if ($this->Session->check('Auth.User')) {
+            $this->redirect(array ('action' => 'profile'));
+        }
        //Auth Magic
     }
     function logout() {
        $this->redirect($this->Auth->logout());
     }
     
-    private function _loadOpauth ($run = true) {
-        require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'opauth.conf.php');
-        require_once (ROOT . DS . APP_DIR . DS . 'vendors' . DS . 'opauth'.DS.'lib'.DS.'Opauth'.DS.'Opauth.php');
-
-        //define('CONF_FILE', dirname(__FILE__).'/'.'opauth.conf.php');
-        //define('OPAUTH_LIB_DIR', dirname(dirname(__FILE__)).'/lib/Opauth/');
-
+    function profile () {
         
-        $Opauth = new Opauth( $config, $run );
-        return $Opauth;
+    }
+    
+    private function _loadOAuth () {
+        
+        App::import('Vendor', 'LHttp', array('file' => 'lem'.DS.'httpclient-2013-02-20'.DS.'http.php'));
+        App::import('Vendor', 'LOAuth', array('file' => 'lem'.DS.'oauth-api-2013-02-20'.DS.'oauth_client.php'));
+
+        $client = new oauth_client_class;
+	$client->server = 'Google';
+	//$client->redirect_uri = "http://beta.thermal-age.eu".$this->here;
+	$client->redirect_uri = Router::url($this->here, true);
+
+	//$client->client_id = '1017893960545-kkd0pq7kp16is7m7513jcfqq7iei2ncu.apps.googleusercontent.com';
+	//$client->client_secret = 'yZ2dW2E6sDibLv8OP-IzpBgF';
+	$client->client_id = '642707952741.apps.googleusercontent.com';
+	$client->client_secret = 'VwWouDZaFxmS59tT9ImKIHNQ';
+        
+        return $client;
     }
     
     // Redirect user to google oauth login
     function oauth () {
-        $this->_loadOpauth();
+        $client = $this->_loadOAuth();
+        $client->scope = 'https://www.googleapis.com/auth/userinfo.email '.
+		'https://www.googleapis.com/auth/userinfo.profile ' .
+                'https://www.googleapis.com/auth/plus.login';
+	if(($success = $client->Initialize()))
+	{
+		if(($success = $client->Process()))
+		{
+			if(strlen($client->authorization_error))
+			{
+				$client->error = $client->authorization_error;
+				$success = false;
+			}
+			elseif(strlen($client->access_token))
+			{
+				$success = $client->CallAPI(
+					'https://www.googleapis.com/oauth2/v1/userinfo',
+					'GET', array(), array('FailOnAccessError'=>true), $userInfo);
+				/*$success = $client->CallAPI(
+					'https://www.googleapis.com/plus/v1/people/me',
+					'GET', array(), array('FailOnAccessError'=>true), $userPlus);*/
+			}
+		}
+		$success = $client->Finalize($success);
+	}
+	if($client->exit)
+            exit;
+        
+        // Does use exist?
+        $this->User->recursive = 0;
+        $egu = $this->User->find('first',array (
+            'conditions' => array (
+                'User.oauth_linked' => $client->server . "#" . $userInfo->id
+            )
+        ));
+        if (!$egu) {
+            $this->loadModel('Upload');
+            $this->User->create();
+            $this->User->save (array (
+                'User' => array (
+                    'name' => $userInfo->name,
+                    'alias' => $userInfo->given_name,
+                    'username' => $userInfo->id,
+                    'email_priv' => $userInfo->email,
+                    'url' => $userInfo->link,
+                    'photo' => $this->Upload->passThrough ($userInfo->picture, $userInfo->name),
+                    'oauth_linked' => $client->server . "#" . $userInfo->id
+                )
+            ));
+            $egu = $this->User->read (null,$this->User->getLastInsertID());
+        }
+        $this->Auth->login($egu);
+        
+        
+        $err = $client->error;
+        $this->set(compact('success','err','userInfo'));
     }
     
-    // After user has been oauth'd by google, do stuff.
-    function oacb ($strategy) {
-        $Opauth = $this->_loadOpauth(false);
-        
-        $response = null;
-
-        switch($Opauth->env['callback_transport']) {
-                case 'session':
-                        session_start();
-                        $response = $_SESSION['opauth'];
-                        unset($_SESSION['opauth']);
-                        break;
-                case 'post':
-                        $response = unserialize(base64_decode( $_POST['opauth'] ));
-                        break;
-                case 'get':
-                        $response = unserialize(base64_decode( $_GET['opauth'] ));
-                        break;
-                default:
-                        echo '<strong style="color: red;">Error: </strong>Unsupported callback_transport.'."<br>\n";
-                        break;
-        }
-
-        /**
-         * Check if it's an error callback
-         */
-        if (array_key_exists('error', $response)) {
-                echo '<strong style="color: red;">Authentication error: </strong> Opauth returns error auth response.'."<br>\n";
-        }
-
-        /**
-         * Auth response validation
-         * 
-         * To validate that the auth response received is unaltered, especially auth response that 
-         * is sent through GET or POST.
-         */
-        else{
-                if (empty($response['auth']) || empty($response['timestamp']) || empty($response['signature']) || empty($response['auth']['provider']) || empty($response['auth']['uid'])) {
-                        echo '<strong style="color: red;">Invalid auth response: </strong>Missing key auth response components.'."<br>\n";
-                } elseif (!$Opauth->validate(sha1(print_r($response['auth'], true)), $response['timestamp'], $response['signature'], $reason)) {
-                        echo '<strong style="color: red;">Invalid auth response: </strong>'.$reason.".<br>\n";
-                } else {
-                        echo '<strong style="color: green;">OK: </strong>Auth response is validated.'."<br>\n";
-
-                        /**
-                         * It's all good. Go ahead with your application-specific authentication logic
-                         */
-                }
-        }
-
-
-        /**
-        * Auth response dump
-        */
-        $this->set(compact('response'));
-        die();
-        $this->redirect("/about");
-        // See if local user account exists
-        // Create it if not
-        // Log the user in
-    }
     
 
 	function index() {

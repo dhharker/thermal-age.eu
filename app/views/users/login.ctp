@@ -24,8 +24,7 @@ if (isset($response))
 else
     echo $this->Html->link ("Login with Google", array (
         'controller' => 'users',
-        'action' => 'oauth',
-        'google',
+        'action' => 'oauth'
     ));
 ?>
 </div></div>

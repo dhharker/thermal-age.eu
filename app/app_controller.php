@@ -3,7 +3,7 @@
 App::import('Sanitize');
 
 class AppController extends Controller {
-    var $components = array('Cookie','Minify.Minify', 'Session', 'RequestHandler');
+    var $components = array('Cookie','Minify.Minify', 'Session', 'RequestHandler', 'Auth');
     var $helpers = array (
         'Html',
         'Form',
@@ -29,7 +29,7 @@ class AppController extends Controller {
         // This while proper security comes slowly along
         if (in_array ($this->name, array ('Soils', 'Reactions', 'Sites', 'Users', 'Citations', 'Feedbacks', 'Jobs', 'Uploads', 'Groups', 'Pages', 'Specimens')) && in_array ($this->action, array ('edit', 'delete', 'index'))) {
 
-            $this->cakeError('error404');
+            //$this->cakeError('error404');
         }
 
         parent::beforeFilter();

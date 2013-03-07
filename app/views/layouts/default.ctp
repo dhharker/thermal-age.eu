@@ -48,7 +48,8 @@
         
         
         //$this->addScript ($global_javascript);
-        echo $this->Html->script($global_javascript);
+        if (isset ($global_javascript))
+            echo $this->Html->script($global_javascript);
         echo $scripts_for_layout;
         
         //when debugging: (prod add to minify)
