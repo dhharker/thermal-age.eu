@@ -18,13 +18,25 @@
 </div></div>
 <div class="grid_5"><div class="smartbox">
 <h2>External</h2>
-<?php
-if (isset($of))
-    var_dump ($of);
+<ul>
 
-echo $this->Html->link ("Login with Google", array (
+<?php
+if (isset($of)) {
+    echo "<li>";
+    var_dump ($of);
+    echo "</li>";
+}
+echo "<li>";
+echo $this->Html->link ($this->Html->image('oauth_google_red_large.png', array (
+        'alt' => "Login with Google",
+        'style' => 'max-width: 100%; max-height: 46px;'
+    )), array (
     'controller' => 'users',
     'action' => 'oauth'
+), array (
+    'escape' => false
 ));
 ?>
+</li>
+</ul>
 </div></div>
