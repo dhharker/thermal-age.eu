@@ -59,9 +59,9 @@ class UsersController extends AppController {
         $client = $this->_loadOAuth();
         
         // Prevents an possible infinite loop
-        if ($cbflag == 'callback' || $this->Session->check('oauth.dgdak'))
+        if ($cbflag == 'callback')
             $client->dontGoDialogAgainKthx = true;
-        $this->Session->write('oauth.dgdak', true);
+        
                 
         $client->scope = 'https://www.googleapis.com/auth/userinfo.email '.
 		'https://www.googleapis.com/auth/userinfo.profile ' .
