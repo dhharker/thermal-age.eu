@@ -691,7 +691,7 @@ class AuthComponent extends Object {
 			$this->_loggedIn = true;
 		}
                 debug (array("failed to identify()", $user));
-                
+                die('auf');
 		return $this->_loggedIn;
 	}
 
