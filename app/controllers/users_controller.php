@@ -14,7 +14,7 @@ class UsersController extends AppController {
             $this->redirect(array ('action' => 'profile'));
         }
         $of = $this->Session->read('oauth.fail');
-        if (is_array($of)) $this->set(compress('of'));
+        if (is_array($of)) $this->set(compact('of'));
         
         //Auth Magic
     }
