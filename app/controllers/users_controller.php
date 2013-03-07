@@ -14,7 +14,10 @@ class UsersController extends AppController {
             $this->redirect(array ('action' => 'profile'));
         }
         $of = $this->Session->read('oauth.fail');
-        if (is_array($of)) $this->set(compact('of'));
+        if (is_array($of)) {
+            $this->set(compact('of'));
+            $this->Session->delete('oauth.fail');
+        }
         
         //Auth Magic
     }
@@ -51,6 +54,7 @@ class UsersController extends AppController {
         if ($this->Session->check('Auth.User')) {
             $this->redirect(array ('action' => 'profile'));
         }
+        
         $client = $this->_loadOAuth();
         
         // Prevents an possible infinite loop
