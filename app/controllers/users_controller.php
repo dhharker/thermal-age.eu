@@ -23,7 +23,7 @@ class UsersController extends AppController {
     }
     
     function profile () {
-        
+        $this->set('user',$this->Auth->user());
     }
     
     private function _loadOAuth () {
@@ -46,6 +46,9 @@ class UsersController extends AppController {
     
     // Redirect user to google oauth login
     function oauth () {
+        if ($this->Session->check('Auth.User')) {
+            $this->redirect(array ('action' => 'profile'));
+        }
         $client = $this->_loadOAuth();
         $client->scope = 'https://www.googleapis.com/auth/userinfo.email '.
 		'https://www.googleapis.com/auth/userinfo.profile ' .

@@ -606,7 +606,7 @@ class oauth_client_class
 	var $response_status = 0;
 
 	var $oauth_user_agent = 'PHP-OAuth-API (http://www.phpclasses.org/oauth-api $Revision: 1.49 $)';
-	var $session_started = true; // dhh hax :-)
+	var $session_started = false;
 
 	Function SetError($error)
 	{
@@ -794,7 +794,7 @@ class oauth_client_class
 	Function GetAccessToken(&$access_token)
 	{
 		if(!$this->session_started
-		&& !session_start())
+		&& session_id() == '' && !session_start()) // DHH hax added session_id() == '' check to prevent session_start()ing
 			return($this->SetPHPError('it was not possible to start the PHP session', $php_error_message));
 		$this->session_started = true;
 		if(IsSet($_SESSION['OAUTH_ACCESS_TOKEN'][$this->access_token_url]))
