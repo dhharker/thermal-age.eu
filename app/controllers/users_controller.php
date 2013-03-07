@@ -18,6 +18,7 @@ class UsersController extends AppController {
             $this->set(compact('of'));
             $this->Session->delete('oauth.fail');
         }
+        set ('data',array());
         
         //Auth Magic
     }
@@ -26,7 +27,35 @@ class UsersController extends AppController {
     }
     
     function profile () {
-        $this->set('user',$this->Auth->user());
+        $user = $this->Auth->user();
+        if (!$user) {
+            // not logged in??!
+            $this->redirect($this->Auth->logout());
+            return;
+        }
+        $this->loadModel('Job');
+        $jobs = $this->Job->find('all',array (
+            'conditions' => array (
+                'Job.user_id' => $user['User']['id']
+            )
+        ));
+        if (!!$jobs) foreach ($jobs as $jin => $job) {
+            if (!$this->Job->read(null, $job['Job']['id'])) continue;
+            $fn = $this->Job->bgpGetJobFileName ('report');
+            if (file_exists ($fn)) {
+                $results = file_get_contents ($fn);
+                $uns = @unserialize($results);
+                if ($uns !== false)
+                    $jobs[$jin]['Job']['results_file'] = $uns;
+                else
+                    $jobs[$jin]['Job']['results_file'] = array ('error', 'couldn\'t find results file');
+            }
+            die (print_r($jobs,true));
+        }
+        
+        
+        $JSCs = $this->Job->statusCodes;
+        $this->set(compact('user','jobs','JSCs'));
     }
     
     private function _loadOAuth () {

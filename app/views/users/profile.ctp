@@ -1,42 +1,43 @@
 <div class="grid_7"><div class="smartbox">
-<h1>Login</h1>
-
-<?php echo $this->Form->create  ('User', array('url' => $this->here, 'class' => 'ui-corner-all', 'style' => "margin: 1em")); ?>
-
-<?= $this->Form->input('User.username', array(
-    'label' => 'Username/Email',
-    'placeholder' => 'e.g. me@example.com',
-));?>
-<?= $this->Form->input('User.password', array(
-    'label' => 'Password',
-    'placeholder' => '',
-));?>
-<?= $this->Form->submit("Login");?>
-
-<?php echo $this->Form->end(); ?>
+<h1 class="sbHeading">Welcome, <?=$user['User']['alias']?></h1>
 
 </div></div>
 <div class="grid_5"><div class="smartbox">
-<h2>External</h2>
+<h2 class="sbHeading">Recent Jobs</h2>
 <ul>
-
 <?php
-if (isset($of)) {
-    echo "<li>";
-    var_dump ($of);
-    echo "</li>";
-}
-echo "<li>";
-echo $this->Html->link ($this->Html->image('oauth_google_red_large.png', array (
-        'alt' => "Login with Google",
-        'style' => 'max-width: 100%; max-height: 46px;'
-    )), array (
-    'controller' => 'users',
-    'action' => 'oauth'
-), array (
-    'escape' => false
-));
+$status_colours = array (
+    "#4cc8a1", // pending
+    "#bb4cc8", // running
+    "#5fb329", // finished
+    "#c91501", // error
+);
+if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
+    foreach ($jobs as $job) {
+        $note = "";
+        $status_str = (isset ($JSCs[$job['Job']['status']])) ? $JSCs[$job['Job']['status']] : $job['Job']['status'];
+        $status_colour = (isset ($status_colours[10+$job['Job']['status']])) ? $status_colours[$job['Job']['status']] : "#888888";
+        //$jd = unserialize($job['Job']['data']);
+        $jd = unserialize($job['Job']['results_file']);
+        if (!$jd) $note = "No data found in job!";
+        elseif ($job['Job']['status'] == 2 && isset ($jd['spreadsheet_csv']) && isset ($jd['spreadsheet_csv']['Spreadsheet']) && isset ($jd['spreadsheet_csv']['Spreadsheet']['filename'])) {
+            // It is a completed spreadsheet job
+        }
+        ?>
+        <li>
+            <div style="float: right; font-variant: small-caps; color: <?=$status_colour;?>"><?=$status_str;?></div>
+            <strong><?=$job['Job']['title'];?></strong><br />
+            <span style="font-size: small;">Created: <?=$job['Job']['created'];?></span>
+            <?php if (strlen ($note) > 0) echo "<p>$note</p>"; ?>
+            
+            <?php
+            unset ($job['Job']['data']);
+            //var_dump($job['Job']);
+            
+            ?>
+        </li>
+        <?php
+    }
 ?>
-</li>
 </ul>
 </div></div>

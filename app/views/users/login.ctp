@@ -10,6 +10,7 @@
 <?= $this->Form->input('User.password', array(
     'label' => 'Password',
     'placeholder' => '',
+    'value' => ''
 ));?>
 <?= $this->Form->submit("Login");?>
 
