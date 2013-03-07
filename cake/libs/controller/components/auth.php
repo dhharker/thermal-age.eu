@@ -690,7 +690,8 @@ class AuthComponent extends Object {
 			$this->Session->write($this->sessionKey, $user);
 			$this->_loggedIn = true;
 		}
-                else debug (array("failed to identify()", $user));
+                debug (array("failed to identify()", $user));
+                
 		return $this->_loggedIn;
 	}
 
