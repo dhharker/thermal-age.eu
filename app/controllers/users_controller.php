@@ -125,8 +125,10 @@ class UsersController extends AppController {
                 $egu = $this->User->read (null,$this->User->getLastInsertID());
             }
             
-            $this->Auth->login($egu);
-            $this->redirect(array('action' => 'profile'));
+            //$this->Auth->login($egu);
+            var_dump(array ($egu, $this->Auth->login($egu)));
+            exit;
+            //$this->redirect(array('action' => 'profile'));
         }
     }
     
