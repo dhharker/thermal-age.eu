@@ -45,7 +45,7 @@ class UsersController extends AppController {
 	//$client->client_id = '1017893960545-kkd0pq7kp16is7m7513jcfqq7iei2ncu.apps.googleusercontent.com';
 	//$client->client_secret = 'yZ2dW2E6sDibLv8OP-IzpBgF';
 	$client->client_id = '642707952741.apps.googleusercontent.com';
-	$client->client_secret = 'VwWouDZaFxmS59tT9ImKIHNQ';
+	$client->client_secret = 'QCeN-NpJIOTqDy3dPVTANaDW';
         
         return $client;
     }
