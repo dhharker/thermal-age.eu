@@ -111,6 +111,7 @@ class UsersController extends AppController {
                         'name' => $userInfo->name,
                         'alias' => $userInfo->given_name,
                         'username' => $userInfo->id,
+                        'password' => 'oauth-noauth',
                         'email_priv' => $userInfo->email,
                         'url' => $userInfo->link,
                         'photo' => $this->Upload->passThrough ($userInfo->picture, $userInfo->name),
