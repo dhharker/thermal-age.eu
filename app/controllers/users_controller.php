@@ -84,7 +84,7 @@ class UsersController extends AppController {
         
         if (!$success) {
             $this->Session->setFlash(__('Login Error', true));
-            $this->Session->write('oauth.fail',array("Error",$err));
+            $this->Session->write('oauth.fail',array("Error",$err,"DBG",$client->debug_output));
             $this->redirect(array('action' => 'login'));
         }
         else {
