@@ -1103,7 +1103,7 @@ class oauth_client_class
 		{
 			$this->access_token_error = 'it was not possible to access the '.$options['Resource'].': it was returned an unexpected response status '.$http->response_status.' Response: '.$data;
 			if($this->debug)
-				$this->OutputDebug('Could not retrieve the OAuth access. Error: '.$this->access_token_error);
+				$this->OutputDebug('Could not retrieve the OAuth access. Error: '.$this->access_token_error.'<br /> '.$http->debug_response_body);
 			if(IsSet($options['FailOnAccessError'])
 			&& $options['FailOnAccessError'])
 			{
