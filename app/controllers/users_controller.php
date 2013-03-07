@@ -30,8 +30,8 @@ class UsersController extends AppController {
 
         $client = new oauth_client_class;
 	$client->server = 'Google';
-	//$client->redirect_uri = "http://beta.thermal-age.eu".$this->here;
-	$client->redirect_uri = Router::url($this->here, true);
+	$client->redirect_uri = "http://beta.thermal-age.eu".$this->here;
+	//$client->redirect_uri = Router::url($this->here, true);
 
 	//$client->client_id = '1017893960545-kkd0pq7kp16is7m7513jcfqq7iei2ncu.apps.googleusercontent.com';
 	//$client->client_secret = 'yZ2dW2E6sDibLv8OP-IzpBgF';
@@ -71,36 +71,36 @@ class UsersController extends AppController {
 	if($client->exit)
             exit;
         
-        // Does use exist?
-        $this->User->recursive = 0;
-        $egu = $this->User->find('first',array (
-            'conditions' => array (
-                'User.oauth_linked' => $client->server . "#" . $userInfo->id
-            )
-        ));
-        if (!$egu) {
-            $this->loadModel('Upload');
-            $this->User->create();
-            $this->User->save (array (
-                'User' => array (
-                    'name' => $userInfo->name,
-                    'alias' => $userInfo->given_name,
-                    'username' => $userInfo->id,
-                    'email_priv' => $userInfo->email,
-                    'url' => $userInfo->link,
-                    'photo' => $this->Upload->passThrough ($userInfo->picture, $userInfo->name),
-                    'oauth_linked' => $client->server . "#" . $userInfo->id
-                )
-            ));
-            $egu = $this->User->read (null,$this->User->getLastInsertID());
-        }
-        $err = $client->error;
-        
-        if (strlen ($err) > 0) {
-            $this->Session->setFlash(__('Login Error: ' . $err, true));
+        if (!$success) {
+            $this->Session->setFlash(__('Login Error', true));
             $this->redirect(array('action' => 'login'));
         }
         else {
+            // Does user exist?
+            $this->User->recursive = 0;
+            $egu = $this->User->find('first',array (
+                'conditions' => array (
+                    'User.oauth_linked' => $client->server . "#" . $userInfo->id
+                )
+            ));
+            if (!$egu) {
+                $this->loadModel('Upload');
+                $this->User->create();
+                $this->User->save (array (
+                    'User' => array (
+                        'name' => $userInfo->name,
+                        'alias' => $userInfo->given_name,
+                        'username' => $userInfo->id,
+                        'email_priv' => $userInfo->email,
+                        'url' => $userInfo->link,
+                        'photo' => $this->Upload->passThrough ($userInfo->picture, $userInfo->name),
+                        'oauth_linked' => $client->server . "#" . $userInfo->id
+                    )
+                ));
+                $egu = $this->User->read (null,$this->User->getLastInsertID());
+            }
+            $err = $client->error;
+        
             $this->Auth->login($egu);
             $this->redirect(array('action' => 'profile'));
         }
