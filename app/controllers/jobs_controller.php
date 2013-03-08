@@ -9,9 +9,16 @@ class JobsController extends AppController {
     }
     
     function job_list ($list = null, $since = 0) {
+        if (isset ($_GET['since']) && is_numeric ($_GET['since']) && $_GET['since'] > 0)
+            $since = $_GET['since'];
         $list = (in_array ($list, array ('recent','incomplete'))) ? $list : null;
-        $jobSections = $this->Job->getSectionsByUserId ($list, $user_id = $this->Auth->user('id'), $since);
-        $this->set(compact('jobSections'));
+        
+        header ('ax-new-epoch: ' . time());
+        
+        $user_id = $this->Auth->user('id');
+        $jobSections = $this->Job->getSectionsByUserId ($list, $user_id, $since);
+        $JSCs = $this->Job->statusCodes;
+        $this->set(compact('jobSections','JSCs'));
     }
     
     

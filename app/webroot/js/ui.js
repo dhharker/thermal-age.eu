@@ -6,20 +6,25 @@ var useful = {
     bp2ad: function (bp) {
         return (bp / -1) + 1950;
     },
+    _isJsFunction: function (obj) {
+        return !!(obj && obj.constructor && obj.call && obj.apply);
+    },
     /*Reloads the contents of an element via ajax less frequently the less stuff happens
      */
     ajaxReloader: function (container,url,options) {
+
         var $container = $(container);
         var defaults = {
             sinceEpoch: 0, // since 1970 in case no starting ts supplied
-            startDelayS: 5, // number of seconds after the fn is called before it refreshes the content
+            startDelayS: 6, // number of seconds after the fn is called before it refreshes the content
             addDelayS: function (dS) {return dS + 1;}, // example of fn value. can be float. number of seconds to wait before re-check after no-changes response
             maxDelayS: 7200, // If they've left the browser open then check every 2 hours by default
             //requestType: 'post', // must be post so there.
             params: {}, // to pass with request,
-            latestTsParamName: 'since' // param to tell endpoint how up to date we are
+            latestTsParamName: 'since', // param to tell endpoint how up to date we are
+            latestTsHeaderName: 'ax-new-epoch' // what is the name of the response header containing the time we're now up to date to
         };
-        var settings = $.extend({}, this.defaults, options);
+        var settings = $.extend({}, defaults, options);
         var timer = null; // careful with this ;-)
         
         // Declare these above updateContent (IE might get upset otherwise, not sure but belt & braces!)
@@ -28,48 +33,68 @@ var useful = {
         
         // function for when request has succeeded
         var startTimer = function () {
+            var state = $container.data('ajaxReloader');
+            if (!!!state.currentDelay) state.currentDelay = 5;
             window.clearTimeout(timer);
-            timer = window.setTimeout(doUpdate,$container.data('ajaxReloader.currentDelay')*1000);
+            timer = window.setTimeout(doUpdate,state.currentDelay*1000);
         }
-        var updateContent = function (data) {
-            $container.innerHtml (data);
+        var updateContent = function (data,xhr) {
+            $container.html (data);
             $container.data('ajaxReloader.currentDelay',settings.startDelayS);
+            var ne = xhr.getResponseHeader(settings.latestTsHeaderName);
+            if (ne > 0)
+                $container.data('ajaxReloader.sinceEpoch', parseInt(ne));
             startTimer();
         }
         // for when the request fails or there's no recent data (do nothing, wait longer next time.)
-        var noUpdateContent = function () {
+        var noUpdateContent = function (xhr) {
             var state = $container.data('ajaxReloader');
-            
-        }
+            state.currentDelay = (useful._isJsFunction(settings.addDelayS)) ?
+                settings.addDelayS (state.currentDelay) : settings.addDelayS + state.currentDelay;
+            var ne = xhr.getResponseHeader(settings.latestTsHeaderName);
+            if (ne > 0) {
+                state.sinceEpoch = parseInt(ne);
+            }
+            $container.data('ajaxReloader',state);
+            startTimer();
+        };
         
         
         // make an ajax request and update the field on non-null response (update delay either way)
         doUpdate = function () {
             var state = $container.data('ajaxReloader');
-            if (!!state) state = {
-                currentDelay: settings.startDelayS,
-                sinceEpoch: settings.sinceEpoch
-            };
-            var ltspn = ''+settings.latestTsParamName+'';
-            var s = { ltspn: state.sinceEpoch };
-            var sendData = $.extend(
-                {},
-                settings.params,
-                s
-            );
-            
-            console.log (url, s);
+            var ts = {}; 
+            if (typeof state == 'undefined') {
+                state = {
+                    'currentDelay': settings.startDelayS,
+                    'sinceEpoch': settings.sinceEpoch
+                };
+            }
+            else {
+                ts[settings.latestTsParamName] = state.sinceEpoch;
+            }
+            var sendData = $.extend({},settings.params,ts);
             
             var requestOpts = {
                 type: 'post',
                 data: sendData,
                 success: function (data,strStatus,xhr) {
-                    console.log ("response",xhr);
-                    updateContent(data);
+                    if (data.toString().length == 0)
+                        noUpdateContent(xhr)
+                    else
+                        updateContent(data,xhr);
+                    return false;
+                },
+                failure: function (data,strStatus,xhr) {
+                    noUpdateContent(xhr);
+                    return false;
                 }
             }
-            $container.ajax(url, requestOpts);
+            $.ajax(url, requestOpts);
+            $container.data('ajaxReloader',state);
         };
+        
+        doUpdate();
     }
 };
 

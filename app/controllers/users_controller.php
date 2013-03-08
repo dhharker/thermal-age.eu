@@ -39,9 +39,9 @@ class UsersController extends AppController {
         }
         $this->loadModel('Job');
         
-        $jobSections = $this->Job->getSectionsByUserId (null, $user_id = null);
-        
+        $jobSections = $this->Job->getSectionsByUserId (null, $user['User']['id'], 0);
         $JSCs = $this->Job->statusCodes;
+        
         $this->set(compact('user','jobSections','JSCs'));
     }
     

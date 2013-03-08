@@ -49,11 +49,15 @@ class Job extends AppModel {
             $uid = User::get('id');
             if (!!$uid) $user_id = $uid;
         }
+        $timeConstraint = "DATE(Job.updated) > DATE('".date('Y-m-d H:i:s',$since_epoch)."')";
         $jobSections = array (
             'recent' => $this->findJobsGetResultsFile(array (
                 'conditions' => array (
-                    'Job.user_id' => $user_id,
-                    'Job.status !=' => '4'
+                    'AND' => array (
+                        'Job.user_id' => $user_id,
+                        'Job.status !=' => '4',
+                        $timeConstraint
+                    )
                 ),
                 'order' => array (
                     'Job.updated' => 'DESC'
@@ -63,7 +67,9 @@ class Job extends AppModel {
                 'conditions' => array (
                     'AND' => array (
                         'Job.user_id' => $user_id,
-                        'Job.status =' => '4'
+                        'Job.status =' => '4',
+                        $timeConstraint
+                        
                     )
                 ),
                 'order' => array (

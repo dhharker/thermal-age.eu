@@ -1,4 +1,3 @@
-<ul class="objectList NUBs">
 <?php
 $status_colours = array (
     "#4cc8a1", // pending
@@ -8,13 +7,14 @@ $status_colours = array (
     "#96b4a7" // incomplete
 );
 $status_icons = array (
-    '&#xe06c;', // pending
+    '&#xe005;', // pending
     '&#xe026;', // running
     '&#xe033;', // finished
     '&#xe035;', // error
     '&#xe04f;' // incomplete
 );
-if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
+if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
+    echo '<ul class="objectList NUBs">';
     foreach ($jobs as $job) {
         
         $status_str = (isset ($JSCs[$job['Job']['status']])) ? $JSCs[$job['Job']['status']] : $job['Job']['status'];
@@ -81,6 +81,10 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
                 $jobTitle = $jd['specimen']['Specimen']['name'];
             }
         }
+        elseif ($job['Job']['status'] == 0) {
+            // Job is in queue
+            $itemIcon = $this->Icons->i('&#xe06c;');
+        }
         elseif ($job['Job']['status'] == 1) {
             // Job is currently running!
             $itemIcon = $this->Icons->i('&#xe042;');
@@ -125,5 +129,6 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
         </li>
         <?php
     }
+    echo '</ul>';
+}
 ?>
-</ul>
