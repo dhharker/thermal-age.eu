@@ -9,7 +9,9 @@ class AppController extends Controller {
         'Form',
         'Javascript',
         'Minify.Minify',
-        'Session'
+        'Session',
+        'Icons',
+        'Time'
     );
     
     function __construct () {
@@ -36,6 +38,8 @@ class AppController extends Controller {
         
         $this->set ('isMobile', $this->RequestHandler->isMobile());
 
+        $this->set('logged_in_user', $this->Auth->user());
+        
         $scripts = array(
               /*prod:'js/wizard_components.js',*/
             //'js/jquery-1.5.1.js',

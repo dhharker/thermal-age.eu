@@ -23,7 +23,7 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
             ?>
             <?php echo $this->Html->link(
                 'Cancel',
-                array ('controller' => '', 'action' => '', ''),
+                array ('controller' => 'wiz', 'action' => 'clearcache'),
                 array('class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary ' . $cocl, 'escape' => false)); ?>
 
             <?php

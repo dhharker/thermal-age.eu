@@ -96,6 +96,8 @@
             <div class="clearfix" style="padding: 20px 1em 10px 1em; text-align: center;">
                 <g:plusone size="medium" href="http://thermal-age.eu/"></g:plusone>
                 <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+                <br />
+                Find us on <a href="https://plus.google.com/113303290040058656667" rel="publisher">Google+</a>
             </div>
 
         </div>

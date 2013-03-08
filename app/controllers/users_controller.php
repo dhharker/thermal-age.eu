@@ -27,6 +27,10 @@ class UsersController extends AppController {
     }
     
     function profile () {
+        $this->redirect(array ('action' => 'dashboard'));
+    }
+    
+    function dashboard () {
         $user = $this->Auth->user();
         if (!$user) {
             // not logged in??!

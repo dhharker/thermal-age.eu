@@ -25,7 +25,7 @@ checkbox multi-period sample example?
         <div class="grid_11 alpha">
             <?=$this->Form->input('Spreadsheet.file', array(
                 'type' => 'file',
-                'label' => 'Upload CSV Data',
+                'label' => $this->Icons->i('&#xe06e;') .' &nbsp;Upload CSV Data',
                 
             ));?>
         </div>

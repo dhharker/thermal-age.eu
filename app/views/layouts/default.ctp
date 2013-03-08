@@ -20,6 +20,7 @@
         echo $this->Html->css('taeu-jqui-theme/jquery-ui-1.8.14.custom.css') . "\n";
         echo $this->Html->css('thermal-age.css') . "\n";
         echo $this->Html->css('chosen.css') . "\n";
+        echo $this->Html->css('imi.css') . "\n";
 
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Html->css('thermal-age-wizard.css') . "\n";
@@ -60,6 +61,9 @@
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Javascript->link('wizard_components.js');
         }
+        
+        $ll = $this->Javascript->link('lte-ie7.js');
+        echo "<!--[if lte IE 7]>".$ll."<![endif]-->";
 
         echo $this->Javascript->link('ui.js');
 
@@ -82,26 +86,33 @@
             </div>
             <nav>
                 <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
-                    <div id="topMainMenu">
+                    <div id="topMainMenu" class="NUBs">
+                        <?php
+                        $logged_in = (is_array ($logged_in_user) && isset ($logged_in_user['User']['id']) && !!$logged_in_user['User']['id']) ? true : false;
+                        ?>
                         <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
                         
-                        <?php echo $this->Html->link('Home', '/', array('class' => 'fg-button ui-state-default  ui-corner-left')); ?>
+                        <?php echo $this->Html->link($this->Icons->i('&#xe000;').'Home', '/', array('escape' => false, 'class' => 'fg-button ui-state-default  ui-corner-left')); ?>
 
-                        <?php echo $this->Html->link('Clear', array ('controller' => 'wiz', 'action' => 'clearcache'), array('class' => 'fg-button ui-state-default')); ?>
+                        <?php echo $this->Html->link($this->Icons->i('&#xe064;').'About', array ('controller' => 'pages', 'action' => 'about'), array('escape' => false, 'class' => 'fg-button ui-state-default ')); ?>
+                        
 
-                        <?php echo $this->Html->link('About', array ('controller' => 'pages', 'action' => 'about'), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php echo $this->Html->link($this->Icons->i('&#xe009;').'Wizards', array ('controller' => 'wiz', 'action' => 'index'), array('escape' => false, 'class' => 'fg-button ui-state-default')); ?>
+                        <?php if (0&&$logged_in) echo $this->Html->link($this->Icons->i('&#xe052;').'Clear', array ('controller' => 'wiz', 'action' => 'clearcache'), array('escape' => false, 'class' => 'fg-button ui-state-default')); ?>
+                        
+                        <?php if ($logged_in) echo $this->Html->link($this->Icons->i('&#xe069;').'Dashboard', array ('controller' => 'users', 'action' => 'dashboard'), array('escape' => false, 'class' => 'fg-button ui-state-default')); ?>
 
-                        <?php echo $this->Html->link('Wizards', array ('controller' => 'wiz', 'action' => 'index'), array('class' => 'fg-button ui-state-default')); ?>
+                        <?php  if (!$logged_in) echo $this->Html->link($this->Icons->i('&#xe00e;').'Login', array ('controller' => 'users', 'action' => 'login'), array('escape' => false, 'class' => 'fg-button ui-state-default')); ?>
+                        <?php  if ($logged_in) echo $this->Html->link($this->Icons->i('&#xe041;').'Logout', array ('controller' => 'users', 'action' => 'logout'), array('escape' => false, 'class' => 'fg-button ui-state-default')); ?>
+                        
+                        <?php echo $this->Html->link($this->Icons->i('&#xe04a;').'Feedback', array ('controller' => 'feedback', 'action' => ''), array('escape' => false, 'class' => 'fg-button ui-state-default feedbackButton ui-corner-right', 'id' => 'feedbackButton')); ?>
 
-                        <?php echo $this->Html->link('Feedback', array ('controller' => 'feedback', 'action' => ''), array('class' => 'fg-button ui-state-default feedbackButton ui-corner-right', 'id' => 'feedbackButton')); ?>
+                        <?php  $this->Html->link($this->Icons->i('&#xe071;').'Developers', array ('controller' => 'pages', 'action' => ''), array('escape' => false, 'class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php  $this->Html->link('Developers', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php  $this->Html->link($this->Icons->i('&#xe073;').'Data', array ('controller' => 'pages', 'action' => ''), array('escape' => false, 'class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php  $this->Html->link('Data', array ('controller' => 'pages', 'action' => ''), array('class' => 'fg-button ui-state-default ')); ?>
+                        <?php  $this->Html->link($this->Icons->i('&#xe067;').'Help', array ('controller' => 'pages', 'action' => 'help'), array('escape' => false, 'class' => 'fg-button ui-state-default ')); ?>
 
-                        <?php  $this->Html->link('Help', array ('controller' => 'pages', 'action' => 'help'), array('class' => 'fg-button ui-state-default ')); ?>
-
-                        <?php  $this->Html->link('Login', array ('controller' => 'users', 'action' => 'login'), array('class' => 'fg-button ui-state-default  ui-corner-right')); ?>
 
                     </div>
                 </div>

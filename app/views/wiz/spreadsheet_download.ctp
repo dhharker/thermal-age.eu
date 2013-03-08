@@ -13,13 +13,14 @@ checkbox multi-period sample example?
 <h1 class="sbHeading">
     Setup Spreadsheet
 </h1>
-<div class="grid_11 omega paddedCell_10_h">
+<div class="grid_11 omega paddedCell_10_h NUBs">
     
     <p>
         Ok, we have created a blank spreadsheet for you to copy your data into. Click below to
         download it. Once you've got your data in press Continue to upload it again for processing.
     </p>
     <?php echo $this->Html->link(
+        $this->Icons->i('&#xe030;') .
         "Download Spreadsheet Template<br /><span class=\"subtler-text\"></span>",
         array ('controller' => 'wiz', 'action' => 'get_blank_spreadsheet'),
         array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
