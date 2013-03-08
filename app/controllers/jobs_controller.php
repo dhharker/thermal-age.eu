@@ -2,7 +2,19 @@
 class JobsController extends AppController {
 
 	var $name = 'Jobs';
-
+    
+    function beforeFilter() {
+        parent::beforeFilter();
+        //$this->Auth->allow(array('report'));
+    }
+    
+    function job_list ($list = null, $since = 0) {
+        $list = (in_array ($list, array ('recent','incomplete'))) ? $list : null;
+        $jobSections = $this->Job->getSectionsByUserId ($list, $user_id = $this->Auth->user('id'), $since);
+        $this->set(compact('jobSections'));
+    }
+    
+    
     /**
      * Users get bounced here when a job is finished (with or without errors)
      * @param int $id of job to get report for

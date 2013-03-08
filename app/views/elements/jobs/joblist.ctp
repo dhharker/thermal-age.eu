@@ -116,8 +116,10 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0)
             <?php if (strlen ($note) > 0) echo "<p>$note</p>"; ?>
             
             <?php
-            //var_dump ($job['Job']['data']);
-            echo date("Y-m-d H:i:s",time());
+            //var_dump ($jd);
+            if (isset ($jd['site']['Site']['name']))
+                echo $jd['site']['Site']['name'];
+            //echo date("Y-m-d H:i:s",time());
             ?>
             <div class="ui-helper-clearfix"></div>
         </li>

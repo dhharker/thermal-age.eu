@@ -64,7 +64,8 @@ var useful = {
                 type: 'post',
                 data: sendData,
                 success: function (data,strStatus,xhr) {
-                    $container.innerHtml (data);
+                    console.log ("response",xhr);
+                    updateContent(data);
                 }
             }
             $container.ajax(url, requestOpts);

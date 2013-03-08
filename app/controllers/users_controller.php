@@ -41,10 +41,11 @@ class UsersController extends AppController {
         
         $jobSections = $this->Job->getSectionsByUserId (null, $user_id = null);
         
-        
         $JSCs = $this->Job->statusCodes;
         $this->set(compact('user','jobSections','JSCs'));
     }
+    
+    
     
     private function _loadOAuth () {
         
