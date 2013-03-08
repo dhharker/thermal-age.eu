@@ -44,6 +44,42 @@ class Job extends AppModel {
         }
         return false;
     }
+    function getSectionsByUserId ($sections = null, $user_id = null, $since_epoch = 0) {
+        if ($user_id === null) {
+            $uid = User::get('id');
+            if (!!$uid) $user_id = $uid;
+        }
+        $jobSections = array (
+            'recent' => $this->findJobsGetResultsFile(array (
+                'conditions' => array (
+                    'Job.user_id' => $user_id,
+                    'Job.status !=' => '4'
+                ),
+                'order' => array (
+                    'Job.updated' => 'DESC'
+                )
+            )),
+            'incomplete' => $this->findJobsGetResultsFile(array (
+                'conditions' => array (
+                    'AND' => array (
+                        'Job.user_id' => $user_id,
+                        'Job.status =' => '4'
+                    )
+                ),
+                'order' => array (
+                    'Job.updated' => 'DESC'
+                )
+            ))
+        );
+        if ($sections !== null) {
+            $sections = (array) $sections;
+            foreach ($jobSections as $ji => $js) {
+                if (!in_array ($ji,$sections))
+                    unset ($jobSections[$ji]);
+            }
+        }
+        return $jobSections;
+    }
     
     
     /**

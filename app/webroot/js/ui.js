@@ -50,9 +50,8 @@ var useful = {
                 currentDelay: settings.startDelayS,
                 sinceEpoch: settings.sinceEpoch
             };
-            var s = {
-                    (settings.latestTsParamName+''): state.sinceEpoch
-                };
+            var ltspn = ''+settings.latestTsParamName+'';
+            var s = { ltspn: state.sinceEpoch };
             var sendData = $.extend(
                 {},
                 settings.params,

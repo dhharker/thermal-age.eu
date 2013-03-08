@@ -39,30 +39,8 @@ class UsersController extends AppController {
         }
         $this->loadModel('Job');
         
+        $jobSections = $this->Job->getSectionsByUserId (null, $user_id = null);
         
-        
-        $jobSections = array (
-            'recent' => $this->Job->findJobsGetResultsFile(array (
-                'conditions' => array (
-                    'Job.user_id' => $user['User']['id'],
-                    'Job.status !=' => '4'
-                ),
-                'order' => array (
-                    'Job.updated' => 'DESC'
-                )
-            )),
-            'incomplete' => $this->Job->findJobsGetResultsFile(array (
-                'conditions' => array (
-                    'AND' => array (
-                        'Job.user_id' => $user['User']['id'],
-                        'Job.status =' => '4'
-                    )
-                ),
-                'order' => array (
-                    'Job.updated' => 'DESC'
-                )
-            ))
-        );
         
         $JSCs = $this->Job->statusCodes;
         $this->set(compact('user','jobSections','JSCs'));
