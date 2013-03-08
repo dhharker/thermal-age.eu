@@ -5,6 +5,71 @@ var useful = {
     },
     bp2ad: function (bp) {
         return (bp / -1) + 1950;
+    },
+    /*Reloads the contents of an element via ajax less frequently the less stuff happens
+     */
+    ajaxReloader: function (container,url,options) {
+        var $container = $(container);
+        var defaults = {
+            sinceEpoch: 0, // since 1970 in case no starting ts supplied
+            startDelayS: 5, // number of seconds after the fn is called before it refreshes the content
+            addDelayS: function (dS) {return dS + 1;}, // example of fn value. can be float. number of seconds to wait before re-check after no-changes response
+            maxDelayS: 7200, // If they've left the browser open then check every 2 hours by default
+            //requestType: 'post', // must be post so there.
+            params: {}, // to pass with request,
+            latestTsParamName: 'since' // param to tell endpoint how up to date we are
+        };
+        var settings = $.extend({}, this.defaults, options);
+        var timer = null; // careful with this ;-)
+        
+        // Declare these above updateContent (IE might get upset otherwise, not sure but belt & braces!)
+        var doUpdate = function () {};
+        
+        
+        // function for when request has succeeded
+        var startTimer = function () {
+            window.clearTimeout(timer);
+            timer = window.setTimeout(doUpdate,$container.data('ajaxReloader.currentDelay')*1000);
+        }
+        var updateContent = function (data) {
+            $container.innerHtml (data);
+            $container.data('ajaxReloader.currentDelay',settings.startDelayS);
+            startTimer();
+        }
+        // for when the request fails or there's no recent data (do nothing, wait longer next time.)
+        var noUpdateContent = function () {
+            var state = $container.data('ajaxReloader');
+            
+        }
+        
+        
+        // make an ajax request and update the field on non-null response (update delay either way)
+        doUpdate = function () {
+            var state = $container.data('ajaxReloader');
+            if (!!state) state = {
+                currentDelay: settings.startDelayS,
+                sinceEpoch: settings.sinceEpoch
+            };
+            var s = {
+                    (settings.latestTsParamName+''): state.sinceEpoch
+                };
+            var sendData = $.extend(
+                {},
+                settings.params,
+                s
+            );
+            
+            console.log (url, s);
+            
+            var requestOpts = {
+                type: 'post',
+                data: sendData,
+                success: function (data,strStatus,xhr) {
+                    $container.innerHtml (data);
+                }
+            }
+            $container.ajax(url, requestOpts);
+        };
     }
 };
 

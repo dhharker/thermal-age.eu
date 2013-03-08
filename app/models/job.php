@@ -9,12 +9,43 @@
 class Job extends AppModel {
 	var $name = 'Job';
 	var $displayField = 'title';
-    var $statusCodes = array ('pending', 'running', 'finished', 'error');
+    var $statusCodes = array ('pending', 'running', 'finished', 'error', 'incomplete');
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 5; // number of seconds to wait before restarting to check for new jobs
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
+    
+    /**
+     * Convenience functions for AJAX job list update, but generic in nature
+     */
+    function findJobsGetResultsFile($options = array ()) {
+        $jobs = $this->find('all',$options);
+        $nJobs = array ();
+        if (!!$jobs) {
+            foreach ($jobs as $jin => $job) {
+                if (!$this->read(null, $job['Job']['id'])) continue;
+
+                $nJobs[$jin] = $job;
+                $fn = $this->bgpGetJobFileName ('report');
+                if (file_exists ($fn)) {
+
+                    $results = file_get_contents ($fn);
+                    $uns = @unserialize($results);
+                    if ($uns !== false)
+                        $nJobs[$jin]['Job']['results_file'] = $uns;
+                    else
+                        $nJobs[$jin]['Job']['results_file'] = array ('error', 'couldn\'t read results file');
+                }
+                else 
+                    $nJobs[$jin]['Job']['results_file'] = array ('error' => 'couldn\'t find results file', 'file' => $fn);
+            }
+            return $nJobs;
+        }
+        return false;
+    }
+    
+    
     /**
      * To be run from CLI. Finds the next job in the queue and runs it.
      */
@@ -1285,14 +1316,14 @@ class Job extends AppModel {
                 if (!mkdir ($dir, 0777))
                     return false;
             }
-            $this->jobDir = $dir;
+            $thisDir = $dir;
             return $dir;
         }
         return false;
     }
     function _clearJobTmpDir () {
-        if (is_dir ($this->jobDir)) {
-            //return rmdir($this->jobDir);
+        if (is_dir ($thisDir)) {
+            //return rmdir($thisDir);
         }
     }
     /**

@@ -38,37 +38,34 @@ class UsersController extends AppController {
             return;
         }
         $this->loadModel('Job');
-        $jobs = $this->Job->find('all',array (
-            'conditions' => array (
-                'Job.user_id' => $user['User']['id']
-            ),
-            'order' => array (
-                'Job.id' => 'DESC'
-            )
-        ));
-        $nJobs = array ();
-        if (!!$jobs) {
-            foreach ($jobs as $jin => $job) {
-                if (!$this->Job->read(null, $job['Job']['id'])) continue;
-                $nJobs[$jin] = $job;
-                $fn = $this->Job->bgpGetJobFileName ('report');
-                if (file_exists ($fn)) {
-
-                    $results = file_get_contents ($fn);
-                    $uns = @unserialize($results);
-                    if ($uns !== false)
-                        $nJobs[$jin]['Job']['results_file'] = $uns;
-                    else
-                        $nJobs[$jin]['Job']['results_file'] = array ('error', 'couldn\'t read results file');
-                }
-                else 
-                    $nJobs[$jin]['Job']['results_file'] = array ('error' => 'couldn\'t find results file', 'file' => $fn);
-            }
-            $jobs = $nJobs;
-        }
+        
+        
+        
+        $jobSections = array (
+            'recent' => $this->Job->findJobsGetResultsFile(array (
+                'conditions' => array (
+                    'Job.user_id' => $user['User']['id'],
+                    'Job.status !=' => '4'
+                ),
+                'order' => array (
+                    'Job.updated' => 'DESC'
+                )
+            )),
+            'incomplete' => $this->Job->findJobsGetResultsFile(array (
+                'conditions' => array (
+                    'AND' => array (
+                        'Job.user_id' => $user['User']['id'],
+                        'Job.status =' => '4'
+                    )
+                ),
+                'order' => array (
+                    'Job.updated' => 'DESC'
+                )
+            ))
+        );
         
         $JSCs = $this->Job->statusCodes;
-        $this->set(compact('user','jobs','JSCs'));
+        $this->set(compact('user','jobSections','JSCs'));
     }
     
     private function _loadOAuth () {
