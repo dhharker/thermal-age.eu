@@ -21,6 +21,9 @@
         echo $this->Html->css('thermal-age.css') . "\n";
         echo $this->Html->css('chosen.css') . "\n";
         echo $this->Html->css('imi.css') . "\n";
+        ?>
+        <link href='http://fonts.googleapis.com/css?family=Cantarell:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <?php
 
         if (isset ($isWizard) && $isWizard == TRUE) {
             echo $this->Html->css('thermal-age-wizard.css') . "\n";

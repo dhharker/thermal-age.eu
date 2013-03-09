@@ -43,6 +43,7 @@ var useful = {
         }
         var updateContent = function (data,xhr,since) {
             $container.html (data);
+            initialiseTAUI ($container);
             var state = $container.data('ajaxReloader')
             state.currentDelay = settings.startDelayS;
             var ne = xhr.getResponseHeader(settings.latestTsHeaderName);
@@ -100,8 +101,10 @@ var useful = {
                         updateContent(data,xhr,latest);
                     }
                     else if (data.toString().length > 0) {
-                        if (data != state.lastData)
+                        if (data != state.lastData) {
                             $container.html(data); // update content because it may have changed even if the db hasn't
+                            initialiseTAUI($container);
+                        }
                         noUpdateContent(data,xhr);
                     }
                     else {

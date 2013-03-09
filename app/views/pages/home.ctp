@@ -61,6 +61,34 @@
             ); ?>
         </div>-->
     </div>
+    
+    <br />
+    
+    <div class="smartbox">
+        <div class="floatingLoader"></div>
+        <h2 class="sbHeading">System Status</h2>
+        <div id="ajax-system-status"><p>Updating...</p></div>
+        <script type="text/javascript">
+            (function ($){
+                $(document).ready(function () {
+                    var $container = $('#ajax-system-status');
+                    var $loading = $('.floatingLoader',$container.parent()).first();
+                    useful.ajaxReloader($container,'<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'system'))?>',{
+                        sinceEpoch: <?=time()?>,
+                        startDelayS: 10,
+                        onLoading: function () {
+                            $loading.hide().html('<img src="/img/loading_spinner_2.gif" alt="loading..." />').show('fade');
+                        },
+                        onComplete: function () {
+                            $loading.hide('fade');
+                        }
+                    });
+                });
+            }(jQuery));
+        </script>
+    </div>
+    
+    
 </div>
 
 
