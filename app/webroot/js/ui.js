@@ -16,7 +16,7 @@ var useful = {
         var $container = $(container);
         var defaults = {
             sinceEpoch: 0, // since 1970 in case no starting ts supplied
-            startDelayS: 1, // number of seconds after the fn is called before it refreshes the content
+            startDelayS: 3, // number of seconds after the fn is called before it refreshes the content
             addDelayS: function (dS) {return dS + 1;}, // example of fn value. can be float. number of seconds to wait before re-check after no-changes response
             maxDelayS: 7200, // If they've left the browser open then check every 2 hours by default
             //requestType: 'post', // must be post so there.

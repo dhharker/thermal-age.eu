@@ -12,8 +12,7 @@ class Job extends AppModel {
     var $statusCodes = array ('pending', 'running', 'finished', 'error', 'incomplete');
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
-    // redundant - doesn't do this any more:
-    // var $sleepyTime = 5; // number of seconds to wait before restarting to check for new jobs
+    var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
     
@@ -117,12 +116,13 @@ class Job extends AppModel {
         }
         else {
             
-            // Start the next one (if it exists) now
-            $this->_forkToBackground ();
-            
             $this->read (null, $next['Job']['id']);
 
             $this->_startProcessing();
+            
+            // Start the next one (if it exists) now we've updated the status in the DB
+            $this->_forkToBackground ();
+            
             $input = unserialize ($this->field('data'));
             // the parser loads user input in whatever-ass format into the ttkpl object model
             $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
@@ -139,7 +139,7 @@ class Job extends AppModel {
         sleep ($this->sleepyTime);
         $this->_forkToBackground();
         exit (0);*/
-        
+        sleep ($this->sleepyTime);
         $next = $this->_getNext ();
         if (!!$next) {
             // If there's more work to do, do it (in a new process)

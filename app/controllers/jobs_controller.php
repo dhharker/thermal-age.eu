@@ -155,16 +155,29 @@ class JobsController extends AppController {
         $this->Session->write ($skey, time());
 
         $this->set ('job', $j);
-        $this->set ('status', $this->Job->bgpGetStatus ());//$since)); ignoring this for now as status update page currently too simple for it
+        $status = $this->Job->bgpGetStatus ();
+        $this->set ('status', $status);//$since)); ignoring this for now as status update page currently too simple for it
         $async = $this->RequestHandler->isAjax ();
         $this->set ('async', $async);
-
+        
+        
         if ($j['Job']['status'] >= 2) // if job is complete, with or without error
             $this->redirect(array('action' => 'report', $id));
         elseif ($j['Job']['status'] == 0 && !$async) // job is pending
             $this->Job->tryProcessNext();
         elseif ($j['Job']['status'] == 1) // job is running
             $this->Job->bgpBOYD(); // check if *this job* has crashed
+        
+        if (!!$async) {
+            $sd = md5(serialize($status['statusFile']));
+            if ($this->Session->read ('Job.statustxt.lastStatusData') !== $sd) {
+                // data have changed
+                $this->Session->write ('Job.statustxt.lastStatusData',$sd);
+                $this->Session->write ('Job.statustxt.lastStatusTime',time());
+            }
+            header ('ax-new-epoch: ' . time());
+            header ('ax-latest-epoch: ' . $this->Session->read ('Job.statustxt.lastStatusTime'));
+        }
     }
 
 
