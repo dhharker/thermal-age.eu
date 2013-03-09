@@ -13,3 +13,6 @@
 [submodule "app/vendors/ttkpl"]
 	path = app/vendors/ttkpl
 	url = https://github.com/dhharker/ttkpl.git
+[submodule "app/plugins/acl"]
+	path = app/plugins/acl
+	url = https://github.com/interlock/acl_plugin.git
