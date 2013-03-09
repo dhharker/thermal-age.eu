@@ -14,9 +14,14 @@
         <h2 class="sbHeading">Recent Jobs</h2>
         <div id="ajax-recent-jobs">
             <?php
-            echo $this->Element('jobs/joblist', array(
-                'jobs' => $jobSections['recent']
-            ));
+            if (is_array($jobSections['recent']) && count($jobSections['recent']) > 0) {
+                echo $this->Element('jobs/joblist', array(
+                    'jobs' => $jobSections['recent']
+                ));
+            }
+            else {
+                echo "<p>Click 'Wizards' above to get started!</p>";
+            }
             ?>
         </div>
         <script type="text/javascript">

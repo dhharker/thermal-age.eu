@@ -29,6 +29,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
         $download = '';
         $download_uri = '';
         $jobTitle = '';
+        $jobSubTitle = '';
         $note = '';
         $itemIcon = '';
         $title_uri = '';
@@ -69,7 +70,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
             $itemIcon = $download = $this->Icons->i('&#xe04b;');
             $download = $this->Icons->i('&#xe056;')."CSV";
             $download_uri = $jr['output_csv_url'];
-            $download = $this->Html->link ($download, $download_uri,array ('class' => 'fg-button ui-corner-all ui-state-default ui-priority-secondary', 'style' => 'margin: .35em;', 'escape' => false));
+            $download = $this->Html->link ($download, $download_uri,array ('class' => 'fg-button ui-corner-all ui-state-default ui-priority-secondary', 'escape' => false));
             
         }
         elseif ($job['Job']['status'] == 2) {
@@ -105,10 +106,16 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
             elseif (isset ($job['Job']['title']) && strlen ($job['Job']['title']) > 0) {
                 $jobTitle = $job['Job']['title'];
             }
+            elseif (isset ($jd['spreadsheet_setup']['Spreadsheet']['name']))
+                $jobTitle = $jd['spreadsheet_setup']['Spreadsheet']['name'];
             else {
                 $jobTitle = sprintf('Untitled Spreadsheet');
             }
-        
+            if (@isset ($jd['spreadsheet_upload']['Spreadsheet']['file']['name']))
+                $jobSubTitle = $jd['spreadsheet_upload']['Spreadsheet']['file']['name'];
+            
+            if (strlen($download) > 0)
+                $download .="&ensp;";
         ?>
         <li>
             <div style="text-align: right; float: right; font-variant: small-caps; color: <?=$status_colour;?>"><?=$status_str;?>&ensp;<?=$this->Icons->i($status_icon)?><br />
@@ -116,6 +123,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
             
             <strong><?=$this->Html->link ($itemIcon."&nbsp; ".$jobTitle, $title_uri, array ('escape' => false));?></strong><br />
             <?=$download?>
+            <?=$jobSubTitle?>
                 
             <?php if (strlen ($note) > 0) echo "<p>$note</p>"; ?>
             

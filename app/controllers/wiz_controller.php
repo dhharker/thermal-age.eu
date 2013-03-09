@@ -685,8 +685,14 @@ class WizController extends AppController {
             // created job ok. reset the wizard and redirect to the job status page.
 // DEBUG
             $this->Wizard->reset ();
+            // (re-)Kick off processing in case thread has died
+            $this->Job->tryProcessNext();
+            
+            // Don't do this any more it is ugly:
             $this->Session->Setflash ("Do not close this window!", true);
             $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
+            // Do this instead:
+            //$this->redirect(array('controller'=>'users', 'action' => 'dashboard'));
         }
 
         //$this->set ('wizdata', $wizardData);

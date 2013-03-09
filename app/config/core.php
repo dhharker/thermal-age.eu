@@ -85,7 +85,8 @@
  *
  * [Note Routing.admin is deprecated in 1.3.  Use Routing.prefixes instead]
  */
-	Configure::write('Routing.prefixes', array('thermal-age.localhost/admin/istrator'));
+	//Configure::write('Routing.prefixes', array('thermal-age.localhost/admin/istrator'));
+	Configure::write('Routing.prefixes', array('admin'));
 
 /**
  * Turn off all caching application-wide.

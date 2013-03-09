@@ -12,7 +12,8 @@ class Job extends AppModel {
     var $statusCodes = array ('pending', 'running', 'finished', 'error', 'incomplete');
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
-    var $sleepyTime = 5; // number of seconds to wait before restarting to check for new jobs
+    // redundant - doesn't do this any more:
+    // var $sleepyTime = 5; // number of seconds to wait before restarting to check for new jobs
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
     
@@ -100,7 +101,7 @@ class Job extends AppModel {
 
         //echo "Trying to process next job...\n";
         if (!$this->_goodToGo()) {
-            if (PHP_SAPI == 'cli') echo "Process already running?\n";
+            if (PHP_SAPI == 'cli') echo "Max num process(es) already running?\n";
             return false;
         }
         if (PHP_SAPI !== 'cli') {
@@ -115,8 +116,10 @@ class Job extends AppModel {
             if (PHP_SAPI == 'cli') $this->_addToStatus ("No more jobs to process.\n");
         }
         else {
-
-
+            
+            // Start the next one (if it exists) now
+            $this->_forkToBackground ();
+            
             $this->read (null, $next['Job']['id']);
 
             $this->_startProcessing();
@@ -132,10 +135,19 @@ class Job extends AppModel {
 
         // once complete, start a new process (to process the next job, if any) and exit
         // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
-        $this->_addToStatus("Waiting {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
+        /*$this->_addToStatus("Waiting {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
         sleep ($this->sleepyTime);
         $this->_forkToBackground();
+        exit (0);*/
+        
+        $next = $this->_getNext ();
+        if (!!$next) {
+            // If there's more work to do, do it (in a new process)
+            $this->_forkToBackground();
+        }
+        // Quit, either way. No longer stays alive and waiting for new hits as relying on web app to trigger this method
         exit (0);
+        
 
     }
     function _getNext () {
@@ -1366,9 +1378,9 @@ class Job extends AppModel {
         return false;
     }
     function _clearJobTmpDir () {
-        if (is_dir ($thisDir)) {
+        //if (is_dir ($thisDir)) {
             //return rmdir($thisDir);
-        }
+        //}
     }
     /**
      * Generic function for getting stuff out of one of a jobs possible files
