@@ -1,10 +1,47 @@
-<div class="grid_7">
+<div class="grid_12">
     <div class="smartbox">
         <h1 class="sbHeading">Welcome, <?= $user['User']['alias'] ?></h1>
         <p>This page lists all your current stuff: wizard runs which you have submitted and those which are awaiting completion.</p>
     </div>
-    <br />
+    
+</div>
+
+
+<div class="grid_7">
+    
     <div class="smartbox">
+        <div class="floatingLoader"></div>
+        <h2 class="sbHeading">Recent Jobs</h2>
+        <div id="ajax-recent-jobs">
+            <?php
+            echo $this->Element('jobs/joblist', array(
+                'jobs' => $jobSections['recent']
+            ));
+            ?>
+        </div>
+        <script type="text/javascript">
+            (function ($){
+                $(document).ready(function () {
+                    var $container = $('#ajax-recent-jobs');
+                    var $loading = $('.floatingLoader',$container.parent()).first();
+                    useful.ajaxReloader($container,'<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'job_list', 'recent'))?>',{
+                        sinceEpoch: <?=time()?>,
+                        onLoading: function () {
+                            $loading.hide().html('<img src="/img/loading_spinner_2.gif" alt="loading..." />').show('fade');
+                        },
+                        onComplete: function () {
+                            $loading.hide('fade');
+                        }
+                    });
+                });
+            }(jQuery));
+        </script>
+    </div>
+    
+    <br />
+    
+    <div class="smartbox">
+        <div class="floatingLoader"></div>
         <h2 class="sbHeading">Unfinished Jobs</h2>
         <div id="ajax-unfinished-jobs">
             <?php
@@ -24,8 +61,16 @@
         <script type="text/javascript">
             (function ($){
                 $(document).ready(function () {
-                    useful.ajaxReloader('#ajax-unfinished-jobs','<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'job_list', 'incomplete'))?>',{
-                        sinceEpoch: <?=time()?>
+                    var $container = $('#ajax-unfinished-jobs');
+                    var $loading = $('.floatingLoader',$container.parent()).first();
+                    useful.ajaxReloader($container,'<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'job_list', 'incomplete'))?>',{
+                        sinceEpoch: <?=time()?>,
+                        onLoading: function () {
+                            $loading.hide().html('<img src="/img/loading_spinner_2.gif" alt="loading..." />').show('fade');
+                        },
+                        onComplete: function () {
+                            $loading.hide('fade');
+                        }
                     });
                 });
             }(jQuery));
@@ -34,27 +79,29 @@
 </div>
 
 
-
-
-
-<div class="grid_5" style="color: ">
+<div class="grid_5">
     <div class="smartbox">
-        <h2 class="sbHeading">Recent Jobs</h2>
-        <div id="ajax-recent-jobs">
-            <?php
-            echo $this->Element('jobs/joblist', array(
-                'jobs' => $jobSections['recent']
-            ));
-            ?>
-        </div>
+        <div class="floatingLoader"></div>
+        <h2 class="sbHeading">System Status</h2>
+        <div id="ajax-system-status"><p>Updating...</p></div>
         <script type="text/javascript">
             (function ($){
                 $(document).ready(function () {
-                    useful.ajaxReloader('#ajax-recent-jobs','<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'job_list', 'recent'))?>',{
-                        sinceEpoch: <?=time()?>
+                    var $container = $('#ajax-system-status');
+                    var $loading = $('.floatingLoader',$container.parent()).first();
+                    useful.ajaxReloader($container,'<?=$this->Html->url(array('controller' => 'jobs', 'action' => 'system'))?>',{
+                        sinceEpoch: <?=time()?>,
+                        onLoading: function () {
+                            $loading.hide().html('<img src="/img/loading_spinner_2.gif" alt="loading..." />').show('fade');
+                        },
+                        onComplete: function () {
+                            $loading.hide('fade');
+                        }
                     });
                 });
             }(jQuery));
         </script>
     </div>
+    
 </div>
+

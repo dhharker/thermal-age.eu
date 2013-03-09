@@ -56,25 +56,27 @@ class Job extends AppModel {
                     'AND' => array (
                         'Job.user_id' => $user_id,
                         'Job.status !=' => '4',
-                        $timeConstraint
+                        //$timeConstraint // @TODO date constraint simply not working however i try it. ignoring for now.
                     )
                 ),
                 'order' => array (
                     'Job.updated' => 'DESC'
-                )
+                ),
+                'limit' => 4
             )),
             'incomplete' => $this->findJobsGetResultsFile(array (
                 'conditions' => array (
                     'AND' => array (
                         'Job.user_id' => $user_id,
                         'Job.status =' => '4',
-                        $timeConstraint
+                        //$timeConstraint // (see above)
                         
                     )
                 ),
                 'order' => array (
                     'Job.updated' => 'DESC'
-                )
+                ),
+                'limit' => 4
             ))
         );
         if ($sections !== null) {
@@ -1422,15 +1424,17 @@ class Job extends AppModel {
         return false;
     }
 
-    function _bgpGetRunningJobs () {
-        return $this->find('all', array (
+    function _bgpGetRunningJobs ($opts = null) {
+        $defaults = array (
             'conditions' => array (
                 'Job.status' => '1'
             ),
             'fields' => array (
                 'Job.id'
             ),
-        ));
+        );
+        $f = (is_array ($opts)) ? array_merge_recursive ($defaults, $opts) : $defaults;
+        return $this->find('all', $f);
     }
 
     function bgpGlobalCorpseCollection () {

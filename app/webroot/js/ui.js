@@ -16,13 +16,16 @@ var useful = {
         var $container = $(container);
         var defaults = {
             sinceEpoch: 0, // since 1970 in case no starting ts supplied
-            startDelayS: 6, // number of seconds after the fn is called before it refreshes the content
+            startDelayS: 1, // number of seconds after the fn is called before it refreshes the content
             addDelayS: function (dS) {return dS + 1;}, // example of fn value. can be float. number of seconds to wait before re-check after no-changes response
             maxDelayS: 7200, // If they've left the browser open then check every 2 hours by default
             //requestType: 'post', // must be post so there.
             params: {}, // to pass with request,
             latestTsParamName: 'since', // param to tell endpoint how up to date we are
-            latestTsHeaderName: 'ax-new-epoch' // what is the name of the response header containing the time we're now up to date to
+            latestTsHeaderName: 'ax-new-epoch', // what is the name of the response header containing the time we're now up to date to
+            latestItemTsHeaderName: 'ax-latest-epoch', // timestamp of the most recently modified item
+            onLoading: function () {},
+            onComplete: function () {}
         };
         var settings = $.extend({}, defaults, options);
         var timer = null; // careful with this ;-)
@@ -34,20 +37,26 @@ var useful = {
         // function for when request has succeeded
         var startTimer = function () {
             var state = $container.data('ajaxReloader');
-            if (!!!state.currentDelay) state.currentDelay = 5;
+            if (!!!state.currentDelay) state.currentDelay = 1;
             window.clearTimeout(timer);
             timer = window.setTimeout(doUpdate,state.currentDelay*1000);
         }
-        var updateContent = function (data,xhr) {
+        var updateContent = function (data,xhr,since) {
             $container.html (data);
-            $container.data('ajaxReloader.currentDelay',settings.startDelayS);
+            var state = $container.data('ajaxReloader')
+            state.currentDelay = settings.startDelayS;
             var ne = xhr.getResponseHeader(settings.latestTsHeaderName);
+            if (!ne && since) ne = since;
+            ne = parseInt(ne);
             if (ne > 0)
-                $container.data('ajaxReloader.sinceEpoch', parseInt(ne));
+                state.sinceEpoch = ne;
+            state.reqPending = false;
+            state.lastData = data;
+            $container.data('ajaxReloader', state);
             startTimer();
         }
         // for when the request fails or there's no recent data (do nothing, wait longer next time.)
-        var noUpdateContent = function (xhr) {
+        var noUpdateContent = function (data,xhr) {
             var state = $container.data('ajaxReloader');
             state.currentDelay = (useful._isJsFunction(settings.addDelayS)) ?
                 settings.addDelayS (state.currentDelay) : settings.addDelayS + state.currentDelay;
@@ -55,6 +64,8 @@ var useful = {
             if (ne > 0) {
                 state.sinceEpoch = parseInt(ne);
             }
+            state.reqPending = false;
+            state.lastData = data;
             $container.data('ajaxReloader',state);
             startTimer();
         };
@@ -67,7 +78,9 @@ var useful = {
             if (typeof state == 'undefined') {
                 state = {
                     'currentDelay': settings.startDelayS,
-                    'sinceEpoch': settings.sinceEpoch
+                    'sinceEpoch': settings.sinceEpoch,
+                    'reqPending': false,
+                    'lastData': false
                 };
             }
             else {
@@ -79,19 +92,41 @@ var useful = {
                 type: 'post',
                 data: sendData,
                 success: function (data,strStatus,xhr) {
-                    if (data.toString().length == 0)
-                        noUpdateContent(xhr)
-                    else
-                        updateContent(data,xhr);
+                    var lithn = xhr.getResponseHeader(settings.latestItemTsHeaderName);
+                    var latest = xhr.getResponseHeader(settings.latestTsHeaderName);
+                    lithn = parseInt(lithn);
+                    if (lithn == false || lithn == 0 || lithn > state.sinceEpoch) { //> $container.data('ajaxReloader.sinceEpoch')) {
+                        // there are "real" updates, reset the clock
+                        updateContent(data,xhr,latest);
+                    }
+                    else if (data.toString().length > 0) {
+                        if (data != state.lastData)
+                            $container.html(data); // update content because it may have changed even if the db hasn't
+                        noUpdateContent(data,xhr);
+                    }
+                    else {
+                        noUpdateContent(data,xhr);
+                    }
+                    settings.onComplete();
                     return false;
                 },
-                failure: function (data,strStatus,xhr) {
-                    noUpdateContent(xhr);
+                failure: function (xhr) {
+                    noUpdateContent('',xhr);
+                    settings.onComplete();
                     return false;
                 }
             }
-            $.ajax(url, requestOpts);
-            $container.data('ajaxReloader',state);
+            // This should never really happen as the time is only restarted by the callback... B+B!
+            if (state.reqPending == false)
+                $.ajax(url, requestOpts);
+                state.reqPending = true;
+                if ($container.data('ajaxReloader',state))
+                    settings.onLoading();
+            else {
+                // last req still pending, wait.
+                startTimer();
+            }
+            
         };
         
         doUpdate();

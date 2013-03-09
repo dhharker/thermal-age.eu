@@ -8,6 +8,70 @@ class JobsController extends AppController {
         //$this->Auth->allow(array('report'));
     }
     
+    
+    // System status, ax fn
+    function system () {
+        
+        
+        // Get num processes which actually have PIDs (are really running)
+        $this->Job->recursive = 0;
+        $numProcs = array (
+            'running' => $this->Job->_bgpCountRunningJobProcesses(),
+            'maxThreads' => $this->Job->maxThreads,
+            'queue' => 0
+        );
+        
+        // Get currently running jobs
+        $this->Job->recursive = 1;
+        $running = $this->Job->_bgpGetRunningJobs(array (
+            'fields' => array (
+                'Job.user_id',
+                'User.id',
+                'User.name',
+                'User.photo',
+                'User.institution',
+                'User.url'
+            ),
+            'limit' => $numProcs['maxThreads']
+        ));
+        $numProcs['statusRunning'] = count ($running);
+        $queue = $this->Job->find('all',array (
+            'fields' => array (
+                'Job.id',
+                'Job.user_id',
+                'User.id',
+                'User.name',
+                'User.photo',
+                'User.institution',
+                'User.url'
+            ),
+            'conditions' => array (
+                'Job.status' => '0'
+            ),
+            'limit' => 3
+        ));
+        //$numProcs['queue'] = count ($queue);
+        $numProcs['queue'] = $this->Job->find('count',array (
+            'conditions' => array (
+                'Job.status' => '0'
+            )
+        ));
+        
+        
+        // Handle header update info timestamps n stuff
+        $data = compact ('running', 'numProcs', 'queue');
+        $sd = serialize($data);
+        if ($this->Session->read ('Job.status.lastStatusData') !== $sd) {
+            // data have changed
+            $this->Session->write ('Job.status.lastStatusData',$sd);
+            $this->Session->write ('Job.status.lastStatusTime',time());
+        }
+        $this->set ($data);
+        header ('ax-new-epoch: ' . time());
+        header ('ax-latest-epoch: ' . $this->Session->read ('Job.status.lastStatusTime'));
+    }
+    
+    // Ajax fn
     function job_list ($list = null, $since = 0) {
         if (isset ($_GET['since']) && is_numeric ($_GET['since']) && $_GET['since'] > 0)
             $since = $_GET['since'];
@@ -17,6 +81,18 @@ class JobsController extends AppController {
         
         $user_id = $this->Auth->user('id');
         $jobSections = $this->Job->getSectionsByUserId ($list, $user_id, $since);
+        
+        $latestTs = 0;
+        if (!!$jobSections) foreach ($jobSections as $jobs) if (!!$jobs) foreach ($jobs as $job) {
+            $jd = strtotime($job['Job']['updated']);
+            if ($jd > $latestTs)
+                $latestTs = $jd;
+        }
+        if ($latestTs > 0)
+            header ('ax-latest-epoch: ' . $latestTs);
+        else
+            header ('ax-latest-epoch: -1');
+        
         $JSCs = $this->Job->statusCodes;
         $this->set(compact('jobSections','JSCs'));
     }

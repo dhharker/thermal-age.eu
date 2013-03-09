@@ -856,12 +856,12 @@ ul.objectList {
     margin: 0;
     padding: 0;
 }
-ul.objectList > li {
+ul.objectList li {
     
     margin: 0 -5px;
     border: 1px solid #8A9881;
     border-width: 1px 0 0 0;
-    padding: .5em;
+    padding: .5em 1em;
     
     background: -moz-linear-gradient(top, rgba(250,250,250,0.35) 0%, rgba(203,214,208,0.65) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(250,250,250,0.35)), color-stop(100%,rgba(203,214,208,0.65))); /* Chrome,Safari4+ */
@@ -871,7 +871,13 @@ ul.objectList > li {
     background: linear-gradient(to bottom, rgba(250,250,250,0.35) 0%,rgba(203,214,208,0.65) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59fafafa', endColorstr='#a6cbd6d0',GradientType=0 ); /* IE6-9 */
 }
-
+ul.objectList li > ul.objectList {
+    margin-top: .3em;
+    margin-bottom: .3em;
+}
+ul.objectList li > ul.objectList li:first-of-type {
+    border-top: none;
+}
 
 
 .NUBs .fg-button {
@@ -890,4 +896,38 @@ ul.objectList > li {
     display: inline-block;
     padding-right: .6em;
     padding-left: .2em;
+}
+
+/* Loading spinner container to hover right of headings */
+.floatingLoader {
+    
+    position: relative;
+    display: inline-block;
+    right: 5px;
+    float: right;
+    clear: none;
+    height: 32px;
+    width: 32px;
+    padding-top: 3px;
+    margin-bottom: -35px;
+    overflow: visible;
+    
+}
+
+
+ul.systemStatus li span.bigNumR {
+    display: block;
+    display: inline-block;
+    float: right;
+    font-weight: bold;
+    font-size: 1.2em;
+    line-height: 1.3em;
+    margin: 0 1em;
+}
+img.profilePhoto {
+    max-width: 45px;
+    max-height: 45px;
+    margin: 0px;
+    border-radius: 4px;
+    float: right;
 }
