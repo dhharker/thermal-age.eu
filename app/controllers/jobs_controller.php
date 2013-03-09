@@ -5,7 +5,7 @@ class JobsController extends AppController {
     
     function beforeFilter() {
         parent::beforeFilter();
-        //$this->Auth->allow(array('report'));
+        $this->Auth->allow(array('system'));
     }
     
     
