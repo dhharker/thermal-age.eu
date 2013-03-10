@@ -121,6 +121,7 @@ class Job extends AppModel {
             $this->_startProcessing();
             
             // Start the next one (if it exists) now we've updated the status in the DB
+            // This is here so that multiple samples can be run at once if maxThreads > 1
             $this->_forkToBackground ();
             
             $input = unserialize ($this->field('data'));
@@ -133,12 +134,8 @@ class Job extends AppModel {
             $this->_stopProcessing();
         }
 
-        // once complete, start a new process (to process the next job, if any) and exit
-        // DEBUG: This will cause an infinite loop if this thread fails to change the status of the current job
-        /*$this->_addToStatus("Waiting {$this->sleepyTime} seconds before starting new thread to check for pending jobs.");
-        sleep ($this->sleepyTime);
-        $this->_forkToBackground();
-        exit (0);*/
+        // After finishing a job, wait for the dust to settle and then see if there's another
+        // job to process. The process spawned here will just die if there is no more work to do.
         sleep ($this->sleepyTime);
         $next = $this->_getNext ();
         if (!!$next) {
