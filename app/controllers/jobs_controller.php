@@ -10,8 +10,11 @@ class JobsController extends AppController {
     
     
     // System status, ax fn
-    function system () {
+    function system ($mod = null) {
         
+        // $mod controls how much info to show
+        $mod = (in_array ($mod,array ('simple'))) ? $mod : null;
+        $this->set(compact('mod'));
         
         // Get num processes which actually have PIDs (are really running)
         $this->Job->recursive = 0;

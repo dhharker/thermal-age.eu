@@ -8,7 +8,7 @@ if (is_array ($running)) {
     
     echo '<li>'.$this->Icons->i('&#xe026;').' &ensp;Jobs Running <span class="bigNumR">'.$numProcs['running'].'</span>';
         // Jobs which (should) be running
-        if (count ($running) > 0) {
+        if (count ($running) > 0 && $mod != 'simple') {
             echo "<div class=\"ui-helper-clearfix\"></div><ul class=\"smartbox objectList box\">";
             // Iterate over running jobs (shouldn't be any more than max processes allowed, at ToW this == only 1!)
             foreach ($running as $job) {
@@ -22,7 +22,7 @@ if (is_array ($running)) {
     
     echo '<li>'.$this->Icons->i('&#xe005;').' &ensp;Jobs in Queue <span class="bigNumR">'.$numProcs['queue'].'</span>';
         // Jobs waiting to run
-        if (count ($queue) > 0) {
+        if (count ($queue) > 0 && $mod != 'simple') {
             echo "<div class=\"ui-helper-clearfix\"></div><ul class=\"smartbox objectList box\">";
             // Iterate over queue jobs
             foreach ($queue as $job) {
