@@ -15,7 +15,7 @@ class Job extends AppModel {
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
 
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
-    
+  
     /**
      * Convenience functions for AJAX job list update, but generic in nature
      */
@@ -100,7 +100,7 @@ class Job extends AppModel {
 
         //echo "Trying to process next job...\n";
         if (!$this->_goodToGo()) {
-            if (PHP_SAPI == 'cli') echo "Max num process(es) already running?\n";
+            if (PHP_SAPI == 'cli') echo $this->maxThreads . " process(es) already running?\n";
             return false;
         }
         if (PHP_SAPI !== 'cli') {
