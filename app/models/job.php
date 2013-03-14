@@ -13,7 +13,10 @@ class Job extends AppModel {
 
     var $maxThreads = 1; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
-
+    // The number of row·samples before the spreadsheet processor is eating all the RAM
+    //var $criticalRowSampleThreshold = 15000; // 30 rows * 500 years sampled in each; // live
+    //var $criticalRowSampleThreshold = 900; // 30 rows * 500 years sampled in each;
+    
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
   
     /**
@@ -116,6 +119,8 @@ class Job extends AppModel {
         }
         else {
             
+            $error = false;
+            
             $this->read (null, $next['Job']['id']);
 
             $this->_startProcessing();
@@ -125,23 +130,68 @@ class Job extends AppModel {
             $this->_forkToBackground ();
             
             $input = unserialize ($this->field('data'));
+            
             // the parser loads user input in whatever-ass format into the ttkpl object model
             $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
+            
+            // If the job will need to be resumed then save this info in db now and decrease priority for next run
+            $resume = false;
+            if (isset ($parsed['resume']) && is_array ($parsed['resume'])) {
+                $resume = true;
+                $input['resume'] = $parsed['resume'];
+                $this->save(array (
+                    'Job' => array (
+                        'id' => $this->id,
+                        'data' => serialize ($input),
+                        'priority' => $this->field('priority')+1
+                    )
+                ),false);
+                $this->read(null,$this->id);
+            }
+            $this->_addToStatus("XXXXXX   PARSED RESUME:" . print_r ($parsed['resume'], true));
+            
             // the processor takes this bunch of objects and makes them work
             $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
             // assuming nothing went wrong with the above steps, the reporter makes nice graphs and pdfs
             $report = $this->_task ($this->field ('reporter_name'), 'reporter',   $output);
-            $this->_stopProcessing();
+            // Save number of rows reported by the reporter
+            if (isset ($report['resume']) && is_array ($report['resume'])) {
+                $resume = true;
+                $data = unserialize ($this->data['data']);
+                $data['resume'] = $report['resume'];
+                $j = array ('Job' => array (
+                    'id' => $this->id,
+                    'data' => serialize ($input),
+                    'priority' => $this->field('priority')+1
+                ));
+                if ($data['resume']['rowsReported'] >= $data['resume']['nRows']) {
+                    $j['Job']['status'] = 0;
+                }
+                $this->_addToStatus("XXXXXX   SAVE:" . print_r ($j, true));
+                $this->save($j,false);
+                $this->read(null,$this->id);
+                
+                $newData = unserialize($this->data);
+                $this->_addToStatus("XXXXXX   LOAD:" . print_r ($newData['resume'], true));
+            }
+            $this->_addToStatus("XXXXXX   REPORT RESUME:" . print_r ($report['resume'], true));
+            $this->_stopProcessing($error, $resume);
         }
 
         // After finishing a job, wait for the dust to settle and then see if there's another
         // job to process. The process spawned here will just die if there is no more work to do.
+        $this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
         sleep ($this->sleepyTime);
+        $this->_addToStatus("Done. What's next?");
         $next = $this->_getNext ();
         if (!!$next) {
             // If there's more work to do, do it (in a new process)
+            // DEBUG: $this->_addToStatus("Didn't start. Restart manually.");
+            $this->_addToStatus("Starting new process now.");
             $this->_forkToBackground();
         }
+        else
+            $this->_addToStatus("Nothing. Exiting.");
         // Quit, either way. No longer stays alive and waiting for new hits as relying on web app to trigger this method
         exit (0);
         
@@ -149,7 +199,10 @@ class Job extends AppModel {
     }
     function _getNext () {
         return $this->find('first', array (
-            'order' => 'Job.id ASC',
+            'order' => array (
+                'Job.priority',
+                'Job.id ASC',
+            ),
             'conditions' => array (
                 'Job.status' => 0
             )
@@ -262,7 +315,7 @@ class Job extends AppModel {
         $bur = new \ttkpl\burial();
         $addbur = false;
         if ($args['burial']['Burial']['numLayers'] > 0) {
-            //echo "There are {$args['burial']['Burial']['numLayers']} burial layers in this TT. Encoding...\n";
+            $this->_addToStatus ("There are {$args['burial']['Burial']['numLayers']} burial layers in this TT. Encoding...\n");
             foreach ($args['burial']['SoilTemporothermal'] as $layer) {
                 $s = $this->_getSoil($layer['soil_id']);
                 if ($s !== false && $layer['thickness_m'] > 0) {
@@ -441,6 +494,7 @@ class Job extends AppModel {
         return array (
             //'unParsed' => $unParsed,
             //'parsed' => $parsed,
+            'resume' => (isset ($args['resume'])) ? $args['resume'] : false,
             'xref' => $args['xref'],
             'results' => $results,
             'output_csv_url' => DS.'spreadsheets'.DS.basename ($args['output_spreadsheet_filename']),
@@ -453,6 +507,14 @@ class Job extends AppModel {
     function _task_thermal_age_csv_reporter ($args) {
 
         $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
+        
+        if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
+            if (file_exists ($args['output_csv_filename'])) {
+                $this->_addToStatus("Output file exists for resumable job; appending results to {$args['output_csv_filename']}");
+                $fn = $args['output_csv_filename'];
+            }
+        }
+        
         if (file_exists($fn)) {
             $this->_addToStatus(basename($fn) . " exists. Trying to open it...");
             $cp = new \ttkpl\csvData($fn, TRUE);
@@ -474,12 +536,24 @@ class Job extends AppModel {
                     $xref[$dup] = $dups[0];
                 }
             }
+            //print_r ($xref);die(__LINE__);
+            if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
+                $this->_addToStatus("Resumable job. Fastforwarding output sheet by ".$args['resume']['rowsReported']." rows.");
+                for ($i = 0; $i < $args['resume']['rowsReported']; $i++) {
+                    $cp->next();
+                }
+            }
+            else {
+                $this->_addToStatus('Not a resumable job.');
+            }
             
             do {
                 $do = true;
+                $this->_addToStatus("Result indices: " . count ($args['results']));
                 if (isset ($args['results'][$cp->key()])) {
                     // Is not a dupe/is first of dupes
                     $cResult = $args['results'][$cp->key()];
+                    $this->_addToStatus('Adding row');
                 }
                 elseif (isset ($xref[$cp->key()]) && isset ($args['results'][$xref[$cp->key()]])) {
                     $cResult = $args['results'][$xref[$cp->key()]];
@@ -493,8 +567,11 @@ class Job extends AppModel {
                 if (!!$do)
                     foreach ($cResult as $col => $val)
                         $cp->setColumn($col, $val);
-                
-            } while ($cp->next());
+                if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
+                    $args['resume']['rowsReported']++;
+                    $stop = $args['resume']['rowsReported'] >= $args['resume']['rowsParsed'] ? true : false;
+                }
+            } while ($cp->next() && !$stop);
             
             $opfn = $args['output_csv_filename'];
             try {
@@ -517,15 +594,18 @@ class Job extends AppModel {
         file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($args));
         // !!==borken
         //return true;
+        if (isset ($args['resume']) && is_array ($args['resume']))
+            return array ('resume' => $args['resume']);
+        
     }
     function _task_thermal_age_csv_parser ($args) {
         $this->_addToStatus ("Parser: Thermal Age CSV");
-
+        
         // cache a bunch of boring stuff
         $rK = array (); $rS = array ();
-
+        
         // load csv file
-
+        
         $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
         if (file_exists($fn)) {
             $this->_addToStatus(basename($fn) . " exists. Trying to open it...");
@@ -536,7 +616,7 @@ class Job extends AppModel {
             $s2e = array ();
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug(str_replace (".","",$title)))] = $title;
-
+            
             //$this->_addToStatus(print_r ($s2e, true));
 
             // count soil layer col sets
@@ -555,10 +635,48 @@ class Job extends AppModel {
             */);
             $rowCount = 0; // heading
             
+            
+            $n = count ($cp->data);
+            $nRowSamples = \ttkpl\temporothermal::aCSRangeDivisor * $n;
+            if ($nRowSamples > $this->criticalRowSampleThreshold) {
+                // This spreadsheet is too big to do all at once
+                $this->_addToStatus('This spreadsheet is too big to process in one go. Will process in multiple batches.');
+                $rowsDonePreviously = -1;
+                
+                $nBatches = ceil($nRowSamples / $this->criticalRowSampleThreshold);
+                $nPerBatch = round ($n / $nBatches);
+                if ($nPerBatch < 1) $nPerBatch = 1;
+                
+                // Do we know this already
+                if (isset ($args['resume']) && is_array($args['resume'])) {
+                    // yes
+                    if (isset ($args['resume']['rowsParsed']))
+                        $rowsDonePreviously = $args['resume']['rowsParsed'];
+                    for ($i = 0; $i < $rowsDonePreviously; $i++) {
+                        $cp->next();
+                        $rowCount++;
+                    }
+                }
+                else {
+                    $args['resume'] = array (
+                        'rowsParsed' => 0,
+                        'rowsReported' => 0,
+                        'nBatches' => $nBatches,
+                        'nPerBatch' => $nPerBatch,
+                        'nRows' => $n,
+                    );
+                }
+                
+                
+                $this->_addToStatus("\-\-\-\-\-\-\-\-\-\ Calculating in $nBatches batches of $nPerBatch rows. Done $rowsDonePreviously rows already.");
+                
+            }
+            
             //$cp->next();
             do {
-                $rowCount++;
                 $row = $cp->current();
+                if (!$row) continue;
+                $rowCount++;
                 $sid = $row[$cp->getColumn($s2e['specimen_id'])];
                 $me = array ();
                 //print_r ($row);
@@ -712,8 +830,8 @@ class Job extends AppModel {
                     $this->_addToStatus ("Nothing to do for this row " . $rowCount);
                 //$this->_addToStatus("<pre>".serialize ($parse)."</pre>");
                 //die();
-
-            } while ($cp->next());
+                if (isset ($args['resume']) && isset ($args['resume']['rowsParsed'])) $args['resume']['rowsParsed']++;
+            } while ($cp->next() && $rowCount <= $rowsDonePreviously + $nPerBatch);
             
             //print_r ($xref);
             //die();
@@ -728,6 +846,7 @@ class Job extends AppModel {
             }
             
             $rtn = array (
+                'resume' => (isset ($args['resume'])) ? $args['resume'] : false,
                 'unParsed' => $unParsed,
                 'xref' => $xref,
                 'parsed' => $parsed,
@@ -1154,17 +1273,34 @@ class Job extends AppModel {
         return false;
     }
     /**
-     * Cleans up runtime files
+     * Cleans up runtime files and changes job status
      */
-    function _stopProcessing ($error = false) {
+    function _stopProcessing ($error = false, $resume = false) {
+        // if $resume is true then the job is only partially complete
         $id = $this->field ('id');
         if ($id !== false) {
             $this->bg['stopTime'] = microtime (true);
-            $this->_addToStatus("Finished job $id");
-            $this->_addToStatus("Total runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
+            $batchD = (!!$resume) ? "a batch of " : '';
+            $this->_addToStatus("Finished {$batchD}job $id");
+            $rtOf = (!!$resume) ? "Batch" : "Total";
+            $this->_addToStatus("{$rtOf} runtime was " . ($this->bg['stopTime'] - $this->bg['startTime']));
             unlink ($this->bg['pid']);
-//DEBUG!!!
-            $this->save (array ('Job' => array ('id' => $id, 'status' => ($error == FALSE) ? 2 : 3)), false);
+            
+            $status = 3; // default to error 0-o
+            if ($error !== false) {
+                $status = 3; // err
+                $this->_addToStatus('Setting job status to: error (3)');
+            }
+            elseif ($resume !== false) {
+                $status = 0; // pend
+                $this->_addToStatus('Setting job status to: pending (is large job processed in multiple batches) (0)');
+            }
+            else {
+                $status = 2; // fin
+                $this->_addToStatus('Setting job status to: finished (2)');
+            }
+                
+            $this->save (array ('Job' => array ('id' => $id, 'status' => $status)), false);
 
             return true;
         }

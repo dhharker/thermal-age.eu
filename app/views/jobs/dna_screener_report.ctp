@@ -11,8 +11,8 @@ if ($jid == 0) {
 }
 
 $this->addScript ($this->Html->script ('jquery.svg'));
-$this->addScript ($this->Html->css ('jquery.svg.min'));
-$this->addScript ($this->Html->css ('jquery.svganim.min'));
+//$this->addScript ($this->Html->css ('jquery.svg.min'));
+//$this->addScript ($this->Html->css ('jquery.svganim.min'));
 $this->addScript ($this->Html->script ('job_report'));
 
 //echo $results['graphs']['lambda'];
@@ -24,9 +24,7 @@ else {
     ?>
 
     <div class="grid_5">
-        <div class="grid_5 alpha">
-            <?=$this->Element ('jobs/traffic_lights', array ('λ' => $results['summary']['λ'], 'class' => 'smartbox'));?>
-        </div>
+        <?=$this->Element ('jobs/traffic_lights', array ('λ' => $results['summary']['λ'], 'class' => 'smartbox'));?>
     </div>
 
     <div class="grid_7">
@@ -50,6 +48,7 @@ else {
             <?=$this->Element ('loading_spinner', array ('wide' => true))?>
         </div>
     </div>
+    
     <div class="grid_12">
         <div class="smartbox">
             <div class="expand-embeds">
