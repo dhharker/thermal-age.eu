@@ -7,8 +7,13 @@ if (isset ($job['Job']['data'])) {
     }
 }*/
 echo "Job <strong>{$job['Job']['id']}</strong>";
+
 if (isset ($job['Job']['percent_complete'])) {
+    $job['Job']['percent_complete'] = round ($job['Job']['percent_complete']);
     ?>
+<div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
+                    <?=$job['Job']['percent_complete'];?>%
+                </div>
         <div class="ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?=$job['Job']['percent_complete']?>">
             <div class="ui-progressbar-value ui-widget-header ui-corner-left" style="width: <?=$job['Job']['percent_complete'];?>%;"></div>
         </div>
