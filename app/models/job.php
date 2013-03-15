@@ -20,9 +20,9 @@ class Job extends AppModel {
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
   
     private $percentRatio = array (
-        'parse'   => .2,
-        'process' => .7,
-        'report'  => .1
+        'parse'   => .05,
+        'process' => .9,
+        'report'  => .05
     );
     
     /**
