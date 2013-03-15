@@ -65,7 +65,8 @@ class UploadsController extends AppController {
                     'file_contents' => file_get_contents ($errfile),
                     'name' => basename ($errfile),
                     'size' => filesize ($errfile),
-                    'mime_type' => 'image/png'
+                    'mime_type' => 'image/png',
+                    'updated' => filemtime ($errfile)
                 )
             );
         }
@@ -73,6 +74,16 @@ class UploadsController extends AppController {
             $file = $this->Upload->findById($id);
         }
         Configure::write('debug', 0);
+        
+        
+        header("Cache-Control: private, max-age=10800, pre-check=10800");
+        header("Pragma: private");
+        header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&  (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $file['Upload']['updated'])) {
+            header('Last-Modified: '.gmdate('D, d M Y H:i:s', $file['Upload']['updated']).' GMT', true, 304);
+            exit;
+         }
+        
         
         if (!empty ($file['Upload']['mime_type'])) header('Content-type: ' . $file['Upload']['mime_type']);
         if (!empty ($file['Upload']['size'])) header('Content-length: ' . $file['Upload']['size']);

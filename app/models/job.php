@@ -517,7 +517,7 @@ class Job extends AppModel {
     }
     // @TODO: (Braindump:) storage temporothermal isn't being added for some reason (fix this somewhere completely different)
     function _task_thermal_age_csv_reporter ($args) {
-
+        mb_internal_encoding("UTF-8");
         $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
         
         if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
