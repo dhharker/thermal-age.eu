@@ -17,7 +17,7 @@ if (isset ($job['Job']['percent_complete'])) {
             
             <div class="ui-progressbar-value ui-widget-header ui-corner-all" style="width: <?=$job['Job']['percent_complete'];?>%; max-width: 100%;">
                 <?php
-                $floatDir = ($job['Job']['percent_complete'] < 19) ? "left" : "right";
+                $floatDir = ($job['Job']['percent_complete'] <= 34) ? "left" : "right";
                 ?>
                 <div style="padding: 2px 5px; font-size: larger; display: inline-block; float: <?=$floatDir?>; font-weight: bold;" class="">
                     <?=$job['Job']['percent_complete'];?>%
@@ -48,7 +48,7 @@ if (strlen ($job['User']['institution']) > 0)
 if (0+$job['User']['id'] > 0) {
     // Job is assigned to a user (good!)
     if (strlen ($job['User']['photo']) > 0) 
-        echo $this->Html->image($job['User']['photo'],array ('class' => 'profilePhoto')).'<div class="ui-helper-clearfix"></div>';
+        echo $this->Html->image($job['User']['photo'],array ('class' => 'profilePhoto','style'=>'float:left')).'<div class="ui-helper-clearfix"></div>';
 
 }
 ?>
