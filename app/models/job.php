@@ -163,22 +163,25 @@ class Job extends AppModel {
             // Save number of rows reported by the reporter
             if (isset ($report['resume']) && is_array ($report['resume'])) {
                 $resume = true;
-                $data = unserialize ($this->data['data']);
+                $data = unserialize ($this->data['Job']['data']);
+                if (!!$data) $data = $input;
                 $data['resume'] = $report['resume'];
                 $j = array ('Job' => array (
                     'id' => $this->id,
-                    'data' => serialize ($input),
+                    'data' => serialize ($data),
                     'priority' => $this->field('priority')+1
                 ));
+                //$this->_addToStatus("XXXXXX   SAVE:" . print_r ($j, true));
+                $this->save($j,false);
+                $this->read(null,$this->id);
+                
                 // @todo make rowsParsed into rowsReported once it agrees to actually save this number fs
                 if ($data['resume']['rowsParsed'] >= $data['resume']['nRows'] ||
                     $data['resume']['nRows'] <= $data['resume']['nPerBatch']) {
                     $j['Job']['status'] = 0;
                     $resume = false;
                 }
-                //$this->_addToStatus("XXXXXX   SAVE:" . print_r ($j, true));
-                $this->save($j,false);
-                $this->read(null,$this->id);
+                
                 
                 $newData = unserialize($this->data['data']);
                 $this->_addToStatus("XXXXXX   LOAD:" . print_r ($newData['resume'], true));
@@ -189,20 +192,16 @@ class Job extends AppModel {
 
         // After finishing a job, wait for the dust to settle and then see if there's another
         // job to process. The process spawned here will just die if there is no more work to do.
-        $this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
-        sleep ($this->sleepyTime);
-        $this->_addToStatus("Searching for more work...");
+        //$this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
+        //sleep ($this->sleepyTime);
+        
         $next = $this->_getNext ();
         if (!!$next) {
-            $this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
-            sleep ($this->sleepyTime);
-            // If there's more work to do, do it (in a new process)
-            // DEBUG: $this->_addToStatus("Didn't start. Restart manually.");
-            $this->_addToStatus("Starting new process now.");
+            $this->_addToStatus("There appears to be more to do.");
             $this->_forkToBackground();
         }
         else
-            $this->_addToStatus("Nothing. Exiting.");
+            $this->_addToStatus("There doesn't appear to be anything more to do.");
         // Quit, either way. No longer stays alive and waiting for new hits as relying on web app to trigger this method
         exit (0);
         
@@ -578,13 +577,13 @@ class Job extends AppModel {
                     $this->_addToStatus("No valid results found for row " . ($cp->key() + 1));
                 }
                 
-                if (!!$do)
+                if (!!$do) {
                     foreach ($cResult as $col => $val)
                         $cp->setColumn($col, $val);
+                }
                 if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
                     //die ($this->_addToStatus(print_r ($args['resume'], true)));
                     $args['resume']['rowsReported']++;
-                    
                     $stop = $args['resume']['rowsReported'] >= $args['resume']['rowsParsed'] ? true : false;
                 }
                 $this->increaseJobPercentComplete('report');
@@ -623,6 +622,7 @@ class Job extends AppModel {
             return array ('resume' => $args['resume']);
             
         }
+        return false;
         
     }
     function _task_thermal_age_csv_parser ($args) {
@@ -705,8 +705,10 @@ class Job extends AppModel {
             $tfps = array_keys ($this->percentRatio);
             $this->percentsPer = array ();
             foreach ($tfps as $tfp) {
-                $this->percentsPer[$tfp] = (100 / $n) * $this->percentRatio[$tfp];
+                $this->percentsPer[$tfp] = (100.0 / $n) * $this->percentRatio[$tfp];
             }
+            $this->_addToStatus("Work type time weightings: " . print_r ($this->percentRatio,true));
+            $this->_addToStatus("Percents per work type: " . print_r ($this->percentsPer,true));
             
             
             //$cp->next();
@@ -863,6 +865,7 @@ class Job extends AppModel {
                     $unParsed[$cp->key()] = $me;
                     $unParsed[$cp->key()]['fingerprint'] = $ck;
                     $xref[$ck][] = $cp->key();
+                    
                 }
                 else
                     $this->_addToStatus ("Nothing to do for this row " . $rowCount);
@@ -1382,15 +1385,15 @@ class Job extends AppModel {
      */
     function increaseJobPercentComplete ($increase_by_points, $id) {
         $tfps = array_keys ($this->percentRatio);
-        if (!$increase_by_points ||$increase_by_points == 0) $this->_addToStatus ("Increase by points: ".increase_by_points);
         if (in_array ($increase_by_points, $tfps)) {
             $increase_by_points = $this->percentsPer[$increase_by_points];
         }
-        if ($increase_by_points == 0) die ($increase_by_points);
+        if (!$increase_by_points ||$increase_by_points == 0) $this->_addToStatus ("Increase by points: ".$increase_by_points);
+        //if ($increase_by_points == 0) die ($increase_by_points);
         $id = ($id === null) ? $this->id : $id;
         $current = $this->getJobPercentComplete($id);
         if ($current -1) {
-            $this->_updateJobPercentComplete($current + $increase_by_points + 0);
+            $this->_updateJobPercentComplete($current + $increase_by_points + 0.0);
             return true;
         }
         return false;
@@ -1403,9 +1406,9 @@ class Job extends AppModel {
         $id = ($id === null) ? $this->id : $id;
         $percent_complete = $this->_bgpGetJobFileContent('percent',$id);
         if ($percent_complete === false) return -1; // file doesn't exist
-        if ($percent_complete < 0) return 0;
-        if ($percent_complete > 100) return 100;
-        return $percent_complete+0;
+        //if ($percent_complete < 0) return 0;
+        //if ($percent_complete > 100) return 100;
+        return $percent_complete+0.0;
     }
     
     /**
@@ -1421,8 +1424,13 @@ class Job extends AppModel {
      * Spawns a background process to run tryProcessNext
      */
     function _forkToBackground () {
-        $this->_addToStatus("Forking new worker thread...");
+        
+        $guessRunning = $this->_bgpCountCakeBackgroundProcesses();
+        $this->sleepyTime = 0.5 + ($guessRunning * .5);
+        $this->_addToStatus("There may be up to {$guessRunning} threads running already. Waiting {$this->sleepyTime}s...");
+        
         $command = "php -q " . APP . "../cake/console/cake.php --app " . APP . " background";
+        $this->_addToStatus("Forking new worker thread now.");
         //die ("nohup $command > /dev/null 2>&1 & echo $!");
         $pid = shell_exec ("nohup $command > /dev/null 2>&1 & echo $!");
         $this->_addToStatus("Started with PID $pid");
@@ -1446,6 +1454,13 @@ class Job extends AppModel {
             if (!$this->bgpIsRunning($this->bgpGetPid($j['Job']['id'])))
                 $numProcs--;
         return $numProcs;
+    }
+    
+    /**
+     * WARNING: This isn't watertight - it is a guideline only!
+     */
+    function _bgpCountCakeBackgroundProcesses () {
+        return (int) exec('ps aux | grep -E "c[ak]{2}e(.*?)background(\W|$)" | wc -l');
     }
 
     /**

@@ -1,7 +1,7 @@
 (function ($) {
     $(document).ready(function () {
         
-        console.log ("svg");
+        //console.log ("svg");
         /* When the viewport is resized, scale embeds to match new parent width while maintaining
         original aspect ratio. */
         var embedIndex = 0;

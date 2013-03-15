@@ -6,17 +6,26 @@ if (isset ($job['Job']['data'])) {
         $percentComplete = round (($jData['resume']['rowsParsed'] / $jData['resume']['nRows']) * 100);
     }
 }*/
-echo "Job <strong>{$job['Job']['id']}</strong>";
+
+?><div style="float: left; display: inline-block;">Job <strong><?=$job['Job']['id'];?></strong></div><?php
 
 if (isset ($job['Job']['percent_complete'])) {
-    $job['Job']['percent_complete'] = round ($job['Job']['percent_complete']);
+    $job['Job']['percent_complete'] = round ($job['Job']['percent_complete'],1);
     ?>
-<div style="padding-right: 5px; float: right; text-align: right; font-weight: bold;" class="">
+
+        <div class="ui-progressbar ui-widget ui-widget-content ui-corner-all" style="display: inline-block; width: 66%; float: right; max-width: 100%;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?=$job['Job']['percent_complete']?>">
+            
+            <div class="ui-progressbar-value ui-widget-header ui-corner-all" style="width: <?=$job['Job']['percent_complete'];?>%; max-width: 100%;">
+                <?php
+                $floatDir = ($job['Job']['percent_complete'] < 19) ? "left" : "right";
+                ?>
+                <div style="padding: 2px 5px; font-size: larger; display: inline-block; float: <?=$floatDir?>; font-weight: bold;" class="">
                     <?=$job['Job']['percent_complete'];?>%
                 </div>
-        <div class="ui-progressbar ui-widget ui-widget-content ui-corner-all" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?=$job['Job']['percent_complete']?>">
-            <div class="ui-progressbar-value ui-widget-header ui-corner-left" style="width: <?=$job['Job']['percent_complete'];?>%;"></div>
+            </div>
         </div>
+<div class="ui-helper-clearfix"></div>
+    
     <?php
 }
 
