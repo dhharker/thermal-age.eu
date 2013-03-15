@@ -28,6 +28,7 @@ class JobsController extends AppController {
         $this->Job->recursive = 1;
         $running = $this->Job->_bgpGetRunningJobs(array (
             'fields' => array (
+                'Job.id',
                 'Job.user_id',
                 'User.id',
                 'User.name',
@@ -60,6 +61,12 @@ class JobsController extends AppController {
             )
         ));
         
+        $jobbage = array (&$running, &$queue);
+        foreach ($jobbage as &$jobs) {
+            foreach ($jobs as &$job) {
+                $job['Job']['percent_complete'] = $this->Job->getJobPercentComplete($job['Job']['id']);
+            }
+        }
         
         // Handle header update info timestamps n stuff
         $data = compact ('running', 'numProcs', 'queue');

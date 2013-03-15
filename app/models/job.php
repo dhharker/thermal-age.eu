@@ -15,10 +15,16 @@ class Job extends AppModel {
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
     // The number of row·samples before the spreadsheet processor is eating all the RAM
     //var $criticalRowSampleThreshold = 15000; // 30 rows * 500 years sampled in each; // live
-    //var $criticalRowSampleThreshold = 900; // 30 rows * 500 years sampled in each;
+    var $criticalRowSampleThreshold = 900; // 30 rows * 500 years sampled in each;
     
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
   
+    private $percentRatio = array (
+        'parse'   => .2,
+        'process' => .7,
+        'report'  => .1
+    );
+    
     /**
      * Convenience functions for AJAX job list update, but generic in nature
      */
@@ -125,11 +131,11 @@ class Job extends AppModel {
 
             $this->_startProcessing();
             
+            $input = unserialize ($this->field('data'));
+            
             // Start the next one (if it exists) now we've updated the status in the DB
             // This is here so that multiple samples can be run at once if maxThreads > 1
-            $this->_forkToBackground ();
-            
-            $input = unserialize ($this->field('data'));
+            //if (!(isset($input['resume']) && !!$input['resume'])) $this->_forkToBackground ();
             
             // the parser loads user input in whatever-ass format into the ttkpl object model
             $parsed = $this->_task ($this->field ('parser_name'), 'parser',     $input);
@@ -148,7 +154,7 @@ class Job extends AppModel {
                 ),false);
                 $this->read(null,$this->id);
             }
-            $this->_addToStatus("XXXXXX   PARSED RESUME:" . print_r ($parsed['resume'], true));
+            //$this->_addToStatus("XXXXXX   PARSED RESUME:" . print_r ($parsed['resume'], true));
             
             // the processor takes this bunch of objects and makes them work
             $output = $this->_task ($this->field ('processor_name'), 'processor',  $parsed);
@@ -164,17 +170,20 @@ class Job extends AppModel {
                     'data' => serialize ($input),
                     'priority' => $this->field('priority')+1
                 ));
-                if ($data['resume']['rowsReported'] >= $data['resume']['nRows']) {
+                // @todo make rowsParsed into rowsReported once it agrees to actually save this number fs
+                if ($data['resume']['rowsParsed'] >= $data['resume']['nRows'] ||
+                    $data['resume']['nRows'] <= $data['resume']['nPerBatch']) {
                     $j['Job']['status'] = 0;
+                    $resume = false;
                 }
-                $this->_addToStatus("XXXXXX   SAVE:" . print_r ($j, true));
+                //$this->_addToStatus("XXXXXX   SAVE:" . print_r ($j, true));
                 $this->save($j,false);
                 $this->read(null,$this->id);
                 
-                $newData = unserialize($this->data);
+                $newData = unserialize($this->data['data']);
                 $this->_addToStatus("XXXXXX   LOAD:" . print_r ($newData['resume'], true));
             }
-            $this->_addToStatus("XXXXXX   REPORT RESUME:" . print_r ($report['resume'], true));
+            //$this->_addToStatus("XXXXXX   REPORT RESUME:" . print_r ($report['resume'], true));
             $this->_stopProcessing($error, $resume);
         }
 
@@ -182,9 +191,11 @@ class Job extends AppModel {
         // job to process. The process spawned here will just die if there is no more work to do.
         $this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
         sleep ($this->sleepyTime);
-        $this->_addToStatus("Done. What's next?");
+        $this->_addToStatus("Searching for more work...");
         $next = $this->_getNext ();
         if (!!$next) {
+            $this->_addToStatus("Resting for {$this->sleepyTime} seconds.");
+            sleep ($this->sleepyTime);
             // If there's more work to do, do it (in a new process)
             // DEBUG: $this->_addToStatus("Didn't start. Restart manually.");
             $this->_addToStatus("Starting new process now.");
@@ -443,6 +454,7 @@ class Job extends AppModel {
         $results = array ();
         $unParsed = array ();
         $parsed = array ();
+        
         if (!empty ($args['parsed'])) {
             
             foreach ($args['parsed'] as $running => $runIt) {
@@ -482,6 +494,7 @@ class Job extends AppModel {
                     );*/
                     unset ($res);
                 }
+                $this->increaseJobPercentComplete('process');
             }
         }
         else {
@@ -547,6 +560,7 @@ class Job extends AppModel {
                 $this->_addToStatus('Not a resumable job.');
             }
             
+            $stop = false;
             do {
                 $do = true;
                 $this->_addToStatus("Result indices: " . count ($args['results']));
@@ -557,20 +571,23 @@ class Job extends AppModel {
                 }
                 elseif (isset ($xref[$cp->key()]) && isset ($args['results'][$xref[$cp->key()]])) {
                     $cResult = $args['results'][$xref[$cp->key()]];
-                    $this->_addToStatus("Adding duplicate of row " . $xref[$cp->key()] + 1 . " to row " . $cp->key()) + 1;
+                    $this->_addToStatus("Adding duplicate of row " . ($xref[$cp->key()] + 1) . " to row " . ($cp->key() + 1));
                 }
                 else {
                     $do = false;
-                    $this->_addToStatus("No valid results found for row " . $cp->key() + 1);
+                    $this->_addToStatus("No valid results found for row " . ($cp->key() + 1));
                 }
                 
                 if (!!$do)
                     foreach ($cResult as $col => $val)
                         $cp->setColumn($col, $val);
                 if (isset ($args['resume']) && is_array ($args['resume']) && isset ($args['resume']['rowsReported'])) {
+                    //die ($this->_addToStatus(print_r ($args['resume'], true)));
                     $args['resume']['rowsReported']++;
+                    
                     $stop = $args['resume']['rowsReported'] >= $args['resume']['rowsParsed'] ? true : false;
                 }
+                $this->increaseJobPercentComplete('report');
             } while ($cp->next() && !$stop);
             
             $opfn = $args['output_csv_filename'];
@@ -594,8 +611,18 @@ class Job extends AppModel {
         file_put_contents ($this->bgpGetJobFileName ('report'), serialize ($args));
         // !!==borken
         //return true;
-        if (isset ($args['resume']) && is_array ($args['resume']))
+        if (isset ($args['resume']) && is_array ($args['resume'])) {
+            
+            /*$percent = ($args['resume']['rowsReported'] / $args['resume']['nRows']) * 100;
+            $this->_addToStatus("($percent% complete)");
+            $this->_updateJobPercentComplete($percent);
+             * 
+             */
+            
+            
             return array ('resume' => $args['resume']);
+            
+        }
         
     }
     function _task_thermal_age_csv_parser ($args) {
@@ -603,6 +630,9 @@ class Job extends AppModel {
         
         // cache a bunch of boring stuff
         $rK = array (); $rS = array ();
+        
+        // In order to easily work out how far through we are, assign some arbitrary fraction of 100% to parseing, processing and reporting
+        
         
         // load csv file
         
@@ -641,11 +671,12 @@ class Job extends AppModel {
             if ($nRowSamples > $this->criticalRowSampleThreshold) {
                 // This spreadsheet is too big to do all at once
                 $this->_addToStatus('This spreadsheet is too big to process in one go. Will process in multiple batches.');
-                $rowsDonePreviously = -1;
+                $rowsDonePreviously = 0;
                 
                 $nBatches = ceil($nRowSamples / $this->criticalRowSampleThreshold);
                 $nPerBatch = round ($n / $nBatches);
                 if ($nPerBatch < 1) $nPerBatch = 1;
+                if ($nBatches < 1) $nBatches = 1;
                 
                 // Do we know this already
                 if (isset ($args['resume']) && is_array($args['resume'])) {
@@ -669,10 +700,17 @@ class Job extends AppModel {
                 
                 
                 $this->_addToStatus("\-\-\-\-\-\-\-\-\-\ Calculating in $nBatches batches of $nPerBatch rows. Done $rowsDonePreviously rows already.");
-                
+            }
+            // Work out how many percents we get for each parse, process and report
+            $tfps = array_keys ($this->percentRatio);
+            $this->percentsPer = array ();
+            foreach ($tfps as $tfp) {
+                $this->percentsPer[$tfp] = (100 / $n) * $this->percentRatio[$tfp];
             }
             
+            
             //$cp->next();
+            $dontStop = true;
             do {
                 $row = $cp->current();
                 if (!$row) continue;
@@ -830,8 +868,12 @@ class Job extends AppModel {
                     $this->_addToStatus ("Nothing to do for this row " . $rowCount);
                 //$this->_addToStatus("<pre>".serialize ($parse)."</pre>");
                 //die();
-                if (isset ($args['resume']) && isset ($args['resume']['rowsParsed'])) $args['resume']['rowsParsed']++;
-            } while ($cp->next() && $rowCount <= $rowsDonePreviously + $nPerBatch);
+                if (isset ($args['resume']) && isset ($args['resume']['rowsParsed'])) {
+                    $args['resume']['rowsParsed']++;
+                    $dontStop = ($rowCount <= $rowsDonePreviously + $nPerBatch) ? true : false;
+                }
+                $this->increaseJobPercentComplete('parse');
+            } while ($cp->next() && !!$dontStop);
             
             //print_r ($xref);
             //die();
@@ -1247,7 +1289,7 @@ class Job extends AppModel {
      * Creates runtime files etc.
      * @return bool success
      */
-    function _startProcessing () {
+    function _startProcessing ($forceReload = false) {
         //die();
         $id = $this->field ('id');
         if ($id !== false) {
@@ -1259,10 +1301,11 @@ class Job extends AppModel {
             foreach (array ('Reaction', 'Soil') as $importModel)
                 $this->$importModel = ClassRegistry::init ($importModel);
 
-            foreach (array ('pid', 'status') as $f)
+            foreach (array ('pid', 'status','percent') as $f)
                 $this->bg[$f] = $this->bgpGetJobFileName($f);
             file_put_contents($this->bg['pid'], posix_getpid ());
-            file_put_contents($this->bg['status'], '');
+            if (!file_exists($this->bg['status'])   || $forceReload === true)     file_put_contents($this->bg['status'],    '');
+            if (!file_exists($this->bg['percent'])  || $forceReload === true)     file_put_contents($this->bg['percent'],   '0');
             $this->_addToStatus("Starting processor for job $id");
             $this->bg['startTime'] = microtime (true);
 
@@ -1314,12 +1357,66 @@ class Job extends AppModel {
         $fmsg = sprintf("%f %s\n", microtime (true), $message);
         if (PHP_SAPI == 'cli') echo $fmsg;
         if (!empty ($this->bg) && !empty ($this->bg['status']) && file_exists ($this->bg['status'])) {
+            // @TODO rewrite this to append to file properly rather than this abomination!
             $st = file_get_contents ($this->bg['status']);
             $st = $fmsg . $st;
             return file_put_contents ($this->bg['status'], $st);
         }
         return false;
     }
+    /**
+     * 
+     * @param int $percent_complete save percentage completeness of this job id to status file
+     * @return bool success
+     */
+    function _updateJobPercentComplete ($percent_complete = 0) {
+        if (!empty ($this->bg) && !empty ($this->bg['percent']) && file_exists ($this->bg['percent'])) {
+            return file_put_contents ($this->bg['percent'], $percent_complete);
+        }
+    }
+    /**
+     * 
+     * @param type $increase_by_points number of % to increase by or array key of $this->percentsPer
+     * @param type $id optional. Job ID. 
+     * @return boolean
+     */
+    function increaseJobPercentComplete ($increase_by_points, $id) {
+        $tfps = array_keys ($this->percentRatio);
+        if (!$increase_by_points ||$increase_by_points == 0) die ("Increase by points: ".increase_by_points);
+        if (in_array ($increase_by_points, $tfps)) {
+            $increase_by_points = $this->percentsPer[$increase_by_points];
+        }
+        if ($increase_by_points == 0) die ($increase_by_points);
+        $id = ($id === null) ? $this->id : $id;
+        $current = $this->getJobPercentComplete($id);
+        if ($current -1) {
+            $this->_updateJobPercentComplete($current + $increase_by_points + 0);
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param int $id Job id (default: $this->id)
+     * @return int -1 if not set else number from 0 to 100 if job is running (value not guaranteed to persist after job is complete)
+     */
+    function getJobPercentComplete ($id = null) {
+        $id = ($id === null) ? $this->id : $id;
+        $percent_complete = $this->_bgpGetJobFileContent('percent',$id);
+        if ($percent_complete === false) return -1; // file doesn't exist
+        if ($percent_complete < 0) return 0;
+        if ($percent_complete > 100) return 100;
+        return $percent_complete+0;
+    }
+    
+    /**
+     * Build percent complete update closure to drop into ttkpl in a nice clean abstract way
+     */
+    function _buildPCUClosure () {
+        $this->pCUClosure = function ($percent_complete) {
+            return $this->_updateJobPercentComplete($percent_complete);
+        };
+    }
+    
     /**
      * Spawns a background process to run tryProcessNext
      */
