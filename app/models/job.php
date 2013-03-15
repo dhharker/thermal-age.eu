@@ -14,8 +14,8 @@ class Job extends AppModel {
     var $maxThreads = 2; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
     // The number of row·samples before the spreadsheet processor is eating all the RAM
-    //var $criticalRowSampleThreshold = 15000; // 30 rows * 500 years sampled in each; // live
-    var $criticalRowSampleThreshold = 900; // 30 rows * 500 years sampled in each;
+    var $criticalRowSampleThreshold = 15000; // 30 rows * 500 years sampled in each; // live
+    //var $criticalRowSampleThreshold = 900; // 30 rows * 500 years sampled in each;
     
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
   
@@ -699,7 +699,7 @@ class Job extends AppModel {
                 }
                 
                 
-                $this->_addToStatus("\-\-\-\-\-\-\-\-\-\ Calculating in $nBatches batches of $nPerBatch rows. Done $rowsDonePreviously rows already.");
+                $this->_addToStatus("Calculating in $nBatches batches of $nPerBatch rows. Done $rowsDonePreviously rows already.");
             }
             // Work out how many percents we get for each parse, process and report
             $tfps = array_keys ($this->percentRatio);
@@ -707,8 +707,8 @@ class Job extends AppModel {
             foreach ($tfps as $tfp) {
                 $this->percentsPer[$tfp] = (100.0 / $n) * $this->percentRatio[$tfp];
             }
-            $this->_addToStatus("Work type time weightings: " . print_r ($this->percentRatio,true));
-            $this->_addToStatus("Percents per work type: " . print_r ($this->percentsPer,true));
+            //$this->_addToStatus("Work type time weightings: " . print_r ($this->percentRatio,true));
+            //$this->_addToStatus("Percents per work type: " . print_r ($this->percentsPer,true));
             
             
             //$cp->next();
@@ -1388,7 +1388,7 @@ class Job extends AppModel {
         if (in_array ($increase_by_points, $tfps)) {
             $increase_by_points = $this->percentsPer[$increase_by_points];
         }
-        if (!$increase_by_points ||$increase_by_points == 0) $this->_addToStatus ("Increase by points: ".$increase_by_points);
+        if (!$increase_by_points ||$increase_by_points == 0) $this->_addToStatus ("Increase by what points: ".$increase_by_points);
         //if ($increase_by_points == 0) die ($increase_by_points);
         $id = ($id === null) ? $this->id : $id;
         $current = $this->getJobPercentComplete($id);
