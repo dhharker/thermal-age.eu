@@ -91,7 +91,7 @@
                 <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
                     <div id="topMainMenu" class="NUBs">
                         <?php
-                        $logged_in = (is_array ($logged_in_user) && isset ($logged_in_user['User']['id']) && !!$logged_in_user['User']['id']) ? true : false;
+                        $logged_in = (isset ($logged_in_user) && is_array ($logged_in_user) && isset ($logged_in_user['User']['id']) && !!$logged_in_user['User']['id']) ? true : false;
                         ?>
                         <?php $this->Html->link('Enter', array ('controller' => '', 'action' => ''), array('class' => 'button'/*, 'target' => '_blank'*/)); ?>
                         
