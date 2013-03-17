@@ -17,7 +17,7 @@ if (!isset ($labResults) || empty ($labResults) && $showForm) {
             Your results will be kept confidential. Please select an option:
         </p>
         <?php
-        echo $this->Element ('lab_results/form');
+        echo $this->Element ('lab_results/form', compact('showForm'));
         ?>
 <?php
 }

@@ -1,13 +1,21 @@
 <?php
+/*
+ * Optional:
+ *  $showForm   bool show form or not default true
+ */
+if (!isset ($showForm)) $showForm = true;
+
 $fgbc = array ('class' => 'fg-button ui-state-default','style' => 'margin-top: -1px');
 if (isset ($labResult) && is_array ($labResult)) {
     $l = &$labResult['LabResult'];
-    ?>
-    <div style="float: right;" class="fg-buttonset fg-buttonset-single">
-        <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-bl", 'style' => $fgbc['style'])); ?>
-        <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $labResult['LabResult']['id'],$l['job_id']), $fgbc, sprintf(__('Are you sure you want to delete # %s?', true), $labResult['LabResult']['id'])); ?>
-    </div>
-    <?php
+    if (!!$showForm) {
+        ?>
+        <div style="float: right;" class="fg-buttonset fg-buttonset-single">
+            <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-bl", 'style' => $fgbc['style'])); ?>
+            <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $labResult['LabResult']['id'],$l['job_id']), $fgbc, sprintf(__('Are you sure you want to delete # %s?', true), $labResult['LabResult']['id'])); ?>
+        </div>
+        <?php
+    }
     
     if (in_array ($l['result_type'], array ('will_run','wont_run','hypothetical')))
         $iconStr = $l['result_type'];
