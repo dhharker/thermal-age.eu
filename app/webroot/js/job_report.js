@@ -1,5 +1,5 @@
 (function ($) {
-    $(document).ready(function () {
+    $(document).on('ready',function () {
         
         //console.log ("svg");
         /* When the viewport is resized, scale embeds to match new parent width while maintaining
@@ -7,6 +7,7 @@
         var embedIndex = 0;
         $('.expand-embeds').find('embed').each (function () {
                 var did = 'embed-svg-' + embedIndex++;
+                //console.log (this);return;
                 var $this = $(this).hide();
                 var before = {
                     width: $this.width(),
@@ -23,7 +24,7 @@
                         var svg = embd.svg('get');
                         svg.load(svgFile, {
                             addTo: false,
-                            changeSize: false
+                            changeSize: true
                         });
                     },
                     settings: {}

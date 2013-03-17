@@ -1,3 +1,15 @@
+<div id="LabResultsScope">
+    <div class="grid_12">
+        <div class="smartbox">
+            <h2 class="sbHeading">Edit</h2>
+            <?php
+                echo $this->Element ('lab_results/form');
+            ?>
+        </div>
+    </div>
+</div>
+<?php
+/*
 <div class="labResults form">
 <?php echo $this->Form->create('LabResult');?>
 	<fieldset>
@@ -28,3 +40,6 @@
 		<li><?php echo $this->Html->link(__('New Job', true), array('controller' => 'jobs', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
+ * 
+ */
+?>

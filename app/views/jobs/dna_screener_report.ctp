@@ -49,6 +49,27 @@ else {
         </div>
     </div>
     
+    
+        <div id="LabResultsScope">
+            
+        </div>
+        <script type="text/javascript">
+            (function($){
+                $(document).ready(function(){
+                    $.ajax({
+                        url: '<?=$this->Html->url(array (
+                            'controller' => 'lab_results',
+                            'action' => 'job',
+                            $jid
+                        ));?>?_ts=<?=microtime(1)?>',
+                        success: function (data,xhr) {
+                            $('#LabResultsScope').html(data);
+                        }
+                    });
+                })
+            }(jQuery));
+        </script>
+    
     <div class="grid_12">
         <div class="smartbox">
             <div class="expand-embeds">

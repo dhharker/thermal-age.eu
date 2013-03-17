@@ -567,6 +567,7 @@ form .help {
     font-variant: italic;
     color: #777;
 }
+form th.required:after,
 form .required label:after {
 	color: #e32;
 	content: '*';
@@ -871,6 +872,9 @@ ul.objectList li {
     background: linear-gradient(to bottom, rgba(250,250,250,0.35) 0%,rgba(203,214,208,0.65) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59fafafa', endColorstr='#a6cbd6d0',GradientType=0 ); /* IE6-9 */
 }
+ul.objectList.noPad li {
+    padding: 0;
+}
 ul.objectList li > ul.objectList {
     margin-top: .3em;
     margin-bottom: .3em;
@@ -930,4 +934,48 @@ img.profilePhoto {
     margin: 0px;
     border-radius: 4px;
     float: right;
+}
+
+/* Positions labels to left of form fields (improve cake's default) */
+.cakeInline label {
+    display: inline;
+    width: 40%;
+    float: left;
+    background-color: rgba(255,255,255,.75);
+    padding-left: 5px;
+    min-width: 8em;
+}
+.cakeInline input,.cakeInline  textarea {
+    width: 56%;
+    clear: none;
+}
+.cakeInline form div.submit {
+    clear: none;
+    display: inline;
+}
+
+/* big info text for lab result rows */
+.lrBigText {
+    /* rows no shorter than and normally 75px tall if at all possible */
+    float: left;
+    margin-left: -75px;
+    padding-left: 80px;
+}
+.lrBigText > span:first-child {
+    display: block;
+    font-size: 40px;
+    line-height: 45px;
+    padding-left: 5px;
+    
+}
+.lrBigText > span:last-child {
+    display: inline-block;
+    font-size: 25px;
+    line-height: 22px;
+    padding-left: 7px;
+    
+}
+.lrBigText span span {
+    font-size: inherit !important;
+    line-height: inherit !important;
 }
