@@ -967,11 +967,12 @@ img.profilePhoto {
     font-size: 40px;
     line-height: 45px;
     padding-left: 5px;
+    padding-top: 2px;
     
 }
 .lrBigText > span:last-child {
     display: inline-block;
-    font-size: 25px;
+    font-size: 19px;
     line-height: 22px;
     padding-left: 7px;
     

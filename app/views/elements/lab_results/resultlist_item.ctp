@@ -49,9 +49,12 @@ if (isset ($labResult) && is_array ($labResult)) {
             break;
         case "will_run":
             echo '<span>';
-                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe002;').' Remind Me on</small>'.' '.$l['remind_me'].'</span>&ensp;';
+                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe002;').'&ensp;Reminder on '.' '.$l['remind_me'].'</small></span>&ensp;';
+                ?>
+                <a href="http://www.google.com/calendar/event?action=TEMPLATE&text=Upload%20experimental%20results%20for%20Job%20<?=$l['id']?>&dates=<?=date('Ymd', strtotime($l['remind_me']))?>/<?=date('Ymd', strtotime($l['remind_me']) + (60*60*24))?>&details=&location=http%3A%2F%2Fthermal-age.localhost%2Fjobs%2Freport%2F<?=$l['id']?>&trp=false&sprop=http%3A%2F%2Fthermal-age.eu&sprop=name:thermal-age.eu" target="_blank"><img src="//www.google.com/calendar/images/ext/gc_button2.gif" border=0></a>
+                <?php
             echo '</span><span>';
-            echo '';
+            echo $timeAgo;
             echo '</span>';
             //$l['']
             
