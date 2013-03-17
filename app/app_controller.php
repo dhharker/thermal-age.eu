@@ -37,6 +37,7 @@ class AppController extends Controller {
         User::store($this->Auth->user());
         
         $this->set ('isMobile', $this->RequestHandler->isMobile());
+        $this->set ('isAjax', $this->RequestHandler->isAjax());
 
         $this->set('logged_in_user', $this->Auth->user());
         
@@ -50,6 +51,7 @@ class AppController extends Controller {
             '/js/chosen.jquery.js',
             '/js/jquery.ba-resize.min.js',
             '/js/jquery.smooth-scroll.js',
+            //'/js/jquery.form.js',
             '/js/config.js',
             //prod:'js/ui.js', // basic interaction stuffs
             '/js/jqf/jquery.form.js',
@@ -67,8 +69,8 @@ class AppController extends Controller {
         parent::beforeFilter();
     }
 
-    function redirect ($url, $status = null, $exit = true) {
-        if ($this->RequestHandler->isAjax ()) {
+    function redirect ($url, $status = null, $exit = true, $ignoreAjax = false) {
+        if ($this->RequestHandler->isAjax () && !$ignoreAjax) {
 
             if ($url !== null) {
                 $goto = Router::url($url, true);
