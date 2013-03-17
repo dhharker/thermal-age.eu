@@ -960,6 +960,7 @@ img.profilePhoto {
     float: left;
     margin-left: -75px;
     padding-left: 80px;
+    text-align: left;
 }
 .lrBigText > span:first-child {
     display: block;

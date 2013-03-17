@@ -17,12 +17,15 @@ if (isset ($labResult) && is_array ($labResult)) {
     }
     echo $this->Html->image('lr_'.$iconStr.'_icon.png',array ('style' => 'float: left;'));
     echo '<div class="lrBigText">';
+    
+    $timeAgo = '<small style="font-style: italic">Added '.$this->Time->timeAgoInWords($l['created']).'</small>';
+    
     switch ($iconStr) {
         case "pcr":
             $percent = round($l['pcr_percent']);//round (($l['pcr_num_successes'] / $l['pcr_num_runs']) * 100);
             echo '<span>';
-                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe06b;').'</small>'.' '.$l['pcr_tgt_length'].'</span>&ensp;';
-                echo '<span><span style="color: #6ca689; font-weight: bold;">&lambda;</span>'.' '.$l['lambda'].'</span>&ensp;';
+                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe06b;').'</small>'.'&nbsp;'.$l['pcr_tgt_length'].'</span>&ensp; ';
+                echo '<span><span style="color: #6ca689; font-weight: bold;">&lambda;</span>'.'&nbsp;'.$l['lambda'].'</span>&ensp;';
             echo '</span><span>';
                 echo '<span style="color: #339933"> ' .
                         '<small>'.$this->Icons->i('&#xe034;').'</small>' .
@@ -30,21 +33,26 @@ if (isset ($labResult) && is_array ($labResult)) {
                      '</span>/' . 
                         $l['pcr_num_runs'] . 
                         '<small>&Sigma;</small> &cong; ' .
-                        $percent . "%";
+                        $percent . "%&ensp; " . $timeAgo;
             echo '</span>';
             //$l['']
             break;
         case "htp":
             echo '<span>';
-                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe05e;').'</small>'.' '.$l['htp_mfl_less_contaminants'].'</span>&ensp;';
-                echo '<span><span style="color: #6ca689; font-weight: bold;">&lambda;</span>'.' '.$l['lambda'].'</span>&ensp;';
+                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe05e;').'</small>'.'&nbsp;'.$l['htp_mfl_less_contaminants'].'</span>&ensp; ';
+                echo '<span><span style="color: #6ca689; font-weight: bold;">&lambda;</span>'.'&nbsp;'.$l['lambda'].'</span>&ensp;';
             echo '</span><span>';
-            echo 'How a-boot a big loong rambling ';
+            echo $timeAgo;
             echo '</span>';
             //$l['']
             
             break;
         case "will_run":
+            echo '<span>';
+                echo '<span><small style="color: #8a8a8a">'.$this->Icons->i('&#xe002;').' Remind Me on</small>'.' '.$l['remind_me'].'</span>&ensp;';
+            echo '</span><span>';
+            echo '';
+            echo '</span>';
             //$l['']
             
             break;
