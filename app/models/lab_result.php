@@ -57,7 +57,7 @@ class LabResult extends AppModel {
     function _calculateLambdaFromExperimental (&$data = null) {
         if ($data === null) $data =& $this->data;
         // calculate lambda from either pcr or htp data
-        if ($data['LabResult']['result_type'] == 'run') {
+        if (isset ($data['LabResult']['result_type']) && isset ($data['LabResult']) && $data['LabResult']['result_type'] == 'run') {
             if ($data['LabResult']['experiment_type'] == 'pcr') {
                 $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
                 $l = $data['LabResult']['pcr_tgt_length'];

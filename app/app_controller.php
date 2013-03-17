@@ -93,5 +93,21 @@ OMG;
         parent::beforeRender();
         
     }
+    
+    function authoriseWrite ($modelName = null, $model_id = null, $uid_field = 'user_id') {
+        if ($modelName === null)
+            $modelName = $this->modelClass;
+        if ($model_id === null && isset ($this->data) && is_array ($this->data) && isset ($this->data[$modelName]) && isset ($this->data[$modelName]['id']))
+            $model_id = $this->data[$modelName]['id'];
+        $model_id = $model_id + 0;
+        if (!$this->loadModel($modelName)) return "Couldn't load model $modelName";
+        $this->$modelName->id = $model_id;
+        if (!$this->$modelName->hasField($uid_field)) return "Model doesn't have field $uid_field";
+        if (!$this->$modelName->exists()) return "Row with id $model_id doesn't exist";
+        $v = $this->$modelName->read($uid_field,$model_id);
+        if (!$v || $v == '') return "$uid_field isn't set";
+        if ($v[$modelName][$uid_field] != $this->Auth->user('id')) return "$modelName.$uid_field = {$v[$modelName][$uid_field]} != ".$this->Auth->user('id');
+        return true;
+    }
 
 }

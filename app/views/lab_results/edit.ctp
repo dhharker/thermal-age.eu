@@ -3,7 +3,11 @@
         <div class="smartbox">
             <h2 class="sbHeading">Edit</h2>
             <?php
-                echo $this->Element ('lab_results/form');
+                echo $this->Element ('lab_results/form', array (
+                    'editMode' => true,
+                    'lockTypes' => true,
+                    'afterSuccess' => (isset ($afterSuccess)) ? $afterSuccess : null
+                ));
             ?>
         </div>
     </div>

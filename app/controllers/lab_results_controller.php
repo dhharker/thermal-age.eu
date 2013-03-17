@@ -15,7 +15,12 @@ class LabResultsController extends AppController {
 			$this->Session->setFlash(__('Invalid labResults', true));
 			$this->redirect(array('action' => 'index'), null, true, true);
 		}
-		$this->set('labResults', $this->LabResult->read(null, $id));
+		$this->set('labResult', $this->find('first',array (
+            'conditions' => array (
+                'LabResult.user_id' => $this->Auth->user('id'),
+                'LabResult.id' => $id
+            )
+        )));
 	}
 
 	function add() {
@@ -35,15 +40,19 @@ class LabResultsController extends AppController {
 		$this->_setStuffByJobId ($this->data['LabResult']['job_id']);
 	}
 
-	function edit($id = null) {
+	function edit($id = null, $job_id = null) {
+        if ($job_id !== null) {
+            $job_id = $job_id+0;
+            //$this->set ('afterSuccess','job');
+        }
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid lab results', true));
-			$this->redirect(array('action' => 'index'));
+			$this->_redirectAfterDoingStuff($job_id);
 		}
 		if (!empty($this->data)) {
 			if ($this->LabResult->save($this->data)) {
 				$this->Session->setFlash(__('The lab results have been saved', true));
-				$this->_redirectAfterDoingStuff();
+				$this->_redirectAfterDoingStuff($job_id);
 			} else {
 				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.', true));
 			}
@@ -51,7 +60,7 @@ class LabResultsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->LabResult->read(null, $id);
 		}
-		$this->_setStuffByJobId ($this->data['Job']['id']);
+		$this->_setStuffByJobId ($this->LabResult->data['Job']['id']);
 	}
 
 	function delete($id = null, $job_id = null) {
@@ -87,16 +96,23 @@ class LabResultsController extends AppController {
 				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
 			}
         }
+        $authd = $this->authoriseWrite('Job',$job_id);
+        if ($authd !== true) {
+            $this->set('showForm', false);
+        }
+            
     }
     
     function _redirectAfterDoingStuff ($job_id = null) {
+        
         $jid = ($job_id === null && isset ($this->data['LabResult']['job_id'])) ? $this->data['LabResult']['job_id'] : $job_id;
-        if (    (isset ($this->data['LabResult']['after_success']) && 
-                $this->data['LabResult']['after_success'] == 'job' && 
-                isset ($this->data['LabResult']['job_id']) && 
-                $this->data['LabResult']['job_id'] > 0)
-            || $job_id !== null)
+        if ((isset ($this->data['LabResult']['after_success']) && 
+        $this->data['LabResult']['after_success'] == 'job' && 
+        isset ($this->data['LabResult']['job_id']) && 
+        $this->data['LabResult']['job_id'] > 0) ||
+        $job_id !== null) {
             $this->redirect(array('action' => 'job', $jid), null, true, true);
+        }
         else
             $this->redirect(array('action' => 'index'), null, true, true);
     }
@@ -111,8 +127,10 @@ class LabResultsController extends AppController {
         $labResults = $this->LabResult->find('all', array (
             'conditions' => array (
                 'LabResult.job_id' => $job_id,
-                'LabResult.user_id' => $user_id,
-                'Job.user_id' => $user_id
+                'OR' => array (
+                    'LabResult.user_id' => $user_id,
+                    'LabResult.shared' => '1'
+                )
             )
         ));
         

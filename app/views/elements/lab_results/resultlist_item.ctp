@@ -4,7 +4,7 @@ if (isset ($labResult) && is_array ($labResult)) {
     $l = &$labResult['LabResult'];
     ?>
     <div style="float: right;" class="fg-buttonset fg-buttonset-single">
-        <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id']), array ('class' => $fgbc['class'] . " ui-corner-bl", 'style' => $fgbc['style'])); ?>
+        <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-bl", 'style' => $fgbc['style'])); ?>
         <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $labResult['LabResult']['id'],$l['job_id']), $fgbc, sprintf(__('Are you sure you want to delete # %s?', true), $labResult['LabResult']['id'])); ?>
     </div>
     <?php
@@ -18,7 +18,9 @@ if (isset ($labResult) && is_array ($labResult)) {
     echo $this->Html->image('lr_'.$iconStr.'_icon.png',array ('style' => 'float: left;'));
     echo '<div class="lrBigText">';
     
-    $timeAgo = '<small style="font-style: italic">Added '.$this->Time->timeAgoInWords($l['created']).'</small>';
+    $shared = '<span style="color: #3366cc">'.$this->Icons->i('&#xe064;').' <strong>Public</strong></span>&ensp; ';
+    $shared = ($l['shared'] == '1') ? $shared : '';
+    $timeAgo = $shared . '<small style="font-style: italic">Added '.$this->Time->timeAgoInWords($l['created']).'</small>';
     
     switch ($iconStr) {
         case "pcr":

@@ -14,10 +14,14 @@
              * 
              * Expects:
              *  $job_id                 Job to attach results to
+             * Optional:
              *  $othersResultsTypes     e.g. array ('will_run','run') - what types of results are already recorded determines which types can be added
+             *  $lockTypes              bool whether to lock the result_type and experiment_type fields (for when editing - prevents people editing their way around the restrictions of what types scan be added when other types are already present)
+             *  $editMode               bool whether to include a hidden field for the LabResult id
              */
             if (!isset ($othersResultsTypes)) $othersResultsTypes = array ();
-            
+            if (!isset ($lockTypes)) $lockTypes = false;
+            if (!isset ($editMode)) $editMode = false;
             ?>
             <style>
                 .sentenceForm {
@@ -54,6 +58,10 @@
                 )*/
             ));?>
                 <?=$this->Form->error('job_id');?>
+                <? if (!!$editMode)
+                    $this->Form->input('id', array (
+                        'type' => 'hidden'
+                    ));?>
                 <?=$this->Form->input('job_id', array (
                     'type' => 'hidden',
                     'value' => $job_id
@@ -83,7 +91,8 @@
                         'empty' => 'Choose an Option',
                         'options' => $rtOpts,
                         'div' => false,
-                        'label' => false
+                        'label' => false,
+                        'disabled' => $lockTypes
                     ));
                 ?>
                 <span>run this</span>
@@ -98,7 +107,8 @@
                         'div' => false,
                         'label' => false,
                         'data-det-field' => 'data[LabResult][result_type]',
-                        'data-det-val' => 'run'
+                        'data-det-val' => 'run',
+                        'disabled' => $lockTypes
                     ));
                 ?>
                 <span>experiment.</span>

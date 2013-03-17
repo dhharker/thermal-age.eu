@@ -1,6 +1,13 @@
+<?php
+/*
+ * Optional:
+ *  $showForm   bool show form or not default true
+ */
+if (!isset ($showForm)) $showForm = true;
+?>
 <div class="grid_12" id="LabResultsScope">
 <?php
-if (!isset ($labResults) || empty ($labResults)) {
+if (!isset ($labResults) || empty ($labResults) && $showForm) {
 ?>
     <div class="smartbox">
         <h2 class="sbHeading">Important - Please help!</h2>
@@ -13,6 +20,14 @@ if (!isset ($labResults) || empty ($labResults)) {
         echo $this->Element ('lab_results/form');
         ?>
 <?php
+}
+elseif (!isset ($labResults) || empty ($labResults) && !$showForm) {
+    // No results and we don't own the job
+    ?>
+    <div class="smartbox">
+        <h2 class="sbHeading"><?=$this->Icons->i('&#xe003;');?>&ensp;No Experimental Results Available</h2>
+    </div>
+    <?php
 }
 else {
     ?>
@@ -35,7 +50,7 @@ else {
             echo "</li>";
         }
         $othersResultsTypes = array_keys($rts);
-        if (!!$willShowForm) {
+        if (!!$willShowForm && $showForm) {
             echo "<li>";
             echo $this->Element ('lab_results/form', compact('othersResultsTypes'));
             echo "</li>";
