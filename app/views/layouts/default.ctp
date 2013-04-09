@@ -81,14 +81,14 @@
 <body>
     <div id="bg1"></div> <div id="bg2"></div>
 
-    <div id="container" class="container_12 ui-corner-bottom">
+    <div id="container" class="container_12 ui-corner-bottom" style="margin-bottom: 2em;">
 
         <header class="grid_12 smart ui-corner-bottom" style="clear: both;">
-            <div class="grid_4 alpha clearfix no-v-margin">
+            <div class="grid_3 alpha clearfix no-v-margin">
                 <?php echo $this->Html->link('', '/', array('id' => 'thermalAgeLogo', 'title' => 'thermal-age.eu home')); ?>
             </div>
             <nav>
-                <div class="grid_8 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
+                <div class="grid_9 omega fg-buttonset fg-buttonset-single clearfix no-v-margin">
                     <div id="topMainMenu" class="NUBs">
                         <?php
                         $logged_in = (isset ($logged_in_user) && is_array ($logged_in_user) && isset ($logged_in_user['User']['id']) && !!$logged_in_user['User']['id']) ? true : false;
@@ -176,6 +176,7 @@
         </footer>
         
     </div>
+    <div class="ui-helper-clearfix"></div>
 
     
     <?php if (configure::read('debug') >= 2) { ?> 

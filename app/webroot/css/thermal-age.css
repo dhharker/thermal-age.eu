@@ -854,12 +854,12 @@ div.moodSlider.ui-slider-horizontal .sliderLabelInternal {
 /* created for user profile but some generic stuff */
 ul.objectList {
     list-style-type: none;
-    margin: 0;
+    margin: 0 -5px;
     padding: 0;
 }
 ul.objectList li {
     
-    margin: 0 -5px;
+    margin: 0;
     border: 1px solid #8A9881;
     border-width: 1px 0 0 0;
     padding: .5em 1em;
@@ -957,11 +957,12 @@ img.profilePhoto {
 /* big info text for lab result rows */
 .lrBigText {
     /* rows no shorter than and normally 75px tall if at all possible */
-    float: left;
     margin-left: -75px;
-    padding-left: 80px;
+    padding-left: 150px;
     text-align: left;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5) !important;
 }
+/* defunct
 .lrBigText > span:first-child {
     display: block;
     font-size: 40px;
@@ -980,4 +981,108 @@ img.profilePhoto {
 .lrBigText span span {
     font-size: inherit !important;
     line-height: inherit !important;
+}
+*/
+.objectList {
+    border-bottom: 1px solid #8A9881;
+}
+.objectList:last-child {
+    border-bottom: none;
+}
+
+.resultBarInner {
+    min-height: 75px;
+    margin: 0;
+    
+}
+.resultBarInner > div {
+    float: left;
+    min-height: 75px;
+    margin: 0;   
+    border-right: 1px solid #dae0d5;
+    border-left: 1px solid #8A9881;
+    -webkit-box-shadow: inset 0px 0px 35px 2px rgba(85, 97, 78, .24);
+    box-shadow: inset 0px 0px 35px 2px rgba(85, 97, 78, .24);
+    box-sizing: border-box; 
+}
+
+.resultBarInner > div {
+    min-height: 80px;
+}
+.resultBarInner.has-4 > div,
+.resultBarInner.has-2 > div {
+    width: 50%;
+}
+.resultBarInner.has-3 > div {
+    width: 33%;
+}
+
+@media handheld, only screen and (min-width: 1080px) {
+    .resultBarInner.has-3 > div,
+    .resultBarInner.has-4 > div {
+        min-height: 75px;
+        width: 25%;
+    }
+    .resultBarInner.has-3 > div:first-child {
+        width: 50%;
+    }
+}
+@media handheld, only screen and (max-width: 600px) {
+    .resultBarInner > div {
+        width: 100% !important;
+    }
+}
+
+.resultBarInner div.fg-buttonset .fg-button {
+    float: none;
+    display: inline-block;
+    padding: 1px 7px;
+}
+.resultBarInner div.fg-buttonset {
+    display: block;
+    text-align: center;
+    float: none;
+}
+.resultBarInner > div:last-child {
+    
+    border-right: none;
+    padding: 0 1%;
+}
+.resultBarInner > div:first-child {
+    
+}
+
+.resultBarInner .bigSmall {
+    box-sizing: border-box;
+    margin: 0 -.005% 0 0;
+    display: inline-block;
+    min-width: 13em;
+    float: left;
+}
+.resultBarInner .bigSmall > span {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    padding: 0;
+}
+.resultBarInner .bigSmall span.big {
+    font-size: 40px;
+    line-height: 35px;
+    margin-top: 10px;
+    margin-bottom: -5px;
+    font-variant: small-caps;
+}
+.resultBarInner .bigSmall > span.small {
+    font-size: 17px;
+    line-height: 16px;
+    margin-top: 8px;
+}
+.resultBarInner .bigSmall > span.small + span.small {
+    font-size: 17px;
+    line-height: 16px;
+    margin-top: 4px;
+}
+.resultBarInner .bigSmall:last-child {
+    
 }

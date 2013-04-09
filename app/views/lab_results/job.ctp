@@ -43,20 +43,21 @@ else {
         $rts = array ();
         // Iterate over running jobs (shouldn't be any more than max processes allowed, at ToW this == only 1!)
         foreach ($labResults as $labResult) {
-            if (!in_array ($labResult['LabResult']['result_type'],$canAddMoreIf)) $willShowForm = false;
+            if (!in_array ($labResult['LabResult']['result_type'],$canAddMoreIf))
+                $willShowForm = false;
             $rts[$labResult['LabResult']['result_type']] = 1;
             echo "<li>";
             echo $this->Element ('lab_results/resultlist_item', compact ('labResult'));
             echo "</li>";
         }
+        echo "</ul>";
         $othersResultsTypes = array_keys($rts);
         if (!!$willShowForm && $showForm) {
-            echo "<li>";
+            //echo "<li>";
             echo $this->Element ('lab_results/form', compact('othersResultsTypes'));
-            echo "</li>";
+            //echo "</li>";
         }
         
-        echo "</ul>";
 }
 ?>
         

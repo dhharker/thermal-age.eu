@@ -52,14 +52,11 @@
                 }
                 ?>
             <?php echo $this->Form->create('LabResult',array (
-                /*'url' => array (
-                    'controller' => 'lab_results',
-                    'action' => 'add'
-                )*/
+                'url' => $this->here
             ));?>
                 <?=$this->Form->error('job_id');?>
                 <? if (!!$editMode)
-                    $this->Form->input('id', array (
+                    echo $this->Form->input('id', array (
                         'type' => 'hidden'
                     ));?>
                 <?=$this->Form->input('job_id', array (

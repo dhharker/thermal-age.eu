@@ -55,26 +55,58 @@ class LabResult extends AppModel {
     }
     
     function _calculateLambdaFromExperimental (&$data = null) {
-        if ($data === null) $data =& $this->data;
-        // calculate lambda from either pcr or htp data
-        if (isset ($data['LabResult']['result_type']) && isset ($data['LabResult']) && $data['LabResult']['result_type'] == 'run') {
-            if ($data['LabResult']['experiment_type'] == 'pcr') {
-                $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
-                $l = $data['LabResult']['pcr_tgt_length'];
-                $λ = 1.0 - pow ($pl, (1.0 / ($l - 1.0)));
+        if ($data === null) {
+            $data =& $this->data;
+            if (!isset ($data['LabResult']['id']))
+                $data['LabResult']['id'] = $this->id;
+        }
+        if (is_array ($data['LabResult'])) {
+            if (isset ($data['LabResult']['id'])) {
+                // Edit operation
+                if (!isset ($data['LabResult']['experiment_type']) || !isset ($data['LabResult']['result_type'])) {
+                    $newData = $data;
+                    $current = $this->find('first',array (
+                        'conditions' => array (
+                            'LabResult.id' => $data['LabResult']['id']
+                        ),
+                        'fields' => array (
+                            'LabResult.experiment_type',
+                            'LabResult.result_type'
+                        )
+                    ));
+                    
+                    if (is_array ($current)) {
+                        $data = array_merge_recursive ($current, $newData);
+                    }
+                    //print_r (compact('newData','current','data'));die();
+                }
             }
-            elseif ($data['LabResult']['experiment_type'] == 'htp') {
-                $ml = $data['LabResult']['htp_mfl_less_contaminants'];
-                $λ = 1.0 / ($ml - 1.0);
+            else {
+                echo "no ids wtrf";
+                //print_r ($data); die();
             }
-            $λ = round ($λ, 4);
-            $data['LabResult']['lambda'] = $λ;
+            // calculate lambda from either pcr or htp data
+            if( isset ($data['LabResult']['result_type']) && $data['LabResult']['result_type'] == 'run') {
+                if ($data['LabResult']['experiment_type'] == 'pcr') {
+                    $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
+                    $l = $data['LabResult']['pcr_tgt_length'];
+                    $λ = 1.0 - pow ($pl, (1.0 / ($l - 1.0)));
+                }
+                elseif ($data['LabResult']['experiment_type'] == 'htp') {
+                    $ml = $data['LabResult']['htp_mfl_less_contaminants'];
+                    $λ = 1.0 / ($ml - 1.0);
+                }
+                $λ = round ($λ, 4);
+                $data['LabResult']['lambda'] = $λ;
+            }
+        }
+        else {
+            print_r (compact ('data')); die();
         }
     }
-    
     function beforeSave() {
-        parent::beforeSave();
-        $this->_calculateLambdaFromExperimental();
-        return true;
+        $this->_calculateLambdaFromExperimental($this->data);
+        //die (print_r ($this->data,1));
+        return parent::beforeSave();
     }
 }
