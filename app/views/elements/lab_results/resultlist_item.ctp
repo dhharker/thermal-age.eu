@@ -47,7 +47,9 @@ if (isset ($labResult) && is_array ($labResult)) {
             '</div>';
     }
     if (strlen($l['labs_ref']) > 0)
-        $big[3] = '<span style="display: block; font-size: -2; height: 35px; line-height: 38px; margin-top: -5px; overflow: hidden;">'.htmlspecialchars($l['labs_ref']).'</span>';
+        $big[3] = '<span style="display: block; font-size: 20px; height: 35px; line-height: 38px; margin-top: -5px; overflow: hidden;">'.htmlspecialchars($l['labs_ref']).'</span>';
+    
+    $l['lambda'] = round ($l['lambda'], 4);
     
     switch ($iconStr) {
         case "pcr":

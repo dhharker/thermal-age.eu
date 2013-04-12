@@ -53,6 +53,11 @@ class LabResult extends AppModel {
             $this->_calculateLambdaFromExperimental($result);*/
         return $results;
     }
+    function beforeSave() {
+        $this->_calculateLambdaFromExperimental($this->data);
+        //die (print_r ($this->data,1));
+        return parent::beforeSave();
+    }
     
     function _calculateLambdaFromExperimental (&$data = null) {
         if ($data === null) {
@@ -82,7 +87,8 @@ class LabResult extends AppModel {
                 }
             }
             else {
-                echo "no ids wtrf";
+                // this is a new record
+                //echo "no ids wtrf";
                 //print_r ($data); die();
             }
             // calculate lambda from either pcr or htp data
@@ -94,19 +100,18 @@ class LabResult extends AppModel {
                 }
                 elseif ($data['LabResult']['experiment_type'] == 'htp') {
                     $ml = $data['LabResult']['htp_mfl_less_contaminants'];
-                    $λ = 1.0 / ($ml - 1.0);
+                    $λ = ($ml < 2) ? 1 : $λ = 1.0 / ($ml - 1.0);
                 }
-                $λ = round ($λ, 4);
+                $λ = round ($λ, 8);
                 $data['LabResult']['lambda'] = $λ;
+                
+                $jdat = unserialize ($this->Job->_bgpGetJobFileContent('report',$data['LabResult']['job_id']));
+                if ($jdat !== false)
+                    $data['LabResult']['modelled_lambda'] = $jdat['summary']['λ'];
             }
         }
         else {
             print_r (compact ('data')); die();
         }
-    }
-    function beforeSave() {
-        $this->_calculateLambdaFromExperimental($this->data);
-        //die (print_r ($this->data,1));
-        return parent::beforeSave();
     }
 }

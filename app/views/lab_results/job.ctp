@@ -41,7 +41,7 @@ else {
         $willShowForm = true;
         $canAddMoreIf = array ('run','will_run');
         $rts = array ();
-        // Iterate over running jobs (shouldn't be any more than max processes allowed, at ToW this == only 1!)
+        
         foreach ($labResults as $labResult) {
             if (!in_array ($labResult['LabResult']['result_type'],$canAddMoreIf))
                 $willShowForm = false;
