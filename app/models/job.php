@@ -734,7 +734,8 @@ class Job extends AppModel {
                     //print_r ($s2e); die();
                     $me = array (
                         'burial' => array (
-                            'Temporothermal' => array ()
+                            'Temporothermal' => array (),
+                            'Burial' => array ()
                         ),
                         'specimen' => array (
                             'name' => @$row[$cp->getColumn($s2e['specimen_name'])],
@@ -792,10 +793,13 @@ class Job extends AppModel {
                         for ($ssln = 1; $ssln <= $SLCnum; $ssln++) {
                             if (!isset ($me['burial']['SoilTemporothermal'])) $me['burial']['SoilTemporothermal'] = array ();
                             if (isset ($row[$cp->getColumn($s2e['thickness_m_' . $ssln])]) && $row[$cp->getColumn($s2e['thickness_m_' . $ssln])] > 0) {
+                                
                                 // layer is probably set
                                 $dbSoil = $this->Soil->findById ($row[$cp->getColumn($s2e['soil_id_' . $ssln])]);
                                 $layr = false;
+                                //$this->_addToStatus("Loading soil $ssln");
                                 // thermal diffusivity is set; along with length this is all we actually /need/
+                                //$this->_addToStatus(print_r ($dbSoil,1));
                                 if (isset ($row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])]) && $row[$cp->getColumn($s2e['thermal_diffusivity_m2_day_' . $ssln])] > 0) {
                                     $layr = array (
                                         'soil_id' => '-1',//$row[$cp->getColumn($s2e['soil_id_' . $ssln])],
@@ -820,11 +824,14 @@ class Job extends AppModel {
                                     $cp->setColumn('soil_id_' . $ssln, '');
                                     $cp->setColumn('soil_type_' . $ssln, $row[$cp->getColumn($s2e['soil_type_' . $ssln])] . ' (Modified)');
                                 }
-
-                                if ($layr) {
+                                else {
+                                    $layr['soil_id'] = $dbSoil['Soil']['id'];
+                                }
+                                if (!!$layr) {
                                     $me['burial']['SoilTemporothermal'][] = $layr;
                                     $me['burial']['Burial']['numLayers']++;
                                 }
+                                
                             }
                         }
                         
@@ -877,9 +884,6 @@ class Job extends AppModel {
                 }
                 $this->increaseJobPercentComplete('parse');
             } while ($cp->next() && !!$dontStop);
-            
-            //print_r ($xref);
-            //die();
             
             foreach ($unParsed as $rowkey => $up) {
                 if ($xref[$up['fingerprint']][0] == $rowkey) {
@@ -1383,14 +1387,15 @@ class Job extends AppModel {
      * @param type $id optional. Job ID. 
      * @return boolean
      */
-    function increaseJobPercentComplete ($increase_by_points, $id) {
+    function increaseJobPercentComplete ($increase_by_points, $id = null) {
+        $id = ($id === null) ? $this->id : $id;
         $tfps = array_keys ($this->percentRatio);
         if (in_array ($increase_by_points, $tfps)) {
             $increase_by_points = $this->percentsPer[$increase_by_points];
         }
         if (!$increase_by_points ||$increase_by_points == 0) $this->_addToStatus ("Increase by what points: ".$increase_by_points);
         //if ($increase_by_points == 0) die ($increase_by_points);
-        $id = ($id === null) ? $this->id : $id;
+
         $current = $this->getJobPercentComplete($id);
         if ($current -1) {
             $this->_updateJobPercentComplete($current + $increase_by_points + 0.0);
