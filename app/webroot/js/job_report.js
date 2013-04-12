@@ -1,5 +1,5 @@
 (function ($) {
-    $(document).on('ready',function () {
+    window.fnInitSvgs = function () {
         
         //console.log ("svg");
         /* When the viewport is resized, scale embeds to match new parent width while maintaining
@@ -67,7 +67,8 @@
                 }).parent().css({height: 'auto', width: 'auto'});
             });
         }).resize();
-    });
+    };
+    $(document).on('ready', window.fnInitSvgs);
 }(jQuery));
 
 
