@@ -237,7 +237,8 @@ class LabResultsController extends AppController {
         $graph = new \ttkpl\ttkplPlot("Modelled and Measured λ (Job:{$job_id})\\n$stro");
         $graph->labelAxes("Modelled λ", "Measured λ");
         $graph->setData("Job $job_id Experiments", 0, 'x1y1', 'points');
-        $graph->addDataAssoc(array_combine($x, $y), 0);
+        foreach ($x as $i => $vx)
+            $graph->addData($vx, $y[$i], 0);
         
         $graph->setData("Job $job_id Best Fit", 1);
         $minX = min($x); $maxX = max($x);

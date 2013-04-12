@@ -17,26 +17,27 @@ if ($jid == 0) {
 }
 
 
-?>
+$show = false;
+if (isset ($job['Job']['status']) && $job['Job']['status'] == 3) {
+    $this->error (500, 'Error', "Unfortunately the job has crashed.");
+}
+elseif (!is_array ($results) || empty ($results['output_csv_url'])) {
+    $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful.");
+    debug ($results);
+}
+else
+    $show = true;
 
+/*
+?>
 <div class="grid_12 ">
     <div class="smartbox">
         <?php
-        $show = false;
-        if (isset ($job['Job']['status']) && $job['Job']['status'] == 3) {
-            $this->error (500, 'Error', "Unfortunately the job has crashed.");
-        }
-        elseif (!is_array ($results) || empty ($results['output_csv_url'])) {
-            $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful.");
-            debug ($results);
-        }
-        else
-            $show = true;
         ?>
     </div>
 </div>
 <?php
-
+*/
 if (!!$show) {
     ?>
     <div class="grid_12 ">
@@ -82,4 +83,4 @@ if (!!$show) {
 }
 ?>
 
-<div style="clear: both"></div>
+<div class="ui-helper-clearfix"></div>
