@@ -1,6 +1,10 @@
 
 <?php
 //debug ($job);
+
+$this->addScript ($this->Html->script ('jquery.svg'));
+$this->addScript ($this->Html->script ('job_report'));
+
 if (isset ($job['Job']['id']) && is_numeric ($job['Job']['id'])) {
     $jid = $job['Job']['id'];
 }
@@ -18,6 +22,7 @@ if ($jid == 0) {
 <div class="grid_12 ">
     <div class="smartbox">
         <?php
+        $show = false;
         if (isset ($job['Job']['status']) && $job['Job']['status'] == 3) {
             $this->error (500, 'Error', "Unfortunately the job has crashed.");
         }
@@ -25,9 +30,17 @@ if ($jid == 0) {
             $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful.");
             debug ($results);
         }
-        else {
-            ?>
+        else
+            $show = true;
+        ?>
+    </div>
+</div>
+<?php
 
+if (!!$show) {
+    ?>
+    <div class="grid_12 ">
+        <div class="smartbox">
             <h1 class="sbHeading ui-corner-tl">
                 Job Finished
             </h1>
@@ -44,9 +57,29 @@ if ($jid == 0) {
                 You can bookmark this page and come back to it but be aware it is not a permanent
                 archive and you should keep a copy of any important results.
             </p>
-        <?php
-        }
-        ?>
+        </div>
     </div>
-</div>
+    <div id="LabResultsScope">
+        
+    </div>
+    <script type="text/javascript">
+        (function($){
+            $(document).ready(function(){
+                $.ajax({
+                    url: '<?=$this->Html->url(array (
+                        'controller' => 'lab_results',
+                        'action' => 'job_multi',
+                        $jid
+                    ));?>?_ts=<?=microtime(1)?>',
+                    success: function (data,xhr) {
+                        $('#LabResultsScope').html(data);
+                    }
+                });
+            })
+        }(jQuery));
+    </script>
+    <?php
+}
+?>
+
 <div style="clear: both"></div>

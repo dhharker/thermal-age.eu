@@ -11,9 +11,9 @@ if ($jid == 0) {
 }
 
 $this->addScript ($this->Html->script ('jquery.svg'));
+$this->addScript ($this->Html->script ('job_report'));
 //$this->addScript ($this->Html->css ('jquery.svg.min'));
 //$this->addScript ($this->Html->css ('jquery.svganim.min'));
-$this->addScript ($this->Html->script ('job_report'));
 
 //echo $results['graphs']['lambda'];
 
