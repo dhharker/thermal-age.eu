@@ -19,7 +19,7 @@ if (isset ($labResult) && is_array ($labResult)) {
     echo $this->Html->image('lr_'.$iconStr.'_icon.png',array ('style' => 'float: left;'));
     echo '<div class="lrBigText">';
     
-    if ($l['shared'] == '1') {
+    if ($l['published'] == '1') {
         $shared = '<span style="color: #3366cc; display: inline-block; min-width: 5em;">'.$this->Icons->i('&#xe00c;').' <strong>Public</strong></span>&ensp; ';
     }
     else {

@@ -210,11 +210,16 @@ class LabResultsController extends AppController {
         $res = $this->LabResult->find('all', array (
             'conditions' => array (
                 'LabResult.job_id' => $job_id,
-                'OR' => array (
-                    'LabResult.user_id' => $this->Auth->user('id'),
-                    'LabResult.shared' => 1,
+                'AND' => array (
+                    'OR' => array (
+                        'LabResult.user_id' => $this->Auth->user('id'),
+                        'AND' => array (
+                            'LabResult.published' => '1',
+                            'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
+                        )
+                    ),
                     'LabResult.modelled_lambda >' => '0',
-                    'LabResult.lambda >=' => '0',
+                    'LabResult.lambda >=' => '0'
                 )
             ),
             'fields' => array (
@@ -317,9 +322,8 @@ class LabResultsController extends AppController {
                         foreach ($cg as $dbn => $gcn) {
                             $rcn = sprintf ($gcn, $n);
                             $rcind = $csv->getColumn($rcn);
-                            if ($rcind === false && $dbn != 'labs_ref') {
+                            if ($rcind === false && $dbn != 'labs_ref')
                                 $apc = false;
-                            }
                             elseif ($rcind !== false)
                                 $append[$dbn] = $rcind;
                         }
@@ -329,9 +333,6 @@ class LabResultsController extends AppController {
                     }
                     
                 }
-                
-                //print_r ($realColGroups); die();
-                
                 
                 // Get index of specimen ID for use in generic experiment ID creation
                 $sidInd = false;
@@ -343,6 +344,7 @@ class LabResultsController extends AppController {
                     elseif ($slug == 'λ')
                         $λInd = $index;
                 }
+                //die();
                     
                 // Iterate rows
                 $dontStop = true;
@@ -451,7 +453,10 @@ class LabResultsController extends AppController {
                 'LabResult.job_id' => $job_id,
                 'OR' => array (
                     'LabResult.user_id' => $user_id,
-                    'LabResult.shared' => '1'
+                    'AND' => array (
+                        'LabResult.published' => '1',
+                        'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
+                    )
                 )
             )
         ));

@@ -175,7 +175,6 @@ class JobsController extends AppController {
         
         $data = $this->_reportFilesGet($id, $ident);
         
-        
         if (!empty ($this->report_file_idents[$ident]['unserialize2json']) && !!$this->report_file_idents[$ident]['unserialize2json'])
             $data = json_encode (unserialize ($data));
         
@@ -194,7 +193,6 @@ class JobsController extends AppController {
                 $this->cakeError("error404");
             else
                 return $f;
-            
         }
         else {
             $this->cakeError("error404");
