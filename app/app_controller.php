@@ -93,21 +93,53 @@ OMG;
         parent::beforeRender();
         
     }
-    
     function authoriseWrite ($modelName = null, $model_id = null, $uid_field = 'user_id') {
         if ($modelName === null)
             $modelName = $this->modelClass;
         if ($model_id === null && isset ($this->data) && is_array ($this->data) && isset ($this->data[$modelName]) && isset ($this->data[$modelName]['id']))
             $model_id = $this->data[$modelName]['id'];
         $model_id = $model_id + 0;
-        if (!$this->loadModel($modelName)) return "Couldn't load model $modelName";
+        if (!isset ($this->$modelName))
+            if (!$this->loadModel($modelName))
+                return "Couldn't load model $modelName";
         $this->$modelName->id = $model_id;
         if (!$this->$modelName->hasField($uid_field)) return "Model doesn't have field $uid_field";
-        if (!$this->$modelName->exists()) return "Row with id $model_id doesn't exist";
+        if (!$this->$modelName->idExists($model_id)) return "Row with id $model_id doesn't exist";
         $v = $this->$modelName->read($uid_field,$model_id);
-        if (!$v || $v == '') return "$uid_field isn't set";
+        if (!$v || !isset ($v[$modelName][$uid_field]) || $v == '') return "$uid_field isn't set";
         if ($v[$modelName][$uid_field] != $this->Auth->user('id')) return "$modelName.$uid_field = {$v[$modelName][$uid_field]} != ".$this->Auth->user('id');
         return true;
     }
 
+    function authoriseRead ($modelName = null, $model_id = null, $uid_field = 'user_id') {
+        if ($modelName === null)
+            $modelName = $this->modelClass;
+        if ($model_id === null && isset ($this->data) && is_array ($this->data) && isset ($this->data[$modelName]) && isset ($this->data[$modelName]['id']))
+            $model_id = $this->data[$modelName]['id'];
+        $model_id = $model_id + 0;
+        if (!isset ($this->$modelName))
+            if (!$this->loadModel($modelName))
+                return "Couldn't load model $modelName";
+        $this->$modelName->id = $model_id;
+        if (!$this->$modelName->hasField($uid_field)) return "Model doesn't have field $uid_field";
+        if (!$this->$modelName->idExists($model_id)) return "Row with id $model_id doesn't exist";
+        
+        // maybe able to make unconditional:
+        if (!isset ($this->$modelName->data[$this->$modelName->alias]['id']) || $this->$modelName->data[$this->$modelName->alias]['id'] != $model_id)
+            $v = $this->$modelName->read(null, $model_id);
+        // item is public (not same as published; userid=0, globally available, not editable)
+        if ($v[$modelName][$uid_field] == '0' && $v[$modelName][$uid_field] !== false)
+            return true;
+        
+        // user is owner?
+        if ($v[$modelName][$uid_field] == $this->Auth->user('id'))
+            return true;
+        // item is published
+        $pf = array ('published','published_date');
+        if (isset ($v[$modelName][$pf[0]]) && isset ($v[$modelName][$pf[1]]) && !!$v[$modelName][$pf[0]] && strtotime($v[$modelName][$pf[1]]) >= time())
+            return true;
+        
+        return false;
+    }
+    
 }
