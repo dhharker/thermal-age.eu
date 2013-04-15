@@ -2,7 +2,7 @@
 class JobsController extends AppController {
 
 	var $name = 'Jobs';
-    
+    var $components = array ('FormatJson');
     function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow(array('system'));
@@ -115,7 +115,6 @@ class JobsController extends AppController {
     function report ($id = null) {
         $j = $this->Job->read(null, $id);
         
-        
         //debug ($this->view); die();
         if ($j !== false) {
             $status = $this->Job->bgpGetStatus ();
@@ -137,7 +136,65 @@ class JobsController extends AppController {
         }
 
         $this->render ($j['Job']['reporter_name'] . '_report');
-
+    }
+    
+    
+    var $report_file_idents = array (
+        'status' => array (
+            'mime' => 'text/plain; charset=utf-8'
+        ),
+        'report' => array (
+            'mime' => 'text/plain; charset=utf-8',
+            'unserialize2json' => true,
+            'formatjson' => true
+        ),
+    );
+    /**
+     * 
+     * @param int $id of job
+     * @param string $ident unique string identifying file/resource to serve
+     */
+    function report_files ($id, $ident) {
+        $j = $this->Job->read(null, $id);
+        if ($j === false || !isset ($this->report_file_idents[$ident]))
+            $this->cakeError ('error404');
+        if (!$this->authoriseRead ('Job') === true)
+            $this->cakeError ('error404');
+        
+        $this->autoRender = false;
+        $this->autoLayout = false;
+        
+        if (isset ($this->report_file_idents[$ident]['mime']))
+            header ("Content-Type: {$this->report_file_idents[$ident]['mime']}\n");
+        
+        $data = $this->_reportFilesGet($id, $ident);
+        
+        
+        if (!empty ($this->report_file_idents[$ident]['unserialize2json']) && !!$this->report_file_idents[$ident]['unserialize2json'])
+            $data = json_encode (unserialize ($data));
+        
+        if (!empty ($this->report_file_idents[$ident]['formatjson']) && !!$this->report_file_idents[$ident]['formatjson'])
+            $data = $this->FormatJson->indent ($data);
+        
+        echo $data;
+        
+    }
+    function _reportFilesGet ($id, $ident) {
+        $rfn = $this->Job->bgpGetJobFileName($ident, $id);
+        
+        if (!!file_exists($rfn)) {
+            $f = file_get_contents ($rfn);
+            if ($f === false)
+                $this->cakeError("error404");
+            else
+                return $f;
+            
+        }
+        else {
+            $this->cakeError("error404");
+            return false;
+        }
+        
     }
 
     /**
