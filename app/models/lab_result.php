@@ -95,6 +95,9 @@ class LabResult extends AppModel {
             if( isset ($data['LabResult']['result_type']) && $data['LabResult']['result_type'] == 'run') {
                 if ($data['LabResult']['experiment_type'] == 'pcr') {
                     $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
+                    
+                    if ($pl == 1) // Treat "100% success" with caution
+                        $pl = 1-(1/($data['LabResult']['pcr_num_runs']+1));
                     $l = $data['LabResult']['pcr_tgt_length'];
                     $λ = 1.0 - pow ($pl, (1.0 / ($l - 1.0)));
                 }
@@ -105,9 +108,11 @@ class LabResult extends AppModel {
                 $λ = round ($λ, 8);
                 $data['LabResult']['lambda'] = $λ;
                 
-                $jdat = unserialize ($this->Job->_bgpGetJobFileContent('report',$data['LabResult']['job_id']));
-                if ($jdat !== false)
-                    $data['LabResult']['modelled_lambda'] = $jdat['summary']['λ'];
+                if (empty ($data['LabResult']['modelled_lambda'])) {
+                    $jdat = unserialize ($this->Job->_bgpGetJobFileContent('report',$data['LabResult']['job_id']));
+                    if ($jdat !== false && isset($jdat['summary']) && isset ($jdat['summary']['λ']))
+                       $data['LabResult']['modelled_lambda'] = $jdat['summary']['λ'];
+                }
             }
         }
         else {
