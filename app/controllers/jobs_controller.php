@@ -141,12 +141,15 @@ class JobsController extends AppController {
     
     var $report_file_idents = array (
         'status' => array (
-            'mime' => 'text/plain; charset=utf-8'
+            'mime' => 'text/plain; charset=utf-8',
+            'ext' => 'log'
         ),
         'report' => array (
             'mime' => 'text/plain; charset=utf-8',
             'unserialize2json' => true,
-            'formatjson' => true
+            'formatjson' => true,
+            'ext' => 'json',
+            'fnident' => 'summary'
         ),
     );
     /**
@@ -166,6 +169,9 @@ class JobsController extends AppController {
         
         if (isset ($this->report_file_idents[$ident]['mime']))
             header ("Content-Type: {$this->report_file_idents[$ident]['mime']}\n");
+        $strExt = (!empty($this->report_file_idents[$ident]['ext'])) ? '.'.$this->report_file_idents[$ident]['ext'] : '';
+        $strIdent = (!empty($this->report_file_idents[$ident]['fnident'])) ? $this->report_file_idents[$ident]['fnident'] : $ident;
+        header("Content-disposition: attachment; filename=thermal-age-eu_job-{$id}_{$strIdent}_".date('Y-m-d')."{$strExt}");
         
         $data = $this->_reportFilesGet($id, $ident);
         
