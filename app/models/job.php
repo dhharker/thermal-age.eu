@@ -183,8 +183,8 @@ class Job extends AppModel {
                 }
                 
                 
-                $newData = unserialize($this->data['data']);
-                $this->_addToStatus("XXXXXX   LOAD:" . print_r ($newData['resume'], true));
+                $newData = (!empty ($this->data['data'])) ? unserialize($this->data['data']) : array ();
+                //$this->_addToStatus("XXXXXX   LOAD:" . print_r ($newData['resume'], true));
             }
             //$this->_addToStatus("XXXXXX   REPORT RESUME:" . print_r ($report['resume'], true));
             $this->_stopProcessing($error, $resume);
@@ -625,6 +625,58 @@ class Job extends AppModel {
         return false;
         
     }
+    function _hrToOneDate  ($strHrDate, $strBestSuffix, $converter = null) {
+        
+        $nm = preg_match_all ('/(?:\s|^|:|\()([0-9]+)\s*(?:((to|-|─)|(±|\+\/(?:─|-)))\s*([0-9]+))?\s*('.$strBestSuffix.')?/i',$strHrDate, $m, PREG_SET_ORDER);
+        if (count ($m) > 1) {
+            $max = 0;
+            $maxI = -1;
+            foreach ($m as $mi => $mc) {
+                $l = (!empty ($mc[6])) ? strlen (trim ($mc[6])) : 0;
+                if ($l > $max) {
+                    $max = $l;
+                    $maxI = $mi;
+                }
+            }
+            $m = $m[$maxI];
+        }
+        elseif (count ($m) == 1) {
+            $m = $m[0];
+        }
+        
+        if ($nm <= 0)
+            return false;
+        elseif (isset ($m[1]) && is_numeric($m[1]) && $m[1] > 0) {
+            $val = false;
+            if (empty ($m[2])) {
+                // just a number
+                $val = $m[1];
+            }
+            elseif (empty ($m[5]) || !is_numeric ($m[5]))
+                return false;
+            elseif (!empty ($m[3]) && !empty ($m[5]) && is_numeric ($m[5])) {
+                // range
+                $val = \ttkpl\cal::mean(array ($m[1],$m[5]));
+            }
+            elseif (!empty ($m[4])) {
+                // plusminus
+                $val = $m[1];
+            }
+            else
+                return false;
+            
+            if ($converter !== null) {
+                $oval = $val;
+                $val = \ttkpl\scalarFactory::$converter ($val);
+                $this->_addToStatus ("preparsed: $converter ($strHrDate = $oval) = $val");
+            }
+            else
+                $this->_addToStatus ("preparsed: $strHrDate = $val");
+            
+            return $val;
+        }
+    }
+    
     function _task_thermal_age_csv_parser ($args) {
         $this->_addToStatus ("Parser: Thermal Age CSV");
         
@@ -636,16 +688,27 @@ class Job extends AppModel {
         
         // load csv file
         
-        $fn = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
-        if (file_exists($fn)) {
-            $this->_addToStatus(basename($fn) . " exists. Trying to open it...");
-            $cp = new \ttkpl\csvData($fn, TRUE);
+        $orig_csv_path = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
+        if (file_exists($orig_csv_path)) {
+            $this->_addToStatus(basename($orig_csv_path) . " exists. Trying to open it...");
+            $cp = new \ttkpl\csvData($orig_csv_path, TRUE);
             $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
 
             // slug  (-and then detect headers (not all are required)-)
             $s2e = array ();
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug(str_replace (".","",$title)))] = $title;
+            
+            if (isset ($s2e['hr_ya_ad']) && !isset ($s2e['year_analysed_ad'])) {
+                $cn = 'Year Analysed (AD)';
+                $s2e['year_analysed_ad'] = $cn;
+                $cp->addColumn($cn);
+            }
+            if (isset ($s2e['hr_yd_bp']) && !isset ($s2e['year_deposited_bp'])) {
+                $cn = 'Year Deposited (b.p.)';
+                $s2e['year_deposited_bp'] = $cn;
+                $cp->addColumn($cn);
+            }
             
             //$this->_addToStatus(print_r ($s2e, true));
 
@@ -710,7 +773,6 @@ class Job extends AppModel {
             //$this->_addToStatus("Work type time weightings: " . print_r ($this->percentRatio,true));
             //$this->_addToStatus("Percents per work type: " . print_r ($this->percentsPer,true));
             
-            
             //$cp->next();
             $dontStop = true;
             do {
@@ -720,7 +782,25 @@ class Job extends AppModel {
                 $sid = $row[$cp->getColumn($s2e['specimen_id'])];
                 $me = array ();
                 //print_r ($row);
+                
+                
+                // find any of our "parse me more first" columns and parse them first
+                $this->_addToStatus("Pre-parsing any human-readable columns...");
+                // (for each new val, need to set $row for following logic and setColumn to save back to sheet
+                if (isset ($s2e['hr_ya_ad']) && !empty ($row[$cp->getColumn($s2e['hr_ya_ad'])]) && empty ($row[$cp->getColumn($s2e['year_analysed_ad'])])) {
+                    $row[$cp->getColumn($s2e['year_analysed_ad'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_ya_ad'])], 'ad');
+                    $cp->setColumn($s2e['year_analysed_ad'], $row[$cp->getColumn($s2e['year_analysed_ad'])]);
+                }
+                if (isset ($s2e['hr_yd_bp']) && !empty ($row[$cp->getColumn($s2e['hr_yd_bp'])]) && empty ($row[$cp->getColumn($s2e['year_deposited_bp'])])) {
+                    $row[$cp->getColumn($s2e['year_deposited_bp'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_yd_bp'])], '(?:cal)?\s*BC', 'bc2bp');
+                    $cp->setColumn($s2e['year_deposited_bp'], $row[$cp->getColumn($s2e['year_deposited_bp'])]);
+                }
+                
+                
+                
+                $this->_addToStatus("Finished pre-parsing.");
 
+                
                 if (empty ($row)) {
                     // empty row, do nothing
                     $this->_addToStatus("Empty Row " . $rowCount);
@@ -783,7 +863,7 @@ class Job extends AppModel {
                         );
                         
                         // cond elev
-                        if (isset ($s2e['elevation_wgs84']) && !empty ($row[$cp->getColumn($s2e['elevation_wgs84'])])) {
+                        if (isset ($s2e['elevation_wgs84']) && !empty ($row[$cp->getColumn($s2e['elevation_wgs84'])]) && is_numeric($row[$cp->getColumn($s2e['elevation_wgs84'])])) {
                             $me['site']['Site']['elevation'] = $row[$cp->getColumn($s2e['elevation_wgs84'])];
                             $this->_addToStatus("Add elev m: " . $row[$cp->getColumn($s2e['elevation_wgs84'])]);
                             $me['site']['Site']['elevation_source'] = "(user supplied in spreadsheet)";
@@ -884,6 +964,8 @@ class Job extends AppModel {
                 }
                 $this->increaseJobPercentComplete('parse');
             } while ($cp->next() && !!$dontStop);
+            
+            $cp->export($orig_csv_path);
             
             foreach ($unParsed as $rowkey => $up) {
                 if ($xref[$up['fingerprint']][0] == $rowkey) {
