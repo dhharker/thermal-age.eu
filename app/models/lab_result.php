@@ -96,8 +96,10 @@ class LabResult extends AppModel {
                 if ($data['LabResult']['experiment_type'] == 'pcr') {
                     $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
                     
-                    if ($pl == 1) // Treat "100% success" with caution
-                        $pl = 1-(1/($data['LabResult']['pcr_num_runs']+1));
+                    // a
+                    //if ($pl == 1) // Treat "100% success" as if there was a 95% chance of getting this result
+                      //  $pl = 1-(1/($data['LabResult']['pcr_num_runs']+1));// wild stab in the dark strategy which didn't work: treat it like the next one would have failed
+                    
                     $l = $data['LabResult']['pcr_tgt_length'];
                     $λ = 1.0 - pow ($pl, (1.0 / ($l - 1.0)));
                 }

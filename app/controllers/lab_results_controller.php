@@ -205,7 +205,6 @@ class LabResultsController extends AppController {
         if (!$this->LabResult->Job->exists($job_id))
             $this->cakeError ('error404');
         
-        $x = $y = array ();
         
         $res = $this->LabResult->find('all', array (
             'conditions' => array (
@@ -219,7 +218,8 @@ class LabResultsController extends AppController {
                         )
                     ),
                     'LabResult.modelled_lambda >' => '0',
-                    'LabResult.lambda >=' => '0'
+                    'LabResult.lambda >=' => '0',
+                    //'LabResult.lambda <' => '1'
                 )
             ),
             'fields' => array (
@@ -228,30 +228,72 @@ class LabResultsController extends AppController {
                 'LabResult.modelled_lambda'
             )
         ));
+        //print_r ($res); die();
+        $avgByModelled = array ();
+        // *a = averaged by modelled, *i = individual
+        $xa = $ya = $xi = $yi = array ();
         foreach ($res as $r) {
-            $x[] = $r['LabResult']['modelled_lambda'];
-            $y[] = $r['LabResult']['lambda'];
+            $xi[] = $r['LabResult']['modelled_lambda'];
+            $yi[] = $r['LabResult']['lambda'];
+            if (!isset ($avgByModelled[$r['LabResult']['modelled_lambda']])) $avgByModelled[$r['LabResult']['modelled_lambda']] = array ();
+            $avgByModelled[$r['LabResult']['modelled_lambda']][] = $r['LabResult']['lambda'];
+        }
+        foreach ($avgByModelled as $modelled => $lambdas) {
+            $xa[] = $modelled;
+            $ya[] = (\ttkpl\cal::mean($lambdas) / count ($lambdas));
         }
         
-        $llr = new \ttkpl\linearRegression($x, $y);
+        $llr = new \ttkpl\linearRegression($xa, $ya);
         $r2 = $llr->regRSqPc();
         $a = $llr->bfA();
         $b = $llr->bfB();
         $stro = sprintf ("%d%% of the variation in measured λ can be explained by %f × [modelled λ] + %f", $r2, $a, $b);
         
-        $graph = new \ttkpl\ttkplPlot("Modelled and Measured λ (Job:{$job_id})\\n$stro");
+        $graph = new \ttkpl\ttkplPlot("Modelled and Measured λ (Job:{$job_id})\\n$stro",1,1,"700,700");
         $graph->labelAxes("Modelled λ", "Measured λ");
-        $graph->setData("Job $job_id Experiments", 0, 'x1y1', 'points');
-        foreach ($x as $i => $vx)
-            $graph->addData($vx, $y[$i], 0);
+        $di = 0;
+        $graph->setData("Job $job_id Experiments", $di, 'x1y1', 'points');
+        foreach ($xa as $i => $vx)
+            $graph->addData($vx, $ya[$i], $di);
         
-        $graph->setData("Job $job_id Best Fit", 1);
-        $minX = min($x); $maxX = max($x);
+        $di = 1;
+        $graph->setData("Job $job_id Best Fit", $di);
+        $minX = min($xa); $maxX = max($xa);
         $graph->addDataAssoc(array (
             $minX => ($a * $minX) + $b,
             $maxX => ($a * $maxX) + $b,
-        ), 1);
+        ), $di);
         
+        $minY = min($ya); $maxY = max($ya);
+        $margin = .05;
+        $dX = $margin * ($maxX - $minX);
+        $dY = $margin * ($maxY - $minY);
+        $maxX += $dX; $minX -= $dX;
+        $maxY += $dY; $minY -= $dY;
+        $max = max(array ($maxX,$maxY));
+        $graph->set("xrange [0:$max]");$graph->set("yrange [0:$max]");
+        //$graph->set("xrange [$minX:$maxX]");$graph->set("yrange [$minY:$maxY]");
+        //$graph->set("xrange [0:.3]"); $graph->set("yrange [0:.3]");
+        
+        $graph->autoScale = false;
+        
+        $cutoffs = array (-1, .0256, .1111, .25, 1);
+        $coColours = array ('green', 'yellow', 'red', 'black');
+        $coOpacity = array (0.35,0.45,0.6,0.6);
+        $objNo = 1;
+        
+        $graph->set ('style fill  transparent solid 0.50 noborder');
+        foreach ($cutoffs as $coi => $cov) {
+            if (isset ($coColours[$coi])) {
+                $lb = $cov;
+                $ub = $cutoffs[$coi + 1];
+                $x1 = '-1'; $x2 = '1'; $y1 = $lb; $y2 = $ub;
+                $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full width
+                $objNo++;
+                $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full height
+                $objNo++;
+            }
+        }
         
         $url = DS . 'reports' . DS . $job_id . '_lab_results_regression_graph.svg';
         $filename = APP . WEBROOT_DIR . $url;
@@ -266,6 +308,7 @@ class LabResultsController extends AppController {
         
         if (file_exists ($filename)) {
             //$this->redirect ($url);
+            //header ('Content-type: image/png');
             echo file_get_contents ($filename);
         }
         else {

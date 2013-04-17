@@ -2,6 +2,7 @@
 
 if (empty ($λ)) $λ = 2;
 
+/*
 if ($λ < .0001) //.0022
     $colour = 'green';
 elseif ($λ < 0.025641026) // 40bp
@@ -10,7 +11,7 @@ elseif ($λ < 0.111111111) // 10bp
     $colour = 'red';
 else
     $colour = 'bork';
-
+*/
 
 if ($λ < 0.025641026) // >40bp
     $colour = 'green';
