@@ -678,6 +678,16 @@ class Job extends AppModel {
         }
     }
     
+    function tasks_available ($type = null) {
+        $meths = get_class_methods($this);
+        $o = array ();
+        $fin = ($type === null) ? '[\w]+' : $type;
+        foreach ($meths as $meth)
+            if (preg_match ('/_task_(([\w_]+)_('.$fin.'))/i', $meth, $m) > 0)
+                $o[] = ($type === null) ? $m[1] : $m[2];
+        return (empty ($o)) ? false : $o;
+    }
+    
     function _task_thermal_age_csv_parser ($args) {
         $this->_addToStatus ("Parser: Thermal Age CSV");
         
@@ -694,22 +704,19 @@ class Job extends AppModel {
             $this->_addToStatus(basename($orig_csv_path) . " exists. Trying to open it...");
             $cp = new \ttkpl\csvData($orig_csv_path, TRUE);
             $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
-
+            
+            // Columns which might be missing in place of "human readable" alternatives which me must parse into these "proper" cols
+            $addCols = array ('Year Analysed (AD)', 'Year Deposited (b.p.)');
+            foreach ($addCols as $cn)
+                if ($cp->addColumn($cn) !== false)
+                    $this->_addToStatus ("Added missing column '$cn' to sheet.");
+            
+            
             // slug  (-and then detect headers (not all are required)-)
             $s2e = array ();
             foreach ($cp->titles as $title)
                 $s2e[strtolower (Inflector::slug(str_replace (".","",$title)))] = $title;
             
-            if (isset ($s2e['hr_ya_ad']) && !isset ($s2e['year_analysed_ad'])) {
-                $cn = 'Year Analysed (AD)';
-                $s2e['year_analysed_ad'] = $cn;
-                $cp->addColumn($cn);
-            }
-            if (isset ($s2e['hr_yd_bp']) && !isset ($s2e['year_deposited_bp'])) {
-                $cn = 'Year Deposited (b.p.)';
-                $s2e['year_deposited_bp'] = $cn;
-                $cp->addColumn($cn);
-            }
             
             //$this->_addToStatus(print_r ($s2e, true));
 
@@ -966,7 +973,7 @@ class Job extends AppModel {
                 $this->increaseJobPercentComplete('parse');
             } while ($cp->next() && !!$dontStop);
             
-            $cp->export($orig_csv_path);
+            //$cp->export($orig_csv_path);
             
             foreach ($unParsed as $rowkey => $up) {
                 if ($xref[$up['fingerprint']][0] == $rowkey) {
