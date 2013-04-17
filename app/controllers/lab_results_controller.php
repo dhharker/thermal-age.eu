@@ -197,6 +197,8 @@ class LabResultsController extends AppController {
     function regression ($job_id) {
         
         App::import ('Vendor', 'ttkpl/lib/ttkpl');
+        $drawLog = 1;
+        
         
         if ($job_id === null && isset ($this->data['LabResult']) && isset ($this->data['LabResult']['job_id']))
             $job_id = $this->data['LabResult']['job_id'];
@@ -217,8 +219,8 @@ class LabResultsController extends AppController {
                             'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
                         )
                     ),
-                    'LabResult.modelled_lambda >=' => '0',
-                    'LabResult.lambda >=' => '0',
+                    'LabResult.modelled_lambda >' => '0',
+                    'LabResult.lambda >' => '0',
                     //'LabResult.lambda <' => '1'
                 )
             ),
@@ -251,52 +253,82 @@ class LabResultsController extends AppController {
         
         $graph = new \ttkpl\ttkplPlot("Modelled and Measured λ (Job:{$job_id})\\n$stro",1,1,"700,700");
         $graph->labelAxes("Modelled λ", "Measured λ");
-        $di = 0;
-        $graph->setData("Job $job_id Experiments", $di, 'x1y1', 'points');
-        foreach ($xa as $i => $vx)
-            $graph->addData($vx, $ya[$i], $di);
+        //$graph->setGrid(array ('x','y'));
+        if (!!$drawLog) $graph->setLog (array ('x','y'));
+        $minOffset = (!!$drawLog) ? .0001 : 0;
         
-        $di = 1;
-        $graph->setData("Job $job_id Best Fit", $di);
-        $minX = min($xa); $maxX = max($xa);
-        $graph->addDataAssoc(array (
-            $minX => ($a * $minX) + $b,
-            $maxX => ($a * $maxX) + $b,
-        ), $di);
-        
-        $minY = min($ya); $maxY = max($ya);
-        $margin = .05;
-        $dX = $margin * ($maxX - $minX);
-        $dY = $margin * ($maxY - $minY);
-        $maxX += $dX;
-        $minX -= $dX;
-        $maxY += $dY;
-        $minY -= $dY;
-        $max = max(array ($maxX,$maxY));
-        $min = min(array ($minX,$minY));
-        $graph->set("xrange [$min:$max]");$graph->set("yrange [$min:$max]");
-        //$graph->set("xrange [$min:$maxX]");$graph->set("yrange [$min:$maxY]");
-        //$graph->set("xrange [$minX:$maxX]");$graph->set("yrange [$minY:$maxY]");
-        //$graph->set("xrange [0:.3]"); $graph->set("yrange [0:.3]");
-        
-        $graph->autoScale = false;
-        
-        $cutoffs = array (-1, .0256, .1111, .25, 2);
-        $coColours = array ('green', 'yellow', 'red', '#333333');
-        $coOpacity = array (0.4,0.3,0.5,0.7);
+        $cutoffs = array ((!!$drawLog) ? $minOffset : -1, .0256, .1111, .25, 2);
+        $coColours = array ('green', 'yellow', 'red', '#330000');
+        $coOpacity = array (0.4,.8,0.5,0.7);
         
         $objNo = 1;
         foreach ($cutoffs as $coi => $cov) {
             if (isset ($coColours[$coi])) {
                 $lb = $cov;
                 $ub = $cutoffs[$coi + 1];
-                $x1 = '-1'; $x2 = '2'; $y1 = $lb; $y2 = $ub;
-                $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full width
+                $x1 = (!!$drawLog) ? $minOffset : '-1';
+                $x2 = '2'; $y1 = $lb; $y2 = $ub;
+                $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0 behind");// full width
                 $objNo++;
-                $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full height
+                $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0 behind");// full height
                 $objNo++;
             }
         }
+        
+        $di = 0;
+        $graph->setData("Job $job_id Individual Experiments", $di, 'x1y1', 'points');
+        foreach ($xi as $i => $vx)
+            $graph->addData($vx+$minOffset, $yi[$i]+$minOffset, $di);
+        
+        $di = 1;
+        $graph->setData("Job $job_id Averaged by Specimen", $di, 'x1y1', 'points');
+        foreach ($xa as $i => $vx)
+            $graph->addData($vx+$minOffset, $ya[$i]+$minOffset, $di);
+        
+        
+        
+        $minX = min($xa); $maxX = max($xa);
+        $minY = min($ya); $maxY = max($ya);
+        if (!!$drawLog) {
+            $minX += $minOffset;
+            $minY += $minOffset;
+        }
+        
+        if (!$drawLog) {
+            $di = 2;
+            $graph->setData("Job $job_id Specimens Best Fit", $di);
+            $graph->addDataAssoc(array (
+                $minX => ($a * $minX) + $b,
+                $maxX => ($a * $maxX) + $b,
+            ), $di);
+        }
+        
+        $margin = .05;
+        $dX = $margin * ($maxX - $minX);
+        $dY = $margin * ($maxY - $minY);
+        $maxX += $dX;
+        $maxY += $dY;
+        $max = max(array ($maxX,$maxY));
+        $min = min(array ($minX,$minY));
+        
+        //$graph->set("xrange [$min:$max]");$graph->set("yrange [$min:$max]");
+        if (!!$drawLog) {
+            $sMin = $min / 2;
+            $graph->set("xrange [$sMin:1.25]"); $graph->set("yrange [$sMin:1.25]");
+            //die ("MIN:".$min);
+            //$graph->set("xrange [$minOffset:1.25]"); $graph->set("yrange [$minOffset:1.25]");
+        }
+        else {
+            $minX -= $dX;
+            $minY -= $dY;
+            $graph->set("xrange [$minX:$maxX]");$graph->set("yrange [$minY:$maxY]");
+        }
+        //$graph->set("xrange [$minOffset:$max]");$graph->set("yrange [$minOffset:$max]");
+        //$graph->set("xrange [$min:$maxX]");$graph->set("yrange [$min:$maxY]");
+        //$graph->set("xrange [$minX:$maxX]");$graph->set("yrange [$minY:$maxY]");
+        
+        $graph->autoScale = false;
+        
         
         $url = DS . 'reports' . DS . $job_id . '_lab_results_regression_graph.svg';
         $filename = APP . WEBROOT_DIR . $url;
