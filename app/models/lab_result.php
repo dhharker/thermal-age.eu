@@ -94,11 +94,13 @@ class LabResult extends AppModel {
             // calculate lambda from either pcr or htp data
             if( isset ($data['LabResult']['result_type']) && $data['LabResult']['result_type'] == 'run') {
                 if ($data['LabResult']['experiment_type'] == 'pcr') {
+                    if (isset ($data['LabResult']['pcr_num_runs']) && !isset ($data['LabResult']['pcr_num_successes']))
+                        $data['LabResult']['pcr_num_successes'] = 0;
                     $pl = $data['LabResult']['pcr_num_successes'] / $data['LabResult']['pcr_num_runs'];
                     
                     // a
-                    //if ($pl == 1) // Treat "100% success" as if there was a 95% chance of getting this result
-                      //  $pl = 1-(1/($data['LabResult']['pcr_num_runs']+1));// wild stab in the dark strategy which didn't work: treat it like the next one would have failed
+                    if ($pl == 1) // maybe treat "100% success" as if there was a 95% chance of getting this result later
+                        $pl = 1-(1/($data['LabResult']['pcr_num_runs']+1));// wild stab in the dark strategy which didn't work: treat it like the next one would have failed
                     
                     $l = $data['LabResult']['pcr_tgt_length'];
                     $λ = 1.0 - pow ($pl, (1.0 / ($l - 1.0)));

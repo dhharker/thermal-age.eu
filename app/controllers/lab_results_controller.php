@@ -217,7 +217,7 @@ class LabResultsController extends AppController {
                             'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
                         )
                     ),
-                    'LabResult.modelled_lambda >' => '0',
+                    'LabResult.modelled_lambda >=' => '0',
                     'LabResult.lambda >=' => '0',
                     //'LabResult.lambda <' => '1'
                 )
@@ -268,26 +268,29 @@ class LabResultsController extends AppController {
         $margin = .05;
         $dX = $margin * ($maxX - $minX);
         $dY = $margin * ($maxY - $minY);
-        $maxX += $dX; $minX -= $dX;
-        $maxY += $dY; $minY -= $dY;
+        $maxX += $dX;
+        $minX -= $dX;
+        $maxY += $dY;
+        $minY -= $dY;
         $max = max(array ($maxX,$maxY));
-        $graph->set("xrange [0:$max]");$graph->set("yrange [0:$max]");
+        $min = min(array ($minX,$minY));
+        $graph->set("xrange [$min:$max]");$graph->set("yrange [$min:$max]");
+        //$graph->set("xrange [$min:$maxX]");$graph->set("yrange [$min:$maxY]");
         //$graph->set("xrange [$minX:$maxX]");$graph->set("yrange [$minY:$maxY]");
         //$graph->set("xrange [0:.3]"); $graph->set("yrange [0:.3]");
         
         $graph->autoScale = false;
         
-        $cutoffs = array (-1, .0256, .1111, .25, 1);
-        $coColours = array ('green', 'yellow', 'red', 'black');
-        $coOpacity = array (0.35,0.45,0.6,0.6);
-        $objNo = 1;
+        $cutoffs = array (-1, .0256, .1111, .25, 2);
+        $coColours = array ('green', 'yellow', 'red', '#333333');
+        $coOpacity = array (0.4,0.3,0.5,0.7);
         
-        $graph->set ('style fill  transparent solid 0.50 noborder');
+        $objNo = 1;
         foreach ($cutoffs as $coi => $cov) {
             if (isset ($coColours[$coi])) {
                 $lb = $cov;
                 $ub = $cutoffs[$coi + 1];
-                $x1 = '-1'; $x2 = '1'; $y1 = $lb; $y2 = $ub;
+                $x1 = '-1'; $x2 = '2'; $y1 = $lb; $y2 = $ub;
                 $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full width
                 $objNo++;
                 $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full height
@@ -313,7 +316,7 @@ class LabResultsController extends AppController {
         }
         else {
             $this->Session->setFlash ("Error: Couldn't make regression graph for some reason.");
-            $this->_redirectAfterDoingStuff($job_id);
+            //$this->_redirectAfterDoingStuff($job_id);
         }
         
     }
@@ -387,6 +390,11 @@ class LabResultsController extends AppController {
                     elseif ($slug == 'λ')
                         $λInd = $index;
                 }
+                if ($λInd === false) {
+                    print_r ($csv->titles);
+                    die ("Couldn't find λ index in header!");
+                    
+                }
                 //die();
                     
                 // Iterate rows
@@ -396,12 +404,12 @@ class LabResultsController extends AppController {
                     $row = $csv->current();
                     if (!$row) continue;
                     $rowCount++;
-                    //DEBUG$etcur[] = "Start Row {$rowCount}";
+                    $etcur[] = "Start Row {$rowCount}";
                     // PCR cols
                     foreach ($realColGroups as $expType => $cgs) {
-                        //DEBUG$etcur[] = strtoupper ($expType) . " Experiments:";
+                        $etcur[] = strtoupper ($expType) . " Experiments:";
                         foreach ($cgs as $cgi => $cg) {
-                            //DEBUG$etcur[] = "Group " . ($cgi+1);
+                            $etcur[] = "Group " . ($cgi+1);
                             $tryInsert = true;
                             $newData = array (
                                 'user_id' => $this->Auth->user('id'),
@@ -415,10 +423,13 @@ class LabResultsController extends AppController {
                             // All fields per group except experiment id are required
                             foreach ($cg as $dbn => $colInd) {
                                 
-                                if (!empty ($row[$colInd]))
+                                if (is_numeric ($row[$colInd]) && $row[$colInd] > 0)
                                     $newData[$dbn] = $row[$colInd];
-                                elseif ($dbn != 'labs_ref')
+                                elseif ($dbn != 'labs_ref' && $dbn != 'pcr_num_successes')
                                     $tryInsert = false;
+                                if ($tryInsert == false) {
+                                    $etcur[] = print_r ($newData,1);
+                                }
                             }
                             $ids = "$rowCount:$expType:".($cgi+1);
                             if (empty ($newData['labs_ref']) && $sidInd !== false)

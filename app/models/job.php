@@ -1019,9 +1019,7 @@ class Job extends AppModel {
         $this->_addToStatus ("Reporter: DNA Screener");
         global $tempDir;
         $tempDir = $this->_makeJobTmpDir() . "/";
-
-        //die ("OH NOES I HAS CRASHED!1\n");
-
+        
         $ta = $args['thermalAge'];
         $taYrs = $args['thermalYears'];
         $results = array (
