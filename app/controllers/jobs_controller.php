@@ -275,6 +275,7 @@ class JobsController extends AppController {
 				$this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
 			}
 		}
+        $this->_populateForm();
 		$users = $this->Job->User->find('list');
 		$this->set(compact('users'));
 	}
@@ -295,10 +296,22 @@ class JobsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Job->read(null, $id);
 		}
+        $this->_populateForm();
 		$users = $this->Job->User->find('list');
 		$this->set(compact('users'));
 	}
-
+    
+    function _populateForm () {
+        $names = array ('Parser', 'Processor', 'Reporter');
+        $task_opts = array ();
+        foreach ($names as $n) {
+            $l = strtolower ($n);
+            $t = $this->Job->tasks_available ($l);
+            $task_opts[$l] = array_combine($t, $t);
+        }
+        return $this->set(compact('task_opts'));
+    }
+    
 	function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for job', true));
