@@ -7,9 +7,18 @@
 		echo $this->Form->input('title');
 		echo $this->Form->input('user_id');
 		echo $this->Form->input('data');
-		echo $this->Form->input('processor_name');
-		echo $this->Form->input('parser_name');
-		echo $this->Form->input('reporter_name');
+		echo $this->Form->input('processor_name', array (
+            'type' => 'select',
+            'options' => $task_opts['processor']
+        ));
+		echo $this->Form->input('parser_name', array (
+            'type' => 'select',
+            'options' => $task_opts['parser']
+        ));
+		echo $this->Form->input('reporter_name', array (
+            'type' => 'select',
+            'options' => $task_opts['reporter']
+        ));
 		echo $this->Form->input('pub_ref');
 		echo $this->Form->input('status');
 	?>
