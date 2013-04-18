@@ -195,7 +195,7 @@ class LabResultsController extends AppController {
     }
     
     function regression ($job_id) {
-        ini_set("zlib.output_compression", "Off");
+        
         App::import ('Vendor', 'ttkpl/lib/ttkpl');
         $drawLog = 1;
         
@@ -339,7 +339,8 @@ class LabResultsController extends AppController {
         
         $this->autoLayout = false;
         $this->autoRender = false;
-        ob_clean();
+        if (!count(array_diff(ob_list_handlers(),array('default output handler'))))
+            ob_clean();
         
         if (file_exists ($filename)) {
             //$this->redirect ($url);
