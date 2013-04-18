@@ -60,27 +60,49 @@ else {
                     <?php
                 }
             }
+            else {
+                
+            }
             ?>
         </div>
         <?=$this->Element ('loading_spinner', array ('wide' => true))?>
         
         <?php
-        
-        echo "<div class=\"ui-helper-clearfix\"></div><ul class=\"noPad objectList box\">";
-        
-        $willShowForm = true;
-        $canAddMoreIf = array ('run','will_run');
         $rts = array ();
+        $willShowForm = true;
         
-        foreach ($labResults as $labResult) {
-            //if (!in_array ($labResult['LabResult']['result_type'],$canAddMoreIf))
-            //    $willShowForm = false;
-            $rts[$labResult['LabResult']['result_type']] = 1;
-            echo "<li>";
-            echo $this->Element ('lab_results/resultlist_item', compact ('labResult'));
-            echo "</li>";
+        if (!$isAjax) {
+            echo "<div class=\"ui-helper-clearfix\"></div><ul class=\"noPad objectList box\">";
+
+            $canAddMoreIf = array ('run','will_run');
+
+            foreach ($labResults as $labResult) {
+                //if (!in_array ($labResult['LabResult']['result_type'],$canAddMoreIf))
+                //    $willShowForm = false;
+                $rts[$labResult['LabResult']['result_type']] = 1;
+                echo "<li>";
+                echo $this->Element ('lab_results/resultlist_item', compact ('labResult'));
+                echo "</li>";
+            }
+            echo "</ul>";
         }
-        echo "</ul>";
+        else {
+            $willShowForm = false;
+            ?>
+            <p>
+                <?=count ($labResults) ?> Lab Results have been uploaded for this job. The view these
+                all on one page please click below.
+            </p>
+            <?php
+            echo $this->Html->link(
+                $this->Icons->i('&#xe04b;'). "&ensp; View Lab Results",
+                array (
+                    'controller' => 'lab_results',
+                    'action' => 'job_multi',
+                    $job['Job']['id']
+                ),
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false));
+        }
         
         
     echo "</div>";

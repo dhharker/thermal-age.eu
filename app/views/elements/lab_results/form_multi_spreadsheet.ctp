@@ -21,13 +21,24 @@ if (isset ($job) && !empty ($job)) {
         <li>Upload the resulting spreadsheet of your experimental results
             <?php echo $this->Form->create  ('Spreadsheet', array('id' => 'SpreadsheetForm', 'url' => array('controller' => 'lab_results', 'action' => 'csv_results_upload', $job['Job']['id']), 'class' => 'ui-corner-all noAjax', 'type' => 'file')); ?>
             <fieldset>
-                <div class="">
+                
+                <div>
                     <?=$this->Form->input('Spreadsheet.file', array(
                         'type' => 'file',
                         'label' => $this->Icons->i('&#xe06e;') .' &nbsp;Upload CSV Data',
-
                     ));
-                    echo $this->Form->submit('Upload Results &raquo;', array(
+                    ?>
+                    <div>
+                        <?=$this->Form->input('LabResult.public', array(
+                            'type' => 'checkbox',
+                            'checked' => true
+                        ));
+                        ?>
+                        <?=$this->Form->input('LabResult.public_date', array(
+                        ));
+                        ?>
+                    </div>
+                    <?=$this->Form->submit('Upload Results &raquo;', array(
                         'style' => 'display: block; width: 99%; padding: 5px 0; margin: 0 auto;',
                         'class' => 'fg-button ui-corner-all ui-state-default cta-button',
                         'escape' => false));
