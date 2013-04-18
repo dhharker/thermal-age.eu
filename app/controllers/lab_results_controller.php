@@ -195,7 +195,7 @@ class LabResultsController extends AppController {
     }
     
     function regression ($job_id) {
-        ob_start();
+        ini_set("zlib.output_compression", "Off");
         App::import ('Vendor', 'ttkpl/lib/ttkpl');
         $drawLog = 1;
         
