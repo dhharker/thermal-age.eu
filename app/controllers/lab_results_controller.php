@@ -257,7 +257,8 @@ class LabResultsController extends AppController {
         if (!!$drawLog) $graph->setLog (array ('x','y'));
         $minOffset = (!!$drawLog) ? .0001 : 0;
         
-        $cutoffs = array ('"graph 0"', '".0256"', '".1111"', '".25"', '"graph 1"');
+        $cutoffs = array ((!!$drawLog) ? $minOffset : -1, .0256, .1111, .25, 2);
+        //$cutoffs = array ((!!$drawLog) ? $minOffset : '"graph 0"', '".0256"', '".1111"', '".25"', '"graph 1"');
         $coColours = array ('green', 'yellow', 'red', '#330000');
         $coOpacity = array (0.4,.8,0.5,0.7);
         
@@ -268,9 +269,9 @@ class LabResultsController extends AppController {
                 $ub = $cutoffs[$coi + 1];
                 $x1 = (!!$drawLog) ? $minOffset : '-1';
                 $x2 = '2'; $y1 = $lb; $y2 = $ub;
-                $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0 behind");// full width
+                $graph->set ("object $objNo rect from $x1, $y1 to $x2, $y2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full width
                 $objNo++;
-                $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0 behind");// full height
+                $graph->set ("object $objNo rect from $y1, $x1 to $y2, $x2 fs solid {$coOpacity[$coi]} fc rgb \"{$coColours[$coi]}\" lw 0");// full height
                 $objNo++;
             }
         }
