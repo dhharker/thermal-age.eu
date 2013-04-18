@@ -343,9 +343,9 @@ class LabResultsController extends AppController {
             ob_clean();
         
         if (file_exists ($filename)) {
-            //$this->redirect ($url);
+            $this->redirect ($url);
             //header ('Content-type: image/png');
-            echo file_get_contents ($filename);
+            //echo file_get_contents ($filename);
         }
         else {
             $this->Session->setFlash ("Error: Couldn't make regression graph for some reason.");
