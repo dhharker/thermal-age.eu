@@ -367,9 +367,6 @@ class LabResultsController extends AppController {
             $etcur[] = "Importing Experimental Results from " . htmlspecialchars($this->data['Spreadsheet']['file']['name']);
             
             
-            echo file_get_contents($this->data['Spreadsheet']['file']['tmp_name']);
-            die();
-            
             App::import ('Vendor', 'ttkpl/lib/ttkpl');
             $csv = new \ttkpl\csvData ($this->data['Spreadsheet']['file']['tmp_name']);
             //print_r ($csv->titles);
