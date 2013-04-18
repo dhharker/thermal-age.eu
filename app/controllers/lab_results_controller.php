@@ -369,7 +369,7 @@ class LabResultsController extends AppController {
             
             App::import ('Vendor', 'ttkpl/lib/ttkpl');
             $csv = new \ttkpl\csvData ($this->data['Spreadsheet']['file']['tmp_name']);
-            
+            print_r ($csv->titles);
             if ($csv === false) {
                 $etcur = "Error: Couldn't parse CSV";
             }
