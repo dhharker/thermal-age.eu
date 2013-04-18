@@ -65,14 +65,14 @@ class LabResultsController extends AppController {
                 //die ("jid is $job_id");
 				$this->_redirectAfterDoingStuff($job_id);
 			} else {
-				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.implode (",",$this->LabResult->validationErrors), true));
 			}
 		}
 		if (empty($this->data)) {
 			$this->data = $this->LabResult->read(null, $id);
 		}
         $this->set('editMode', true);
-		$this->_setStuffByJobId ($this->LabResult->data['Job']['id']);
+		$this->_setStuffByJobId ($job_id);
 	}
 
 	function delete($id = null, $job_id = null) {
@@ -197,7 +197,17 @@ class LabResultsController extends AppController {
     function regression ($job_id) {
         
         App::import ('Vendor', 'ttkpl/lib/ttkpl');
-        $drawLog = 1;
+        
+        $scale = (isset ($this->params['named']['scale'])) ? $this->params['named']['scale'] : 'log';
+        switch ($scale) {
+            case "lin":
+                $drawLog = 0;
+                break;
+            default:
+            case "log":
+                $drawLog = 1;
+                break;
+        }
         
         
         if ($job_id === null && isset ($this->data['LabResult']) && isset ($this->data['LabResult']['job_id']))
@@ -426,9 +436,12 @@ class LabResultsController extends AppController {
                         $λInd = $index;
                 }
                 if ($λInd === false) {
-                    print_r ($csv->titles);
-                    die ("Couldn't find λ index in header!");
-                    
+                    $this->Session->setFlash ("Error: Couldn't find λ in header.");
+                    $this->_redirectAfterDoingStuff($job_id);
+                }
+                if ($sidInd === false) {
+                    $this->Session->setFlash ("Error: Couldn't find Specimen ID in header.");
+                    $this->_redirectAfterDoingStuff($job_id);
                 }
                 //die();
                     
