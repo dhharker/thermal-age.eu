@@ -343,7 +343,8 @@ class LabResultsController extends AppController {
             ob_clean();
         
         if (file_exists ($filename)) {
-            $this->redirect ($url, null, true, true);
+            header ('Location: '.$url."\n");
+            return;
             //header ('Content-type: image/png');
             //echo file_get_contents ($filename);
         }
