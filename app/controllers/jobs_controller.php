@@ -63,9 +63,10 @@ class JobsController extends AppController {
         
         $jobbage = array (&$running, &$queue);
         foreach ($jobbage as &$jobs) {
-            foreach ($jobs as &$job) {
-                $job['Job']['percent_complete'] = $this->Job->getJobPercentComplete($job['Job']['id']);
-            }
+            if (is_array ($jobs))
+                foreach ($jobs as &$job) {
+                    $job['Job']['percent_complete'] = $this->Job->getJobPercentComplete($job['Job']['id']);
+                }
         }
         
         // Handle header update info timestamps n stuff
