@@ -36,4 +36,5 @@
     Router::connect('/feedback', array('controller' => 'feedbacks', 'action' => 'add'));
     
     
+    Router::connect('/pub/*', array('controller' => 'jobs', 'action' => 'published'));
     

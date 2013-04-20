@@ -23,26 +23,6 @@
             if (!isset ($lockTypes)) $lockTypes = false;
             if (!isset ($editMode)) $editMode = false;
             ?>
-            <style>
-                .sentenceForm {
-                    font-size: large;
-                }
-                .sentenceForm select {
-                    font-size: large;
-                }
-                
-                div.sentenceForm {
-                    margin: 2em;
-                    font-size: large;
-                }
-                .sentenceForm input[type="text"] {
-                    width: 4.5em;
-                    max-width: 100%;
-                }
-                .sentenceForm span {
-                    margin: 0 .2em;
-                }
-            </style>
             <div class="labResults form sentenceForm cakeInline smxartbox" style="max-width: 650px; margin: 0 auto; padding: 1.5em 2em .25em 2em;">
                 <?php
                 //$a = new FormHelper;

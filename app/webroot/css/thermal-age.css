@@ -1086,3 +1086,24 @@ img.profilePhoto {
 .resultBarInner .bigSmall:last-child {
     
 }
+
+/* inline forms used in lab results etc. */
+
+.sentenceForm {
+    font-size: large;
+}
+.sentenceForm select {
+    font-size: large;
+}
+
+div.sentenceForm {
+    margin: 2em;
+    font-size: large;
+}
+.sentenceForm input[type="text"] {
+    width: 4.5em;
+    max-width: 100%;
+}
+.sentenceForm span {
+    margin: 0 .2em;
+}

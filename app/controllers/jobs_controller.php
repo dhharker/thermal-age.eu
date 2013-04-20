@@ -5,7 +5,7 @@ class JobsController extends AppController {
     var $components = array ('FormatJson');
     function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow(array('system'));
+        $this->Auth->allow(array('system', 'published', 'report'));
     }
     
     
@@ -117,6 +117,15 @@ class JobsController extends AppController {
         
         //debug ($this->view); die();
         if ($j !== false) {
+            $ar = $this->authoriseRead ('Job',$id);
+            if ($ar !== true) {
+                $this->Session->setFlash("Not authorised to view this job: " . $ar);
+                $this->redirect ((!!$this->Auth->user('id')) ? array (
+                    'controller' => 'users',
+                    'action' => 'dashboard'
+                ) : '/');
+            }
+                
             $status = $this->Job->bgpGetStatus ();
             $this->set ('status', $status);
             $fn = $this->Job->bgpGetJobFileName ('report');
@@ -285,10 +294,15 @@ class JobsController extends AppController {
 			$this->Session->setFlash(__('Invalid job', true));
 			$this->redirect(array('action' => 'index'));
 		}
+        if (!!$id && !$this->Job->idExists ($id) || !$this->authoriseWrite('Job',$id)) {
+            $this->Session->setFlash(__('Invalid job', true));
+			$this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
+        }
 		if (!empty($this->data)) {
+            $this->data['Job']['pub_ref'] = 'TAEU-J'. $id;
 			if ($this->Job->save($this->data)) {
 				$this->Session->setFlash(__('The job has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'report', $this->data['Job']['id']));
 			} else {
 				$this->Session->setFlash(__('The job could not be saved. Please, try again.', true));
 			}
@@ -300,6 +314,40 @@ class JobsController extends AppController {
 		$users = $this->Job->User->find('list');
 		$this->set(compact('users'));
 	}
+    
+    function published ($pub_ref) {
+        $job = $this->Job->find ('first', array (
+            'conditions' => array (
+                'Job.pub_ref LIKE' => $pub_ref,
+                /*'OR' => array (
+                    'Job.user_id' => $this->Auth->user('id'),
+                    'AND' => array (
+                        'Job.published' => '1',
+                        'DATE(Job.published_date) >' => 'DATE('.date('Y-m-d').')'
+                    )
+                )*/
+            )
+        ));
+        if (!$job)
+            $this->cakeError ('error404');
+        else {
+            $ua = $this->authoriseRead ('Job', $job['Job']['id']);
+            // Is embargoed & user not otherwise allowed to see?
+            if (strtotime ($job['Job']['published_date']) > time() && $ua !== true) // yes
+                $job['Job']['embargo'] = true;
+            elseif ($ua != true) {
+                $job['Job']['authorised'] = false;
+                $job['Job']['authorised_message'] = $ua;
+            }
+            else
+                $this->redirect (array (
+                    'controller' => 'jobs',
+                    'action' => 'report',
+                    $job['Job']['id']
+                ));
+            $this->set(compact('job'));
+        }
+    }
     
     function _populateForm () {
         $names = array ('Parser', 'Processor', 'Reporter');

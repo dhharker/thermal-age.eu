@@ -29,14 +29,24 @@ if (isset ($job) && !empty ($job)) {
                     ));
                     ?>
                     <div>
-                        <?=$this->Form->input('LabResult.public', array(
+                        <?=$this->Form->input('LabResult.published', array(
                             'type' => 'checkbox',
                             'checked' => true
                         ));
                         ?>
-                        <?=$this->Form->input('LabResult.public_date', array(
+                        <?=$this->Form->input('LabResult.published_date', array(
+                            'type' => 'text',
+                            'style' => 'width: 10em;',
+                            'default' => date('Y-m-d')
                         ));
                         ?>
+                        <script>
+                            (function($){
+                                $('div.input.text.datepicker input').each (function () {
+                                    $(this).datepicker();
+                                });
+                            }(jQuery))
+                        </script>
                     </div>
                     <?=$this->Form->submit('Upload Results &raquo;', array(
                         'style' => 'display: block; width: 99%; padding: 5px 0; margin: 0 auto;',
