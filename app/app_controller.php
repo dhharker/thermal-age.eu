@@ -127,6 +127,8 @@ OMG;
         // maybe able to make unconditional:
         if (!isset ($this->$modelName->data[$this->$modelName->alias]['id']) || $this->$modelName->data[$this->$modelName->alias]['id'] != $model_id)
             $v = $this->$modelName->read(null, $model_id);
+        else
+            $v = $this->$modelName->data;
         // item is public (not same as published; userid=0, globally available, not editable)
         if ($v[$modelName][$uid_field] == '0' && $v[$modelName][$uid_field] !== false)
             return true;
@@ -136,10 +138,11 @@ OMG;
             return true;
         // item is published
         $pf = array ('published','published_date');
-        if (isset ($v[$modelName][$pf[0]]) && isset ($v[$modelName][$pf[1]]) && !!$v[$modelName][$pf[0]] && strtotime($v[$modelName][$pf[1]]) >= time())
+        
+        if (isset ($v[$modelName][$pf[0]]) && isset ($v[$modelName][$pf[1]]) && !!$v[$modelName][$pf[0]] && strtotime($v[$modelName][$pf[1]]) <= time())
             return true;
         
-        return false;
+        return false;//"{$v[$modelName][$uid_field]}";
     }
     
 }
