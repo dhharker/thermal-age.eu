@@ -217,7 +217,7 @@ class LabResultsController extends AppController {
         if (!$this->LabResult->Job->exists($job_id))
             $this->cakeError ('error404');
         
-        $url = DS . 'reports' . DS . $job_id . '_lab_results_regression_graph.svg';
+        /*$url = DS . 'reports' . DS . $job_id . '_lab_results_regression_graph.svg';
         $filename = APP . WEBROOT_DIR . $url;
         if (file_exists ($filename) && (!isset ($this->params['named']['refresh']) || !$this->params['named']['refresh'])) {
             $this->autoLayout = false;
@@ -225,7 +225,7 @@ class LabResultsController extends AppController {
             header ('Content-type: image/svg');
             echo file_get_contents ($filename);
             return;
-        }
+        }*/
         $res = $this->LabResult->find('all', array (
             'conditions' => array (
                 'LabResult.job_id' => $job_id,
@@ -360,11 +360,12 @@ class LabResultsController extends AppController {
         $this->autoRender = false;
         if (!count(array_diff(ob_list_handlers(),array('default output handler'))))
             ob_clean();
+        //$graph->plot('php://stdout');
         
         if (file_exists ($filename)) {
             //header ('Location: '.$url."\n");
             //return;
-            //header ('Content-type: image/png');
+            header ('Content-type: image/svg+xml');
             echo file_get_contents ($filename);
         }
         else {

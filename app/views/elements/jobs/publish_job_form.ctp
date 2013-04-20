@@ -69,7 +69,7 @@ if (!isset ($editMode)) $editMode = false;
                     $(this).change (function () {
                         var $sel = $(this);
                         var val = ($sel.is(':checkbox')) ? (($sel.is(':checked') ? 1 : 0)) : $sel.val();
-                        console.log ($sel.is(':checkbox'), $sel.is(':checked'), $sel.val(), val);
+                        //console.log ($sel.is(':checkbox'), $sel.is(':checked'), $sel.val(), val);
                         var dfs = $('[data-det-field="'+$sel.attr('name')+'"]');
 
                         dfs.filter('[data-det-val="'+val+'"]:hidden').slideDown('slow');

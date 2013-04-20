@@ -38,8 +38,14 @@ else {
         <h2 class="sbHeading"><?=$this->Icons->i('&#xe003;');?>&ensp;Experimental Results</h2>
         
         <div class="expand-embeds">
+            <img src="<?=$this->Html->url(array(
+                    'controller' => 'lab_results',
+                    'action' => 'regression',
+                    $job['Job']['id'],
+                    'graph.svg'
+                ));?>" style="max-width: 100%; display: block; margin: 0px auto;" />
             <?php
-            if (1) {
+            if (0) {
                 $this->addScript ($this->Html->script ('jquery.svg'));
                 $this->addScript ($this->Html->script ('job_report'));
                 ?>
@@ -63,9 +69,9 @@ else {
             else {
                 
             }
+            //<?=$this->Element ('loading_spinner', array ('wide' => true))
             ?>
         </div>
-        <?=$this->Element ('loading_spinner', array ('wide' => true))?>
         
         <?php
         $rts = array ();
