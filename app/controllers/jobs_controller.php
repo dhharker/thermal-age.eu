@@ -140,12 +140,16 @@ class JobsController extends AppController {
                 $results = "Couldn't find report, sorry!";
             $this->set ('results', $results);
             $this->set ('job', $j);
+            $this->render ($j['Job']['reporter_name'] . '_report');
         }
         else {
-            $this->set ('results', "Error :-(");
+            $this->Session->setFlash ("Couldn't find a Report for that Job.");
+            $this->redirect(array (
+                'controller' => 'users',
+                'action' => 'dashboard'
+            ));
         }
 
-        $this->render ($j['Job']['reporter_name'] . '_report');
     }
     
     

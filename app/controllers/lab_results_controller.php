@@ -2,6 +2,10 @@
 class LabResultsController extends AppController {
 
 	var $name = 'LabResults';
+    function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow(array('regression', 'job', 'job_multi'));
+    }
     
     function index() {
 		$this->LabResult->recursive = 0;
@@ -37,42 +41,50 @@ class LabResultsController extends AppController {
 			}
 		}
         
-		$this->_setStuffByJobId ($this->data['LabResult']['job_id']);
+		$this->_setFormStuffByJobId ($this->data['LabResult']['job_id']);
 	}
 
 	function edit($id = null, $job_id = null) {
-        
-        if ($job_id !== null) {
-            $job_id = $job_id+0;
-            //$this->set ('afterSuccess','job');
+        if ($this->authoriseWrite ('LabResult', $id) === true) {
+            if ($job_id !== null) {
+                $job_id = $job_id+0;
+                //$this->set ('afterSuccess','job');
+            }
+
+            if (!$id && empty($this->data)) {
+                $this->Session->setFlash(__('Invalid lab results', true));
+                $this->_redirectAfterDoingStuff($job_id);
+            }
+            elseif (!$id && !empty($this->data)) {
+                $id = $this->data['LabResult']['id'];
+                $job_id = $this->data['LabResult']['job_id'];
+            }
+            //print_r (compact ('id','job_id'));echo("AS");
+            if (!empty($this->data) && $this->LabResult->set($this->data)) {
+                //print_r (compact ('id','job_id'));die("AB");
+                if ($this->LabResult->validates()) {
+                    $this->LabResult->_calculateLambdaFromExperimental ($this->data);
+                    $this->LabResult->save();
+                    $this->Session->setFlash(__('The lab results have been saved', true));
+                    //die ("jid is $job_id");
+                    $this->_redirectAfterDoingStuff($job_id);
+                } else {
+                    $this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.implode (",",$this->LabResult->validationErrors), true));
+                }
+            }
+            if (empty($this->data)) {
+                $this->data = $this->LabResult->read(null, $id);
+            }
+            $this->set('editMode', true);
+            $this->_setFormStuffByJobId ($job_id);
         }
-        
-        if (!$id && empty($this->data)) {
-			$this->Session->setFlash(__('Invalid lab results', true));
-			$this->_redirectAfterDoingStuff($job_id);
-		}
-        elseif (!$id && !empty($this->data)) {
-            $id = $this->data['LabResult']['id'];
-            $job_id = $this->data['LabResult']['job_id'];
+        else {
+            $this->Session->setFlash ("Unauthorised :-(");
+            $this->redirect(array (
+                'controller' => 'users',
+                'action' => 'dashboard'
+            ));
         }
-        //print_r (compact ('id','job_id'));echo("AS");
-		if (!empty($this->data) && $this->LabResult->set($this->data)) {
-            //print_r (compact ('id','job_id'));die("AB");
-			if ($this->LabResult->validates()) {
-                $this->LabResult->_calculateLambdaFromExperimental ($this->data);
-                $this->LabResult->save();
-				$this->Session->setFlash(__('The lab results have been saved', true));
-                //die ("jid is $job_id");
-				$this->_redirectAfterDoingStuff($job_id);
-			} else {
-				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.implode (",",$this->LabResult->validationErrors), true));
-			}
-		}
-		if (empty($this->data)) {
-			$this->data = $this->LabResult->read(null, $id);
-		}
-        $this->set('editMode', true);
-		$this->_setStuffByJobId ($job_id);
 	}
 
 	function delete($id = null, $job_id = null) {
@@ -96,7 +108,7 @@ class LabResultsController extends AppController {
             $this->data['LabResult']['job_id'] = $job_id;
             $this->data['LabResult']['user_id'] = $this->Auth->user('id');
         }
-        $this->_setStuffByJobId ($job_id);
+        $this->_setFormStuffByJobId ($job_id);
         if (!empty($this->data)) {
             //print_r ($this->data);die();
 			$this->LabResult->create();
@@ -118,14 +130,20 @@ class LabResultsController extends AppController {
     function job_multi ($job_id = null) {
         if ($job_id === null && isset ($this->data['LabResult']) && isset ($this->data['LabResult']['job_id']))
             $job_id = $this->data['LabResult']['job_id'];
-        if (!empty ($this->data)) {
+        
+        $authd = $this->authoriseWrite('Job',$job_id);
+        $this->_setFormStuffByJobId ($job_id);
+        
+        if (!empty($this->data) && $authd) {
+            
+            // Create only!
+            if (isset ($this->data['LabResult']['id']))
+                unset ($this->data['LabResult']['id']);
+            
             $this->data['LabResult']['job_id'] = $job_id;
             $this->data['LabResult']['user_id'] = $this->Auth->user('id');
-        }
-        $this->_setStuffByJobId ($job_id);
-        if (!empty($this->data)) {
-            //print_r ($this->data);die();
-			$this->LabResult->create();
+			
+            $this->LabResult->create();
 			$this->LabResult->set($this->data);
 			if ($this->LabResult->validates() && $this->LabResult->save()) {
 				$this->Session->setFlash(__('The lab results have been saved', true));
@@ -134,7 +152,6 @@ class LabResultsController extends AppController {
 				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
 			}
         }
-        $authd = $this->authoriseWrite('Job',$job_id);
         if ($authd !== true) {
             $this->set('showForm', false);
         }
@@ -234,7 +251,7 @@ class LabResultsController extends AppController {
                         'LabResult.user_id' => $this->Auth->user('id'),
                         'AND' => array (
                             'LabResult.published' => '1',
-                            'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
+                            'DATE(LabResult.published_date) <=' => 'DATE(\''.date('Y-m-d').'\')'
                         )
                     ),
                     'LabResult.modelled_lambda >' => '0',
@@ -551,7 +568,7 @@ class LabResultsController extends AppController {
         else
             $this->redirect(array('action' => 'index'), null, true, true);
     }
-    function _setStuffByJobId ($job_id = null) {
+    function _setFormStuffByJobId ($job_id = null) {
         if (!$this->LabResult->Job->idExists($job_id))
             $this->_redirectAfterDoingStuff($job_id);
             //$this->redirect (array ('action' => 'index'));
@@ -566,7 +583,7 @@ class LabResultsController extends AppController {
                     'LabResult.user_id' => $user_id,
                     'AND' => array (
                         'LabResult.published' => '1',
-                        'DATE(LabResult.published_date) >=' => 'DATE(\''.date('Y-m-d').'\')'
+                        'DATE(LabResult.published_date) <=' => 'DATE(\''.date('Y-m-d').'\')'
                     )
                 )
             )
