@@ -286,7 +286,7 @@ class LabResultsController extends AppController {
         $b = $llr->bfB();
         $stro = sprintf ("%d%% of the variation in measured λ can be explained by %f × [modelled λ] + %f", $r2, $a, $b);
         
-        $addStro = ($rs >= 95) ? "\\n$stro" : '';
+        $addStro = ($r2 >= 95) ? "\\n$stro" : '';
         
         $graph = new \ttkpl\ttkplPlot("Modelled and Measured λ (Job:{$job_id})$addStro",1,1,"700,700");
         $graph->labelAxes("Modelled λ", "Measured λ");
