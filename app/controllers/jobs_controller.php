@@ -291,6 +291,7 @@ class JobsController extends AppController {
 	}
 
 	function edit($id = null) {
+        
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid job', true));
 			$this->redirect(array('action' => 'index'));
@@ -300,7 +301,17 @@ class JobsController extends AppController {
 			$this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
         }
 		if (!empty($this->data)) {
-            $this->data['Job']['pub_ref'] = 'TAEU-J'. $id;
+            if (isset ($this->data['Job']['publish_lab_results']) && !!$this->data['Job']['publish_lab_results'])
+                $this->_publishAssociatedLabResults ($id, $this->data['Job']['published_date']);
+            
+            // J for Job (generic)
+            $pubRefTypeIdentifier = 'J';
+            switch ($this->data['Job']['reporter_name']) {
+                // B for Batch, S for Single
+                case "thermal_age_csv": $pubRefTypeIdentifier = 'B'; break; 
+                case "dna_screener":    $pubRefTypeIdentifier = 'S'; break;
+            }
+            $this->data['Job']['pub_ref'] = 'TAEU-' . $pubRefTypeIdentifier . $id;
 			if ($this->Job->save($this->data)) {
 				$this->Session->setFlash(__('The job has been saved', true));
 				$this->redirect(array('action' => 'report', $this->data['Job']['id']));
@@ -315,6 +326,28 @@ class JobsController extends AppController {
 		$users = $this->Job->User->find('list');
 		$this->set(compact('users'));
 	}
+    
+    function _publishAssociatedLabResults ($job_id, $date = null) {
+        if ($date === null) $date = time ();
+        if ($this->authoriseWrite ('Job',$job_id) !== true) return false;
+        $lrs = $this->Job->LabResult->find ('all', array (
+            'conditions' => array (
+                'LabResult.job_id' => $job_id,
+                'LabResult.user_id' => $this->Auth->user('id'),
+                'LabResult.published NOT' => '1'
+            )
+        ));
+        if (!!$lrs && !empty ($lrs))
+            foreach ($lrs as $lr) {
+                // E for Experimental result
+                $lr['LabResult']['pub_ref'] = 'TAEU-E-' . $lr['LabResult']['id'];
+                $lr['LabResult']['published'] = '1';
+                $lr['LabResult']['published_date'] = date ('Y-m-d',strtotime($date));
+                $this->Job->LabResult->set ($lr);   
+                $this->Job->LabResult->save ();   
+            }
+        return true;
+    }
     
     function published ($pub_ref) {
         $job = $this->Job->find ('first', array (
