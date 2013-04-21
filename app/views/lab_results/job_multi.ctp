@@ -35,7 +35,7 @@ else {
     ?>
     
     <div class="smartbox">
-        <h2 class="sbHeading"><?=$this->Icons->i('&#xe003;');?>&ensp;Experimental Results</h2>
+        <h1 class="sbHeading"><?=$this->Icons->i('&#xe003;');?>&ensp;Experimental Results</h1>
         
         <div class="expand-embeds">
             <img src="<?=$this->Html->url(array(

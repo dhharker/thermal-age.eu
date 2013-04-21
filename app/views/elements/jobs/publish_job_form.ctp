@@ -30,17 +30,27 @@ if (!isset ($editMode)) $editMode = false;
         ?>
     </div>
     <div data-det-field="data[Job][published]" data-det-val="1">
-         <span><?=$this->Icons->i('&#xe002;');?> Embargo the results until: </span>
-         <?
-         echo $this->Form->input ('Job.published_date',array (
-             'type' => 'text',
-             'div' => false,
-             'label' => false,
-             'class' => 'datePicker',
-             'default' => date('Y-m-d'),
-             'value' => date('Y-m-d', strtotime($job['Job']['published_date']))
-         ));
-         ?>
+        <span><?=$this->Icons->i('&#xe01d;');?> Publish any attached experimental results? </span>
+        <?=$this->Form->input('Job.publish_lab_results', array(
+            'type' => 'checkbox',
+            'checked' => true,
+            'div' => false,
+            'style' => 'margin: .2em; float: none; display: inline; width: auto;',
+            'label' => false,
+        ));
+        ?>
+        <br />
+        <span><?=$this->Icons->i('&#xe002;');?> Embargo the results until: </span>
+        <?
+        echo $this->Form->input ('Job.published_date',array (
+            'type' => 'text',
+            'div' => false,
+            'label' => false,
+            'class' => 'datePicker',
+            'default' => date('Y-m-d'),
+            'value' => date('Y-m-d', strtotime($job['Job']['published_date']))
+        ));
+        ?>
     </div>
 
     <?php
