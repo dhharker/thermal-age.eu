@@ -110,6 +110,15 @@ else {
                 array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false));
         }
         
+        echo $this->Html->link(
+            $this->Icons->i('&#xe020;'). "&ensp; Publish any unpublished Lab Results immediately",
+            array (
+                'controller' => 'jobs',
+                'action' => 'publish_results',
+                $job['Job']['id']
+            ),
+            array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false))
+        ;
         
     echo "</div>";
     

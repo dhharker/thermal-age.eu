@@ -63,7 +63,7 @@ if (!!$show) {
     <div class="grid_12 ">
         <div class="smartbox">
             <h2 class="sbHeading ui-corner-tl">
-                Publication
+                <?=$this->Icons->i('&#xe020;')?> Publication
             </h2>
             <div>
                 <?

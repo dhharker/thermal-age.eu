@@ -331,6 +331,21 @@ class JobsController extends AppController {
 		$this->set(compact('users'));
 	}
     
+    function publish_results ($job_id) {
+        if ($this->authoriseWrite ('Job',$job_id) !== true) return false;
+        $n = $this->_publishAssociatedLabResults($job_id);
+        $msg = ($n === false) ? "Couldn't publish any results." : "Published " . ($n+0) . " lab results!";
+        $url = ($this->authoriseRead ('Job',$job_id) === true) ? array (
+            'action' => 'report',
+            $job_id
+        ) : array (
+            'controller' => 'users',
+            'action' => 'dashboard'
+        );
+        $this->Session->setFlash ($msg);
+        $this->redirect ($url);
+    }
+    
     function _publishAssociatedLabResults ($job_id, $date = null) {
         if ($date === null) $date = time ();
         if ($this->authoriseWrite ('Job',$job_id) !== true) return false;
@@ -350,7 +365,7 @@ class JobsController extends AppController {
                 $this->Job->LabResult->set ($lr);   
                 $this->Job->LabResult->save ();   
             }
-        return true;
+        return count ($lrs);
     }
     
     function published ($pub_ref) {

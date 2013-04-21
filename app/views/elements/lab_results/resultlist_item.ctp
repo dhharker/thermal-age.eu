@@ -20,7 +20,7 @@ if (isset ($labResult) && is_array ($labResult)) {
     echo '<div class="lrBigText">';
     
     if ($l['published'] == '1') {
-        $shared = '<span style="color: #3366cc; display: inline-block; min-width: 5em;">'.$this->Icons->i('&#xe00c;').' <strong>Public</strong></span>&ensp; ';
+        $shared = '<span style="color: #3366cc; display: inline-block; min-width: 5em;">'.$this->Icons->i('&#xe020;').' <strong>Published</strong></span>&ensp; ';
     }
     else {
         $shared = '<span style="color: #cc9933; display: inline-block; min-width: 5em;">'.$this->Icons->i('&#xe00d;').' <strong>Private</strong></span>&ensp; ';
