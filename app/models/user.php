@@ -67,6 +67,32 @@ class User extends AppModel {
 	);
 
 	var $hasMany = array(
+		'Job' => array(
+			'className' => 'Job',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+		'LabResult' => array(
+			'className' => 'LabResult',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 		'Citation' => array(
 			'className' => 'Citation',
 			'foreignKey' => 'user_id',

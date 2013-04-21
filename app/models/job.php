@@ -1870,5 +1870,20 @@ class Job extends AppModel {
 			'order' => ''
 		)
 	);
+    var $hasMany = array(
+		'LabResult' => array(
+			'className' => 'LabResult',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
+    );
 }
 ?>
