@@ -177,7 +177,7 @@ class WizController extends AppController {
                 'NOT' => array ('Job.id' => $recent),
             ),
             'Published Jobs' => array (
-                'Job.user_id NOT IN' => array ("$cuid",'0'),
+                'NOT' => array ('Job.user_id' => array ("$cuid",'0')),
                 'Job.published' => '1',
                 'DATE(Job.published_date) <= DATE(\''.date('Y-m-d').'\')',
             ),
