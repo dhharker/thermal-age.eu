@@ -174,7 +174,7 @@ class WizController extends AppController {
             ),
             'My Jobs' => array (
                 'Job.user_id' => array ("$cuid", '0'),
-                'Job.id NOT' => $recent,
+                'Job.id NOT IN' => $recent,
             ),
             'Published Jobs' => array (
                 'Job.user_id NOT IN' => array ("$cuid",'0'),
