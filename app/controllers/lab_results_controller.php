@@ -88,7 +88,7 @@ class LabResultsController extends AppController {
 	}
 
 	function delete($id = null, $job_id = null) {
-		if (!$id || $this->authoriseWrite('LabResults',$id)) {
+		if (!$id || !$this->authoriseWrite('LabResult',$id)) {
 			$this->Session->setFlash(__('Invalid id for lab results or not authorised', true));
 			$this->_redirectAfterDoingStuff($job_id);
 		}
