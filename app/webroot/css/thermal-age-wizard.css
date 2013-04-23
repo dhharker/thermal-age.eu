@@ -420,10 +420,25 @@ span.isBp {
 }
 
 
+div.loadValuesFrom {
+    width: auto;
+    min-width: 200px;
+    margin: 1px 5em;
+    text-align: center;
+    clear: none;
+}
 
 /* Mobile tweaks */
+@media handheld, only screen and (max-width: 600px) {
+    div.loadValuesFrom {
+        display: block;
+        min-width: 200px;
+        margin: 1px;
+        clear: both;
+        text-align: center;
+    }
+}    
 @media handheld, only screen and (max-width: 760px) {
-
     /* Burial Layers */
     .mobile-layout #wizardContainer .burialLayer .deleteLayerButton {
         margin-right: -11px;

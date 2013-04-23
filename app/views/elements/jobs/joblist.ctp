@@ -46,8 +46,8 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
             $job['Job']['id']
         );
         $resume_uri = array (
-            'controller' => 'jobs',
-            'action' => 'resume',
+            'controller' => 'wiz',
+            'action' => 'resume_draft',
             $job['Job']['id']
         );
         if ($job['Job']['status'] >= 2) {
@@ -98,6 +98,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
         elseif ($job['Job']['status'] == 4) {
             // Job is incomplete (saved for later by user)
             $itemIcon = $this->Icons->i('&#xe009;');
+            $title_uri = $resume_uri;
         }
         
         if (isset ($jd['specimen']) && isset ($jd['specimen']['Specimen']) && isset ($jd['specimen']['Specimen']['name'])) {

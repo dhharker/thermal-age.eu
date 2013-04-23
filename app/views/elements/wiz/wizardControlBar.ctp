@@ -24,20 +24,20 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
             <?php echo $this->Html->link(
                 'Cancel',
                 array ('controller' => 'wiz', 'action' => 'clearcache'),
-                array('class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary ' . $cocl, 'escape' => false)); ?>
-
+                array('class' => 'fg-button ui-state-default ui-priority-secondary ' . $cocl, 'escape' => false)); ?>
+            
             <?php
-            echo $this->Html->link(
+            /*echo $this->Html->link(
                 'Load',
                 array ('controller' => '', 'action' => '', ''),
                 array(
                     'class' => 'fg-button ui-corner-left ui-state-default ui-priority-secondary right',
-                    'escape' => false));
+                    'escape' => false));*/
             echo $this->Html->link(
-                'Save',
-                array ('controller' => '', 'action' => '', ''),
+                'Save Draft',
+                array ('controller' => 'wiz', 'action' => 'save_draft'),
                 array(
-                    'class' => 'fg-button ui-state-default ui-priority-secondary right',
+                    'class' => 'fg-button ui-corner-right ui-state-default ui-priority-secondary',
                     'escape' => false));
             echo $this->Form->submit('Continue &raquo;', array(
                 'div' => false,

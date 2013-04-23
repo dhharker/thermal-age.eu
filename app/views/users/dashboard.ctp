@@ -52,7 +52,11 @@
             <?php
             if (is_array($jobSections['incomplete']) && count($jobSections['incomplete']) > 0) {
                     echo $this->Element('jobs/joblist', array(
-                        'jobs' => $jobSections['incomplete']
+                        'jobs' => $jobSections['incomplete'],
+                        'baseUrl' => array (
+                            'controller' => 'wiz',
+                            'action' => 'resume_draft'
+                        )
                     ));
                     ?>
 

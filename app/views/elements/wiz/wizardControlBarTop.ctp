@@ -19,10 +19,38 @@ $wizardInfos['progress'] = (isset ($wizardInfos)) ? sprintf ('%01.0f', $wizardIn
             }
             
             echo $this->Html->link(
-                    'Continue &raquo;',
-                    '',
-                    array('class' => 'fg-button ui-corner-all ui-state-default ', 'id' => 'wtbbContinue', 'style' => 'margin-bottom: .35em; float: right;', 'escape' => false));
+                'Continue &raquo;',
+                '',
+                array('class' => 'fg-button ui-corner-all ui-state-default ', 'id' => 'wtbbContinue', 'style' => 'margin-bottom: .35em; float: right;', 'escape' => false));
             ?>
+            
+            <div class="loadValuesFrom form sentenceForm cakeInline">
+                <?=$this->Form->input ('loadValuesFrom', array (
+                    'type' => 'select',
+                    'options' => $this->getVar('loadValuesFrom'),
+                    'label' => 'Copy From: ',
+                    'div' => false,
+                    'id' => 'loadValuesFromJobSelect',
+                    'selected' => $this->getVar('loadValuesFromLast')
+                ));?>
+                
+                
+                <?=$this->Html->link(
+                    $this->Icons->i('&#xe048;') . '&ensp;Copy',
+                    '',
+                    array (
+                        'class' => 'fg-button ui-corner-all ui-state-default',
+                        'id' => 'loadValuesFromButton',
+                        'style' => 'position: relative; top: -3px; float: none;',
+                        'escape' => false,
+                        'data-wscn' => $wizardInfos['step_requested'],
+                        'data-wizn' => $wizardInfos['wizardname'],
+                        
+                    )
+                );
+                ?>
+            </div>
+            
         </div>
     </div>
 

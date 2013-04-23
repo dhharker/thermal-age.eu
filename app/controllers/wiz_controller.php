@@ -34,6 +34,18 @@ class WizController extends AppController {
             'dna_survival_screening_tool' => 'DNA Survival Tool',
             'thermal_age_spreadsheet_tool' => 'Thermal Age Spreadsheet Tool'
         ),
+        'jobdefaults' => array (
+            'dna_survival_screening_tool' => array (
+                'parser_name' => 'dna_screener',
+                'processor_name' => 'thermal_age',
+                'reporter_name' => 'dna_screener',
+            ),
+            'thermal_age_spreadsheet_tool' => array (
+                'parser_name' => 'thermal_age_csv',
+                'processor_name' => 'thermal_age_multi',
+                'reporter_name' => 'thermal_age_csv',
+            )
+        ),
         "wizardname" => '',
         "wizardtitle" => '',
         "progress" => 0,
@@ -47,12 +59,13 @@ class WizController extends AppController {
     /**
      * This is called towards the end of _initWizardEnvironment and pads out $this->wizardInfos with
      * all the stuff needed by the wizard progress column (showing previous and next steps), as well
-     * as the control bar (previous step etc.)
+     * as the control bar (previous step, "load values from" etc.)
      * @param string $wizardAction
      * @return bool success
      * @todo take into account validation success when assigning css classes
      */
     function _initWizardInfos ($wizardAction) {
+        
         // is it a real wizard?
         $wizardAction = strtolower (trim($wizardAction));
         if (strlen ($wizardAction) == 0) return false;
@@ -103,7 +116,15 @@ class WizController extends AppController {
 
                     //$stepInfo['class'];
                 }
-                $this->wizardInfos['prevstep'] = (strlen ($lastWas) > 0) ? $lastWas : false;
+                
+                $sn = array_keys ($steps);
+                $sr = array_search($this->wizardInfos['step_requested'], $sn);
+                if ($sr === false)
+                    $this->wizardInfos['prevstep'] = (strlen ($lastWas) > 0) ? $lastWas : false;
+                elseif (is_numeric ($sr) && $sr > 0)
+                    $this->wizardInfos['prevstep'] = $sn[$sr - 1];
+                else
+                    $this->wizardInfos['prevstep'] = false;
             }
         }
 
@@ -111,11 +132,132 @@ class WizController extends AppController {
             $this->wizardInfos['progress'] = round (($num['complete'] / $num['steps']) * 100, 2);
         else
             $this->wizardInfos['progress'] = 3;
-
-
+        
+        
+        if (1) {
+            $loadValuesFrom = $this->_getLoadValuesFromOpts ();
+            $this->set (compact ('loadValuesFrom'));
+            $this->set ('loadValuesFromLast',$this->Session->read('wizards.lvf.'.$this->wizardInfos['wizardname'].'.last'));
+            
+            //print_r ($loadValuesFrom); die("asef");
+        }
         return true;
 
     }
+    
+    function _getLoadValuesFromOpts ($addRecent = null, $wizName = null) {
+        // find jobs where user has read access and p/p/r in Job match jobdefaults for this wizard
+        // add "standard" values if applic
+        // list order = "standard" job first then group jobs into Recently Used, My Jobs, Examples [public jobs; uid=0]
+        
+        if ($wizName === null) // This needed because wizard component reports amWizard as get_values_from_job_screen in context of re-generating call as called from that action/method
+            $wizName = $this->amWizard;
+        
+        $cuid = $this->Auth->user('id');
+        $sKey = 'wizards.lvf.'.$wizName;
+        $session = $this->Session->read($sKey.'.cache');
+        $recent = $this->Session->read($sKey.'.recent');
+        if (empty ($recent)) $recent = array ();
+        
+        if ($addRecent !== null) {
+            //$recent = array_filter($recent, function ($a) use ($addRecent) { return !!($a != $addRecent); });
+            array_unique((array)array_unshift($recent, $addRecent));
+            $this->Session->write($sKey.'.recent', $recent);
+        }
+        elseif (!!$session && 0) {
+            return $session;
+        }
+        
+        $cats = array (
+            'Recently Used' => array (
+                'Job.id' => $recent,
+            ),
+            'My Jobs' => array (
+                'Job.user_id' => array ("$cuid", '0'),
+                'Job.id NOT' => $recent,
+            ),
+            'Published Jobs' => array (
+                'Job.user_id NOT' => array ("$cuid",'0'),
+                'Job.published' => '1',
+                'DATE(Job.published_date) <=' => 'DATE(\''.date('Y-m-d').'\')',
+            ),
+            'Examples' => array (
+                'Job.user_id' => '0',
+            ),
+        );
+        
+        $q = array (
+            'conditions' => array (
+                'Job.parser_name' => $this->wizardInfos['jobdefaults'][$wizName]['parser_name'],
+                'Job.processor_name' => $this->wizardInfos['jobdefaults'][$wizName]['processor_name'],
+                'Job.reporter_name' => $this->wizardInfos['jobdefaults'][$wizName]['reporter_name'],
+            ),
+            'order' => array (
+                'Job.user_id',
+                'Job.created DESC',
+            ),
+            'fields' => array (
+                'Job.id',
+                'Job.sel_title'
+            ),
+            'limit' => 10
+        );
+        
+        $this->Job->recursive = -1;
+        if (empty ($this->Job->virtualFields))
+            $this->Job->virtualFields = array ();
+        $this->Job->virtualFields['sel_title'] = 'CONCAT(id," (",LEFT(title,25),") ",DATE_FORMAT(created,\'%e%b%y\'))';
+        $opts = array (
+            array ('std' => "Standard Values")
+        );
+        foreach ($cats as $cat => $conds) {
+            $opts[$cat] = $this->Job->find ('list', array_merge_recursive ($q, array ('conditions' => $conds)));
+        }
+        
+        // Put recently used in recency order
+        if (!empty ($opts['Recently Used'])) {
+            $reordered = array ();
+            foreach ($opts['Recently Used'] as $k => $v) {
+                $ind = array_search($k, $recent);
+                if ($ind !== false) {
+                    $reordered["$k"] = $v;
+                }
+            }
+            $opts['Recently Used'] = $reordered;
+        }
+        
+        foreach ($opts as $l => $o) {
+            if (empty ($o))
+                unset ($opts[$l]);
+        }
+        
+        $this->Session->write ($sKey.'.cache', $opts);
+        
+        return $opts;
+        
+    }
+    
+    function _getStandardValues ($wiz_name) {
+        switch ($wiz_name) {
+            case "dna_survival_screening_tool":
+                // is job 667 in dev DB
+                $s = <<<HAX
+a:6:{s:8:"specimen";a:2:{s:8:"Specimen";a:3:{s:4:"name";s:14:""Standard" Run";s:4:"code";s:5:"STD-0";s:11:"description";s:122:"This run contains standard values for use as "sane defaults" when comparing specimens where some variables may be unknown.";}s:14:"Temporothermal";a:1:{s:12:"stopdate_ybp";s:4:"4000";}}s:8:"reaction";a:1:{s:8:"Reaction";a:9:{s:8:"showname";s:23:"DNA Depurination (Bone)";s:11:"reaction_id";s:1:"1";s:13:"molecule_name";s:0:"";s:13:"reaction_name";s:0:"";s:14:"substrate_name";s:0:"";s:4:"name";s:0:"";s:13:"ea_kj_per_mol";s:0:"";s:5:"f_sec";s:0:"";s:11:"citation_id";s:1:"3";}}s:4:"site";a:1:{s:4:"Site";a:7:{s:4:"name";s:27:"S-Block, University of York";s:7:"lat_dec";s:17:"53.94679973582498";s:7:"lon_dec";s:19:"-1.0580287460327327";s:9:"elevation";s:2:"14";s:16:"elevation_source";s:9:"Wikipedia";s:13:"lapse_correct";s:1:"1";s:11:"description";s:323:"The University of York (informally York University, or simply York, abbreviated as Ebor. for post-nominals), is an academic institution located in the city of York, England. Established in 1963, the campus university has expanded to more than thirty departments and centres, covering a wide range of (...)
+(elevation: 14 m)";}}s:6:"burial";a:3:{s:14:"Temporothermal";a:5:{s:13:"startdate_yad";s:4:"2005";s:13:"startdate_ybp";s:3:"-55";s:11:"temp_mean_c";s:0:"";s:13:"temp_pp_amp_c";s:0:"";s:11:"description";s:0:"";}s:6:"Burial";a:1:{s:9:"numLayers";s:1:"1";}s:18:"SoilTemporothermal";a:1:{i:0;a:5:{s:7:"soil_id";s:1:"1";s:11:"thickness_m";s:3:"1.5";s:6:"sudden";s:1:"0";s:15:"direct_sunlight";s:1:"0";s:5:"order";s:1:"0";}}}s:7:"storage";a:1:{s:14:"Temporothermal";a:6:{s:13:"startdate_yad";s:4:"2013";s:13:"startdate_ybp";s:3:"-63";s:12:"stopdate_ybp";s:3:"-55";s:11:"temp_mean_c";s:2:"10";s:13:"temp_pp_amp_c";s:2:"10";s:11:"description";s:0:"";}}s:6:"review";a:1:{s:3:"Job";a:3:{s:14:"processor_name";s:11:"thermal_age";s:11:"parser_name";s:12:"dna_screener";s:13:"reporter_name";s:12:"dna_screener";}}}
+HAX;
+                break;
+            case "thermal_age_spreadsheet_tool":
+                $s = <<<HAX
+a:3:{s:17:"spreadsheet_setup";a:1:{s:11:"Spreadsheet";a:6:{s:4:"name";s:10:""Standard"";s:15:"soil_cols_count";s:1:"2";s:13:"example_soils";a:2:{i:0;s:1:"1";i:1;s:1:"6";}s:9:"sine_cols";s:1:"0";s:16:"multi_tt_example";s:1:"0";s:20:"custom_kinetics_cols";s:1:"0";}}s:8:"reaction";a:1:{s:8:"Reaction";a:9:{s:8:"showname";s:23:"DNA Depurination (Bone)";s:11:"reaction_id";s:1:"1";s:13:"molecule_name";s:0:"";s:13:"reaction_name";s:0:"";s:14:"substrate_name";s:0:"";s:4:"name";s:0:"";s:13:"ea_kj_per_mol";s:0:"";s:5:"f_sec";s:0:"";s:11:"citation_id";s:1:"3";}}s:20:"spreadsheet_download";a:1:{s:11:"Spreadsheet";a:1:{s:20:"passed_download_step";s:1:"1";}}}
+HAX;
+                break;
+            default:
+                return array ();
+        }
+        
+        return unserialize (trim ($s));
+    }
+    
     /**
      * To fill in some wizard-wide stuff for use by the various views/elements. Run once we're sure
      * everything is ok.
@@ -141,6 +283,8 @@ class WizController extends AppController {
     function clearcache () {
         $this->set ('clearedOk', (clearCache ()) ? TRUE : FALSE);
         $this->set ('clearedWizard', ($this->Wizard->reset()) ? TRUE : FALSE);
+        $this->Session->delete ("wizards.currently");
+        $this->Session->delete ("wizards.after_save");
         $this->Session->setFlash ("Cleared Cache & Reset Wizard");
         $this->redirect (array ('controller' => 'wiz', 'action' => 'index'));
     }
@@ -182,7 +326,78 @@ class WizController extends AppController {
         $this->set ('places', (array) $places);
 
     }
-
+    
+    /**
+     * Loads data from a previous job into a single screen of the wizard and reloads the form
+     */
+    function get_values_from_job_screen () {
+        
+        $job_id =       (!empty ($this->params['url']['job_id'])) ?     $this->params['url']['job_id'] : null;
+        $wiz_name =     (!empty ($this->params['url']['wiz_name'])) ?   $this->params['url']['wiz_name'] : null;
+        $wiz_screen =   (!empty ($this->params['url']['wiz_screen'])) ? $this->params['url']['wiz_screen'] : null;
+        
+        
+        $this->autoLayout = false;
+        $this->autoRender = false;
+        $op = array (
+            'vals' => array (),
+            'error' => false
+        );
+        if ($job_id !== null && $wiz_screen !== null && ($this->Job->idExists ($job_id) || $job_id == 'std')) {
+            if ($job_id != 'std' && $this->authoriseRead('Job', $job_id) !== true) {
+                $op['error'] = "Not authorised.";
+            }
+            else {
+                if ($job_id == 'std') {
+                    $u = $this->_getStandardValues ($wiz_name);
+                }
+                else {
+                    $d = $this->Job->read ('data', $job_id);
+                    $u = unserialize ($d['Job']['data']);
+                }
+                if ($u === false) {
+                    $op['error'] = "Couldn't decode job data.";
+                }
+                elseif (!isset ($u[$wiz_screen])) {
+                    $op['error'] = "That job doesn't contain data for this wizard screen.";
+                }
+                else {
+                    $op['vals'] = $u[$wiz_screen];
+                }
+            }
+        }
+        else {
+            $op['error'] = "Ensure job_id, wiz_name and wiz_screen params are set.";
+        }
+        
+        if ($op['error'] === false) {
+            $this->Wizard->save ($wiz_screen, $op['vals']);
+            $this->Session->setFlash ("Copied data from job $job_id");
+            // Regenerate the "load from" list options, adding this job to recent items
+            $this->_getLoadValuesFromOpts($job_id, $wiz_name);
+            // Most recently used selected on load
+            $lastKey = 'wizards.lvf.'.$wiz_name.'.last';
+            $this->Session->write ($lastKey, $job_id);
+            
+            $this->redirect(array (
+                'controller' => 'wiz',
+                'action' => $wiz_name,
+                $wiz_screen
+            ));
+        }
+        else {
+            $this->Session->setFlash ("Error: " . $op['error']);
+            
+            $this->redirect(array (
+                'controller' => 'wiz',
+                'action' => $wiz_name,
+                $wiz_screen,
+            ));
+            
+        }
+        
+    }
+    
     /**
      * Function to get the altitude used in the temperature models from which we draw our 0ka DP
      * Used to calculate the difference between DEM alt. and alt. of actual site for lapse rate correction.
@@ -327,7 +542,7 @@ class WizController extends AppController {
      * Checks to see if the environment is a supported browser, if not returns false, if so returns
      * true if the environment is successfully initialised or false if there are errors.
      */
-    function _initWizardEnvironment ($wizardAction = null) {
+    function _initWizardEnvironment ($wizardAction = null, $step = null) {
 
         // <hax /> this is here to force session to init before writing in initial env check
         $this->Session->write ('wizards.lasttime', time());
@@ -343,13 +558,15 @@ class WizController extends AppController {
                     'wizardAction' => $wizardAction
                 ));
 
+            $this->wizardInfos['step_requested'] = preg_replace ('/[\W]/','',strtolower ($step));
+            
             if (!$this->_initWizardInfos($wizardAction)) {
                 return false;
             }
             
+            
             $this->Wizard->steps = array_keys ($this->wizardInfos['steps'][$this->amWizard]);
             $this->set ('wizardInfos', $this->wizardInfos);
-            
             
             // validates against models automatically if no cb
             $this->Wizard->autoValidate = true;
@@ -378,27 +595,123 @@ class WizController extends AppController {
      * and optional storage phase.
      */
     function dna_survival_screening_tool ($step = null) {
-        $environmentGood = $this->_initWizardEnvironment(__FUNCTION__);
-
-        if ($environmentGood == true)
-            $this->Wizard->process($step);
-
-        //$this->Session->setFlash (print_r ($this->data, true));
+        return $this->_run_wizard(__FUNCTION__, $step);
     }
     /**
      * The thermal age spreadsheet tool calculates lots of thermal ages at once and populates a
      * spreadsheet for the user to download and further analyse.
      */
     function thermal_age_spreadsheet_tool ($step = null) {
-        $environmentGood = $this->_initWizardEnvironment(__FUNCTION__);
-
-        if ($environmentGood == true)
-            $this->Wizard->process($step);
-
-        //$this->Session->setFlash (print_r ($this->data, true));
+        return $this->_run_wizard(__FUNCTION__, $step);
     }
-
-
+    
+    
+    function _run_wizard ($wizard, $step = null) {
+        if (!method_exists($this, $wizard)) return false;
+        // is the requested wizard the running wizard?
+        $wcKey = 'wizards.currently';
+        $crw = $this->Session->read ($wcKey);
+        if (!!$crw && $crw != $wizard) {
+            $this->redirect(array (
+                'controller' => 'wiz',
+                'action' => 'switch_to',
+                $wizard
+            ));
+            return;
+        }
+        
+        $environmentGood = $this->_initWizardEnvironment($wizard, $step);
+        
+        if ($environmentGood !== true) return false;
+        
+        $wizardData = $this->Wizard->read();
+        if (!!$wizardData && !empty ($wizardData))
+            $this->Session->write ($wcKey, $wizard);
+        
+        $this->Wizard->process($step);
+        
+    }
+    
+    function resume_draft ($job_id) {
+        if (!($this->Job->idExists ($job_id) && $this->authoriseWrite('Job',$job_id))) {
+            $this->Session->setFlash ("Error: Unknown Job or not authorised.");
+            $this->redirect (array (
+                'controller' => 'users',
+                'action' => 'dashboard'
+            ));
+        }
+        elseif ($this->Session->check('wizards.currently')) {
+            $this->redirect (array (
+                'controller' => 'wiz',
+                'action' => 'switch_to',
+                $job_id
+            ));
+        }
+        else {
+            $this->Wizard->reset();
+            $j = $this->Job->read(null,$job_id);
+            $this->Wizard->restore (unserialize ($j['Job']['data']));
+            $this->Job->delete ($job_id);
+            $this->Session->setFlash ("Loaded unfinished job back into wizard: ".@$j['Job']['title']);
+            $this->Session->write('wizards.currently',$j['Job']['wizard_name']);
+            $this->redirect (array (
+                'controller' => 'wiz',
+                'action' => $j['Job']['wizard_name'],
+                false
+            ));
+        }
+    }
+    
+    function switch_to ($new_wizard) {
+        $action =       (!empty ($this->params['url']['action'])) ?     $this->params['url']['action'] : null;
+        if (!in_array ($new_wizard, array_keys ($this->wizardInfos['titles'])) && !(is_numeric ($new_wizard) && $this->authoriseRead ('Job', $new_wizard))) {
+            $action = null;
+            $this->Session->setFlash ("Warning: Unknown wizard or not authorised.");
+        }
+        
+        switch ($action) {
+            case 'save':
+                $url = array (
+                    'controller' => 'wiz',
+                    'action' => 'save_draft',
+                    null
+                );
+                $thenDo = is_numeric ($new_wizard) ? array ('resume_draft',$new_wizard) : array ($new_wizard);
+                $this->Session->write('wizards.after_save', $thenDo);
+                break;
+            case 'discard':
+                $this->Wizard->reset();
+                $this->Session->delete('wizards.currently');
+                if (is_numeric ($new_wizard))
+                    $url = array (
+                        'controller' => 'wiz',
+                        'action' => 'resume_draft',
+                        $new_wizard
+                    );
+                else
+                    $url = array (
+                        'controller' => 'wiz',
+                        'action' => $new_wizard,
+                        null
+                    );
+                break;
+            case 'cancel':
+                $url = array (
+                    'controller' => 'wiz',
+                    'action' => $this->Session->read('wizards.currently'),
+                    null
+                );
+                break;
+        }
+        if ($action !== null)
+            $this->redirect ($url);
+        $this->set ('newWizard', $new_wizard);
+    }
+    
+    function save_draft () {
+        $this->_wizard_data_to_job(true);
+    }
+    
     /**
      * Specimen input handler
      */
@@ -463,12 +776,8 @@ class WizController extends AppController {
                 //debug (array ('spreadsheet_upload', array ('Spreadsheet' => array ('filename' => $fn)))); die();
 
                 // success - setup job in data to override review actions
-                $this->Wizard->save ('set_review', array ('Job' => array (
-                    'parser_name' => 'thermal_age_csv',
-                    'processor_name' => 'thermal_age_multi',
-                    'reporter_name' => 'thermal_age_csv',
-                )));
-
+                $this->_setJobDefaults ();
+                
                 return true;
             }
 
@@ -482,6 +791,14 @@ class WizController extends AppController {
 
 
         return false;
+    }
+    
+    function _setJobDefaults () {
+        if (isset ($this->wizardInfos['jobdefaults'][$this->amWizard])) {
+            $this->Wizard->save ('set_review', array ('Job' => $this->wizardInfos['jobdefaults'][$this->amWizard]));
+            return true;
+        }
+        else return false;
     }
 
     /**
@@ -671,31 +988,93 @@ class WizController extends AppController {
         }
     }
     
-
-
+    /**
+     * Used to turn wizard data into a job when a wizard is successfully completed
+     */
     function create_job () {
+        $this->_wizard_data_to_job();
+    }
+    
+    /**
+     * Saves wizard data in a new job, resets wizard and redirects
+     * @param boolean $draft whether job is ready to run now (false) or saved for later (true)
+     */
+    function _wizard_data_to_job ($draft = false) {
         $wizardData = $this->Wizard->read();
         $this->Job->create();
 
-        $job = $wizardData['review'];
-        $job['Job']['status'] = 0; // set pending
+        if (!$draft) $job = $wizardData['review'];
+        $job['Job']['status'] = (!!$draft) ? 4 : 0; // set draft else pending
         $job['Job']['data'] = serialize ($wizardData);
-
-        if ($this->Job->save ($job)) {
-            // created job ok. reset the wizard and redirect to the job status page.
-// DEBUG
-            $this->Wizard->reset ();
+        $job['Job']['wizard_name'] = $this->Session->read('wizards.currently');
+        
+        if (!is_array ($this->wizardInfos['jobdefaults'][$job['Job']['wizard_name']])) {
+            $this->Session->setFlash ('Error: Couldn\'t find specification for wizard.');
+        }
+        else {
+            foreach ($this->wizardInfos['jobdefaults'][$job['Job']['wizard_name']] as $k => $v) {
+                $job['Job'][$k] = $v;
+            }
+        }
+        
+        if (empty ($job['Job']['title'])) {
+            switch ($job['Job']['wizard_name']) {
+                case "dna_survival_screening_tool":
+                    $job['Job']['title'] = '';
+                    if (@!empty ($wizardData['specimen']['Specimen']['code']))
+                        $job['Job']['title'] .= $wizardData['specimen']['Specimen']['code'] . "; ";
+                    if (@!empty ($wizardData['specimen']['Temporothermal']['stopdate_ybp']))
+                        $job['Job']['title'] .= $wizardData['specimen']['Temporothermal']['stopdate_ybp'] . "yrs bp";
+                    if (@!empty ($wizardData['site']['Site']['name'])) {
+                        $nn = trim(substr($wizardData['site']['Site']['name'], 0, 25));
+                        if ($nn != $wizardData['site']['Site']['name']) $nn .= '...';
+                        if (!empty ($nn))
+                            $job['Job']['title'] .= ", " . $nn;
+                    }
+                    break;
+                case "thermal_age_spreadsheet_tool":
+                    if (isset ($wizardData['spreadsheet_upload']['Spreadsheet']['file']['name']))
+                        $job['Job']['title'] = $wizardData['spreadsheet_upload']['Spreadsheet']['file']['name'];
+                    break;
+                default:
+                    $job['Job']['title'] = 'Untitled Job';
+                    
+            }
+            
+        }
+        
+        if (!$this->Job->save ($job)) {
+            $this->Session->setFlash ("Error: Unable to save job!");
+            $this->Session->delete ("wizards.after_save");
+            $this->redirect(array ('controller' => 'wiz', 'action' => 'index', false));
+        }
+        // created job ok. reset the wizard and redirect to the job status page.
+        $this->Wizard->reset ();
+        $this->Session->delete ('wizards.currently');
+        
+        if (!$draft) {
             // (re-)Kick off processing in case thread has died
             $this->Job->tryProcessNext();
-            
-            // Don't do this any more it is ugly:
-            $this->Session->Setflash ("Do not close this window!", true);
             $this->redirect(array('controller'=>'jobs', 'action' => 'status', $this->Job->field('id')));
-            // Do this instead:
-            //$this->redirect(array('controller'=>'users', 'action' => 'dashboard'));
         }
-
-        //$this->set ('wizdata', $wizardData);
+        else {
+            $this->Session->setFlash ("Previous incomplete run saved.");
+            $r = $this->Session->read('wizards.after_save');
+            if (!empty($r)) {
+                $r = (array) $r;
+                $this->redirect(array_merge (array (
+                    'controller' => 'wiz',
+                    'action' => array_shift($r)
+                ), $r));
+                $this->Session->delete ("wizards.after_save");
+            }
+            else {
+                $this->redirect (array (
+                    'controller' => 'users',
+                    'action' => 'dashboard'
+                ));
+            }
+        }
     }
 
 }

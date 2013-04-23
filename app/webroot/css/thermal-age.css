@@ -1107,3 +1107,12 @@ div.sentenceForm {
 .sentenceForm span {
     margin: 0 .2em;
 }
+
+.loadValuesFrom.sentenceForm label {
+    margin: 0;
+    position: relative;
+    top: -2px;
+    padding-right: 5px;
+    width: auto;
+    float: none;
+}

@@ -102,6 +102,20 @@ var wc = {
         })
         .removeClass('make-chosen')
         .addClass('made-chosen');
+        
+        wc.initLoadFromButton($me);
+    },
+    initLoadFromButton: function (scope) {
+        scope = scope || '#wizardContainer';
+        var $btn = $('#loadValuesFromButton');//.click (function () { return confirm('This will overwrite any data already in this form - continue?'); });
+        var $inp = $('#loadValuesFromJobSelect');
+        $inp.on('change', function(){
+            $btn.attr ('href','/wiz/get_values_from_job_screen/?' + $.param({
+                job_id: $inp.val(),
+                wiz_name: $btn.attr('data-wizn'),
+                wiz_screen: $btn.attr('data-wscn')
+            }))
+        }).change();
     },
     initLayerDeleteButtons: function (scope) {
         scope = scope || '#wizardContainer';
