@@ -109,7 +109,8 @@ class LabResultsController extends AppController {
             $this->data['LabResult']['user_id'] = $this->Auth->user('id');
         }
         $this->_setFormStuffByJobId ($job_id);
-        if (!empty($this->data)) {
+        $authd = $this->authoriseWrite('Job',$job_id);
+        if (!empty($this->data) && $authd === true) {
             //print_r ($this->data);die();
 			$this->LabResult->create();
 			$this->LabResult->set($this->data);
@@ -120,7 +121,9 @@ class LabResultsController extends AppController {
 				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
 			}
         }
-        $authd = $this->authoriseWrite('Job',$job_id);
+        elseif ($authd !== true) {
+            $this->setFlash ("Not authorised.");
+        }
         if ($authd !== true) {
             $this->set('showForm', false);
         }
@@ -134,7 +137,7 @@ class LabResultsController extends AppController {
         $authd = $this->authoriseWrite('Job',$job_id);
         $this->_setFormStuffByJobId ($job_id);
         
-        if (!empty($this->data) && $authd) {
+        if (!empty($this->data) && $authd === true) {
             
             // Create only!
             if (isset ($this->data['LabResult']['id']))

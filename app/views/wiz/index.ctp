@@ -7,13 +7,17 @@
     </p>
 </div></div>
 
+<?php
+$isRunning = '<div class="message" style="padding: .25em .2em .05em .2em; margin: .3em -5px;"><span>&ensp;'.$this->Icons->i('&#xe064;').'&ensp;In Progress</span></div>';
+$curWiz = $this->Session->read('wizards.currently');
+?>
 <div class="grid_4">
 
     <div class="smartbox cleafix">
         <!--<h2 class="sbHeading">
             Thermal Age
         </h2>
-
+        
         <?php echo $this->Html->link(
             "Thermal Age Tool<br /><span class=\"subtler-text\">Click to Start</span>",
             array ('controller' => 'wiz', 'action' => 'age_proxy_tool'),
@@ -38,9 +42,16 @@
         <h2 class="sbHeading">
             Spreadsheet Wizard
         </h2>
-        <?php echo $this->Html->link(
-            "Thermal Age Spreadsheet<br /><span class=\"subtler-text\">Click to Start</span>",
-            array ('controller' => 'wiz', 'action' => 'thermal_age_spreadsheet_tool'),
+        <?php
+        $wn = 'thermal_age_spreadsheet_tool';
+        $verb = 'Start';
+        if ($curWiz == $wn) {
+            echo $isRunning;
+            $verb = 'Resume';
+        }
+        echo $this->Html->link(
+            "Thermal Age Spreadsheet<br /><span class=\"subtler-text\">Click to $verb</span>",
+            array ('controller' => 'wiz', 'action' => $wn),
             array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
         <div class="spoiler">
             <p>
@@ -57,16 +68,23 @@
     </div>
     
 </div>
-
 <div class="grid_4">
     <div class="smartbox">
         <h2 class="sbHeading">
             DNA Screener
         </h2>
-        <?php echo $this->Html->link(
-            "DNA Screening Wizard<br /><span class=\"subtler-text\">Click to Start</span>",
-            array ('controller' => 'wiz', 'action' => 'dna_survival_screening_tool'),
-            array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
+        <?php
+        $wn = 'dna_survival_screening_tool';
+        $verb = 'Start';
+        if ($curWiz == $wn) {
+            echo $isRunning;
+            $verb = 'Resume';
+        }
+        echo $this->Html->link(
+            "DNA Screening Wizard<br /><span class=\"subtler-text\">Click to $verb</span>",
+            array ('controller' => 'wiz', 'action' => $wn),
+            array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false));
+        ?>
        <div class="spoiler">
             <p>
                 Because thermal age is the absolute amount of a reaction which has taken place in a sample, we

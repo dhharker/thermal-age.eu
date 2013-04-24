@@ -4,7 +4,7 @@ $status_colours = array (
     "#bb4cc8", // running
     "#5fb329", // finished
     "#c91501", // error
-    "#96b4a7" // incomplete
+    "#71877D" // incomplete
 );
 $status_icons = array (
     '&#xe005;', // pending
@@ -34,6 +34,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
         $itemIcon = '';
         $title_uri = '';
         $modd_date = '';
+        $areYouSure = false;
         
         $status_uri = array (
             'controller' => 'jobs',
@@ -99,6 +100,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
             // Job is incomplete (saved for later by user)
             $itemIcon = $this->Icons->i('&#xe009;');
             $title_uri = $resume_uri;
+            $areYouSure = "Would you like to resume this wizard now?";
         }
         
         if (isset ($jd['specimen']) && isset ($jd['specimen']['Specimen']) && isset ($jd['specimen']['Specimen']['name'])) {
@@ -121,8 +123,7 @@ if (isset ($jobs) && is_array ($jobs) && count ($jobs) > 0) {
         <li>
             <div style="text-align: right; float: right; font-variant: small-caps; color: <?=$status_colour;?>"><?=$status_str;?>&ensp;<?=$this->Icons->i($status_icon)?><br />
             <?=$modd_date?></div>
-            
-            <strong><?=$this->Html->link ($itemIcon."&nbsp; ".$jobTitle, $title_uri, array ('escape' => false));?></strong><br />
+            <strong><?=$this->Html->link ($itemIcon."&nbsp; ".$jobTitle, $title_uri, array ('escape' => false), $areYouSure);?></strong><br />
             <?=$download?>
             <?=$jobSubTitle?>
                 
