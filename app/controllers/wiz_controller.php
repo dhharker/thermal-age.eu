@@ -851,10 +851,48 @@ HAX;
         $this->set ('agebp', $ssd);
 
         $this->loadModel('Soil');
+        
+        $this->Soil->virtualFields['water_content_rounded'] = "ROUND(100*Soil.water_content,1)";
+        $soils = $this->Soil->find('all', array (
+            'fields' => array (
+                'Soil.id',
+                'Soil.name',
+                'Soil.water_content_rounded',
+                'Soil.thermal_diffusivity_m2_day'
+            ),
+            'conditions' => array (
+                'Soil.user_id' => '0'
+            ),
+            'order' => array (
+                'Soil.name',
+                'Soil.water_content ASC',
+            )
+        ));
+        
+        /* This removed as can no longer just populate a list :-(
+        $this->Soil->virtualFields['scat'] = "IF(Soil.user_id = 0,'Public Soil Types','My Soil Types')";
+        $this->Soil->virtualFields['snam'] = "CONCAT(Soil.name,' (',ROUND(100*Soil.water_content,1),'% h2o by mass)')";
         $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
-            'Soil.id',
-            'Soil.name'
+            'fields' => array (
+                'Soil.id',
+                //'Soil.snam',
+                'Soil.name',
+                //'Soil.scat',
+            ),
+            'conditions' => array (
+                //'Soil.user_id' => array ('0', $this->Auth->user('id'))
+                'Soil.user_id' => '0'
+            ),
+            'order' => array (
+                'Soil.scat DESC',
+                'Soil.water_content ASC',
+            ),
+            'group' => array (
+                'Soil.name'
+            )
         )));
+         * 
+         */
         
         $this->set(compact('soils'));
     }
