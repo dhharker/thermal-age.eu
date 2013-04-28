@@ -465,3 +465,11 @@ div.loadValuesFrom.sentenceForm {
         margin-top: 2px;
     }
 }
+
+
+#burialLayersList.cakeInline label {
+    width: auto;
+    min-width: 0%;
+    padding: .23em;
+    margin: .3em 0;
+}

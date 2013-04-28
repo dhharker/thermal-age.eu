@@ -814,9 +814,26 @@ div.moodSlider.ui-slider-horizontal {
     background: -ms-linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e21212', endColorstr='#63d313',GradientType=1 );
     background: linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
+}
+.layerSliderWrapper {
+    padding: .4em 0;
+    margin: 0 auto;
+}
+div.waterSlider.ui-slider-horizontal {
+    background: rgb(230,193,100);
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2U2YzE2NCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjU1JSIgc3RvcC1jb2xvcj0iI2FiZDhhNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3MGI0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(left, rgba(230,193,100,1) 0%, rgba(171,216,164,1) 55%, rgba(112,180,232,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(230,193,100,1)), color-stop(55%,rgba(171,216,164,1)), color-stop(100%,rgba(112,180,232,1)));
+    background: -webkit-linear-gradient(left, rgba(230,193,100,1) 0%,rgba(171,216,164,1) 55%,rgba(112,180,232,1) 100%);
+    background: -o-linear-gradient(left, rgba(230,193,100,1) 0%,rgba(171,216,164,1) 55%,rgba(112,180,232,1) 100%);
+    background: -ms-linear-gradient(left, rgba(230,193,100,1) 0%,rgba(171,216,164,1) 55%,rgba(112,180,232,1) 100%);
+    background: linear-gradient(to right, rgba(230,193,100,1) 0%,rgba(171,216,164,1) 55%,rgba(112,180,232,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6c164', endColorstr='#70b4e8',GradientType=1 );
+}
+div.ui-slider-horizontal {
     margin: 1px 3px 2px 3px;
 }
-div.moodSlider.ui-slider a.ui-slider-handle {
+div.ui-slider a.ui-slider-handle {
     background: none;
     background-color: rgba(255,255,255, 0.3);
     border-width: 3px 1px 3px 1px;
@@ -828,15 +845,15 @@ div.moodSlider.ui-slider a.ui-slider-handle {
     -moz-box-shadow:    0px 0px 3px rgba(0, 0, 0, 0.75);
     box-shadow:         0px 0px 3px rgba(0, 0, 0, 0.75);
 }
-div.moodSlider.ui-slider a.ui-slider-handle.ui-state-active {
+div.ui-slider a.ui-slider-handle.ui-state-active {
     border-color: #333;
 }
-div.moodSlider.ui-slider-horizontal .sliderLabelInternal {
+div.ui-slider-horizontal .sliderLabelInternal {
     font-weight: bold;
     font-size: 9px;
     letter-spacing: 1px;
     padding: 0px;
-    margin: -2px 5px 0px 5px;
+    margin: -1px 5px 0px 5px;
     color: #fafafa;
 }
 

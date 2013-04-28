@@ -146,7 +146,7 @@ var wc = {
             // on load, the value will be in bp, so put it in the bp field
             var ival = $i.attr('value');
             if (!( isNaN (ival) || '' === ival || ival.length == 0 )) {
-                console.log ("ival is a number", ival);
+                //console.log ("ival is a number", ival);
                 newInp.val($i.val());
                 $i.val (useful.bp2ad (newInp.val()));
                 
@@ -214,6 +214,7 @@ var wc = {
         });
         
         this.initLayerDeleteButtons (scope);
+        this.initWaterSlides (list);
         this.reorderLayers (scope);
         this.local.burial.nextIndex = $('input#BurialNumLayers', scope).val();
         
@@ -237,16 +238,42 @@ var wc = {
 
             $(newItem).appendTo (list).show ({
                 effect: 'blind',
-                duration: 300,
+                duration: 300
             });
             initialiseTAUI (list);
             wc.initLayerDeleteButtons (list);
+            wc.initWaterSlides (list);
             wc.reorderLayers (list);
             return false;
         });
         
+    },
+    initWaterSlides: function (scope) {
+        scope = scope || '#wizardContainer';
+        $('div.waterSlider', scope).not ('.inited').each (function () {
+            var slider = $(this);
+            var input = slider.parent().find ('input[id$=H2o]');
+            var udhv = function () {
+                var $this = $(this);
+                input.val ($this.slider('value') / 100.0);
+                $this.trigger('blur');
+            };
+            
+            slider.slider ({
+                step: 1,
+                min: 0,
+                max: 100,
+                value: input.val() * 100,
+                animate: true,
+                slide: udhv,
+                change: udhv
+            });
+        })
+        .prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">WET</div>')
+        .prepend('<div class="sliderLabelInternal" style="float: right">SATURATED</div>')
+        .prepend('<div class="sliderLabelInternal" style="float: left">DESICCATED</div>')
 
-        
+        .addClass ('inited');
     },
     initStorageForm: function (scope) {
         scope = scope || '#wizardContainer';

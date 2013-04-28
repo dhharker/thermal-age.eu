@@ -244,7 +244,7 @@ var initialiseTAUI = function (scope) {
             change: udhv
         });
     })
-    .prepend('<div class="sliderLabelInternal" style="float: none; margin: -2px auto; clear: none; width: 8em; text-align: center;">INDIFFERENT</div>')
+    .prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">INDIFFERENT</div>')
     .prepend('<div class="sliderLabelInternal" style="float: right">GOOD</div>')
     .prepend('<div class="sliderLabelInternal" style="float: left">BAD</div>')
 

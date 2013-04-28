@@ -54,7 +54,7 @@
                 'type' => 'hidden',
                 'value' => $numLayers,
             ));?>
-            <div id="burialLayersList" class="smartbox grid_10 alpha" style="clear: both;">
+            <div id="burialLayersList" class="smartbox grid_10 alpha  form sentenceForm cakeInline" style="clear: both;">
                 <div class="" style="background: url('/img/burial_surface.png') bottom center no-repeat; margin: -4px 0px 0px 0px; height: 54px;">
                     <p class="help">
                         The soil surface is up here, the sample is buried down by the &quot;Add Layer&quot; button.
@@ -91,13 +91,20 @@
                             </div>
                             <div class="mobileLayers">
                                 <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id', array (
-                                        'label' => 'Layer of'
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
+                                        'label' => 'Thick (m)',
+                                        'div' => false
                                     ));?>
+                                    <div class="layerSliderWrapper">
+                                        <div class="waterSlider"></div>
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_saturated_h2o', array (
+                                            'type' => 'hidden'
+                                        ));?>
+                                    </div>
                                 </div>
                                 <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
-                                        'label' => 'Thick (m)'
+                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id', array (
+                                        'label' => 'Layer of'
                                     ));?>
                                 </div>
                                 <div class="grid_3 omega">
