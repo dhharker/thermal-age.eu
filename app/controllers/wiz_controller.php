@@ -923,13 +923,14 @@ HAX;
         //                              --> interpolated Dh value between nearest real soil(s)
         $soilsData = array (
             'byName' => $soilsByName,
-            'graphs' => $graphs
+            'graphs' => $graphs,
+            'graphableMax' => $graphableMax
         );
         
         //* This removed as can no longer just populate a list :-(
         $this->Soil->virtualFields['scat'] = "IF(Soil.user_id = 0,'Public Soil Types','My Soil Types')";
         $this->Soil->virtualFields['snam'] = "CONCAT(Soil.name,' (',ROUND(100*Soil.water_content,1),'% h2o by mass)')";
-        $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
+        $soils = $this->Soil->find('list', array (
             'fields' => array (
                 //'Soil.id',
                 'Soil.name',
@@ -948,8 +949,7 @@ HAX;
             'group' => array (
                 'Soil.name'
             )
-        )));
-        //*/
+        ));
         
         $this->set(compact('soils', 'soilsData'));
     }

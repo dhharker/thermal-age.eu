@@ -230,11 +230,21 @@ var wc = {
                         width: $('.waterSlider',$row).css('width')
                     })
                     .sparkline (graph, {
+                        chartRangeMin: 0,
                         width: '95.5%',
                         height: '23px'
                     })
                 ;
                 $('.show-graph:hidden',$row).show();
+                var newMax = wc.local.soilsData.graphableMax[$this.val()];
+                var slider = $('.waterSlider',$row);
+                var oldVal = slider.slider('value')
+                    
+                slider.slider('option','max',newMax).slider('refresh');
+                if (newMax < oldVal)
+                    slider.slider('value',newMax);
+                else
+                    slider.slider('value',oldVal);
             }
             else
                 $('.show-graph:visible',$row).hide();
@@ -291,21 +301,34 @@ var wc = {
         scope = scope || '#wizardContainer';
         $('div.waterSlider', scope).not ('.inited').each (function () {
             var slider = $(this);
-            var input = slider.parent().find ('input[id$=H2o]');
-            var udhv = function () {
+            var $row = slider.parentsUntil ('fieldset');
+            var inputPc = $row.find ('input[id$=PercentMassH2o]').first();
+            var inputMe = $row.find ('input[id$=H2o]').first();
+            var inputDh = $row.find ('input[id$=ThermalDiffusivity]').first();
+            var fnUpdate = function () {
+                var val = slider.slider('value');
+                inputPc.val (val);
+                inputMe.val (val / 100.0);
+                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][val]);
+            };
+            var fnSlide = function () {
+                fnUpdate();
+            };
+            var fnChange = function () {
+                fnUpdate();
                 var $this = $(this);
-                input.val ($this.slider('value') / 100.0);
-                $this.trigger('blur');
+                $this.find('a').trigger('blur');
+                
             };
             
             slider.slider ({
                 step: 1,
                 min: 0,
                 max: 100,
-                value: input.val() * 100,
+                value: inputMe.val() * 100,
                 animate: true,
-                slide: udhv,
-                change: udhv
+                slide: fnSlide,
+                change: fnChange
             });
         })
         //.prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">WET</div>')
