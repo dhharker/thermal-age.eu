@@ -161,7 +161,7 @@ if (!empty ($soilsData)) {
                                 
                                 <div class="blGridCell">
                                     
-                                    <div class="common-height">
+                                    <div class="common-height required-custom">
                                         <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_mass_h2o', array (
                                             'label' => "=",
                                             'div' => false,
@@ -173,7 +173,7 @@ if (!empty ($soilsData)) {
                                 </div>
                                 
                                 <div class="blGridCell">
-                                    <div class="common-height">
+                                    <div class="common-height required-custom">
                                         <?=$this->Form->input('SoilTemporothermal.'.$n.'.thermal_diffusivity', array (
                                             'label' => "=",
                                             'div' => false,

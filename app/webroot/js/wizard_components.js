@@ -228,12 +228,14 @@ var wc = {
             var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
             if ($this.is(':checked')) {
-                $('.hide-custom',$row).show();
-                $('.show-custom',$row).hide();
-            }
-            else {
                 $('.hide-custom',$row).hide();
                 $('.show-custom',$row).show();
+                $('.required-custom',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
+            }
+            else {
+                $('.hide-custom',$row).show();
+                $('.show-custom',$row).hide();
+                $('.required-custom',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
             }
         }).trigger('change');
         
