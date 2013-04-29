@@ -148,10 +148,11 @@ if (!empty ($soilsData)) {
                                     
                                 </div>
                                 
-                                <div class="blGridCell hide-custom">
+                                <div class="blGridCell hide-custom show-graph">
                                     <div class="common-height">
                                         <div class="layerSliderWrapper">
-                                            <div class="waterSlider"></div>
+                                            <span class="saturationSpark"></span>
+                                            <div class="waterSlider" style=""></div>
                                             <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_saturated_h2o', array (
                                                 'type' => 'hidden'
                                             ));?>

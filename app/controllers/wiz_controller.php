@@ -865,15 +865,66 @@ HAX;
             ),
             'order' => array (
                 'Soil.name',
-                'Soil.water_content ASC',
+                'Soil.water_content ASC', // <-- very important!
             )
         ));
         
         $soilsByName = array ();
+        $graphableMax = array ();
+        $graphs = array ();
         foreach ($sdsRaw as $sd) {
-            if (empty ($soilsByName[$sd['Soil']['name']])) $soilsByName[$sd['Soil']['name']] = array ();
+            if (empty ($soilsByName[$sd['Soil']['name']])) $soilsByName[$sd['Soil']['name']] = array (
+                'wcr2id' => array (),
+                'id2dh' => array (),
+            );
+            $soilsByName[  $sd['Soil']['name']  ]['wcr2id'][  $sd['Soil']['water_content_rounded']  ]   = $sd['Soil']['id'];
+            $soilsByName[  $sd['Soil']['name']  ]['id2dh'][  $sd['Soil']['id']  ]                       = $sd['Soil']['thermal_diffusivity_m2_day'];
+            if (count ($soilsByName[$sd['Soil']['name']]['wcr2id']) > 1) 
+                $graphableMax[$sd['Soil']['name']] = max (array_keys ($soilsByName[$sd['Soil']['name']]['wcr2id']));
         }
+            
+        foreach ($graphableMax as $sn => $g) {
+            //   $Dh = $soilsByName[$sd['Soil']['name']]['id2dh'][$sid];
+            $wcrs = array_keys ($soilsByName[$sn]['wcr2id']);
+            $lastWcr = $wcrs[0];
+            $graph = array ();
+            for ($graphIndex = 0; $graphIndex <= $g; $graphIndex++) {
+                //echo "GI: $graphIndex\n";
+                foreach ($wcrs as $wi => $wcr) {
+                    if ($graphIndex == $wcr || $lastWcr == $wcr) {
+                        $Dh =     $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr]  ];
+                        //echo "\tCopy WCR $graphIndex% = $Dh\n";
+                        //echo "$graphIndex/{$g} | $wi | $wcr\n";
+                        $graph[] = $Dh;
+                    }
+                    else if ($wcr >= $graphIndex && $lastWcr <= $graphIndex) {
+                        $wcrXDiff = $wcr - $lastWcr;
+                        $lastDh =     $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$lastWcr]  ];
+                        $wcrDhDiff = ($soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr    ]  ]) - $lastDh;
+                        $graphWcrXDiff = $graphIndex - $lastWcr;
+                        $ratio = $graphWcrXDiff / $wcrXDiff;
+                        $interp = round ($lastDh + ($wcrDhDiff * $ratio), 6);
+                        $graph[] = $interp;
+                        //echo "\tInterp WCR $graphIndex% = $interp\n";
+                    }
+                    $lastWcr = $wcr;
+                }
+            }
+            //$graphs[$sn] = implode(",",$csv);
+            $graphs[$sn] = $graph;
+            //print_r ($graphs);die();
+        }
+
+               
         
+        // list of soils (of same name) --> min(=0)/max slider values
+        //                              --> CSV string of sparkline values
+        // slider value                 --> closest slider value with real soil (for non-custom soils) and id of that soil
+        //                              --> interpolated Dh value between nearest real soil(s)
+        $soilsData = array (
+            'byName' => $soilsByName,
+            'graphs' => $graphs
+        );
         
         //* This removed as can no longer just populate a list :-(
         $this->Soil->virtualFields['scat'] = "IF(Soil.user_id = 0,'Public Soil Types','My Soil Types')";
