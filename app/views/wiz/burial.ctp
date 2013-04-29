@@ -1,3 +1,10 @@
+<script type="text/javascript">
+<?php
+if (!empty ($soilsData)) {
+    echo "wc.local.soilsData = " . json_encode($soilsData) . ";";
+}
+?>
+</script>
 <?=$this->element('wiz/wizardControlBarTop',  array ('wizardInfos' => $wizardInfos));?>
 <h1 class="sbHeading">
     Burial
@@ -55,7 +62,7 @@
                 'value' => $numLayers,
             ));?>
             <div id="burialLayersList" class="smartbox grid_10 alpha  form sentenceForm cakeInline" style="clear: both;">
-                <div class="" style="background: url('/img/burial_surface.png') bottom center no-repeat; margin: -4px 0px 0px 0px; height: 54px;">
+                <div class="" style="background: url('/img/burial_surface.png') bottom center no-repeat; margin: -4px 0px 0px 0px; padding-bottom: 1em; min-height: 38px;">
                     <p class="help">
                         The soil surface is up here, the sample is buried down by the &quot;Add Layer&quot; button.
                     </p>
@@ -90,27 +97,94 @@
                                 ?>
                             </div>
                             <div class="mobileLayers">
-                                <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
-                                        'label' => 'Thick (m)',
-                                        'div' => false
-                                    ));?>
-                                    <div class="layerSliderWrapper">
-                                        <div class="waterSlider"></div>
-                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_saturated_h2o', array (
-                                            'type' => 'hidden'
+                                
+                                <div class="blGridCell">
+                                    <div class="common-height required">
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.thickness_m', array (
+                                            'label' => false,
+                                            'div' => false,
+                                            'style' => 'float: left;',
+                                            'after' => '<label>m thick</label>'
+                                        ));?>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="blGridCell">
+                                    <div class="common-height">
+                                        <?php /*<label style="width: 34%">Layer of</label>*/ ?>
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id', array (
+                                            'type' => 'select',
+                                            'label' => false,
+                                            'div' => false,
+                                            'options' => $this->getVar('soils'),
+                                            //'style' => 'width: 60%; margin: 11px 0px 0px 3px;'
+                                            'style' => 'margin-top: 6px; max-width: 98%;',
+                                            'class' => 'hide-custom'
+                                        ));?>
+                                        <?=$this->Form->input('Soil.'.$n.'.name', array (
+                                            'type' => 'text',
+                                            'label' => false,
+                                            'div' => false,
+                                            //'style' => 'width: 60%; margin: 11px 0px 0px 3px;'
+                                            'style' => 'display: none; width: inherit; max-width: 90%;',
+                                            'placeholder' => '(soil name)',
+                                            'class' => 'show-custom'
                                         ));?>
                                     </div>
+                                    
                                 </div>
-                                <div class="grid_3">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.soil_id', array (
-                                        'label' => 'Layer of'
-                                    ));?>
+                                
+                                <div class="blGridCell">
+                                    
+                                    <div class="common-height">
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.custom', array (
+                                            'type' => 'checkbox',
+                                            'div' => false,
+                                            'style' => 'width: auto; margin: 16px 5px 0 16px;'
+                                        ));?>
+                                    </div>
+                                    
                                 </div>
-                                <div class="grid_3 omega">
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.sudden');?>
-                                    <?=$this->Form->input('SoilTemporothermal.'.$n.'.direct_sunlight');?>
+                                
+                                <div class="blGridCell hide-custom">
+                                    <div class="common-height">
+                                        <div class="layerSliderWrapper">
+                                            <div class="waterSlider"></div>
+                                            <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_saturated_h2o', array (
+                                                'type' => 'hidden'
+                                            ));?>
+                                        </div>
+                                    </div>
                                 </div>
+                                
+                                <div class="blGridCell">
+                                    
+                                    <div class="common-height">
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_mass_h2o', array (
+                                            'label' => "=",
+                                            'div' => false,
+                                            'disabled' => true,
+                                            'style' => 'float: left; width: 2em;'
+                                        ));?>
+                                        <label style="">% mass H<sub>2</sub>O</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="blGridCell">
+                                    <div class="common-height">
+                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.thermal_diffusivity', array (
+                                            'label' => "=",
+                                            'div' => false,
+                                            'disabled' => true,
+                                            'style' => 'float: left;'
+                                        ));?>
+                                        <label>m<sup>2</sup>/day</label>
+                                    </div>
+                                    
+                                </div>
+                                
                                 <?/*=*/$this->Form->input('SoilTemporothermal.'.$n.'.order', array (
                                     'type' => 'hidden',
                                     'class' => 'layerOrder',

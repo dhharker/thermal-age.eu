@@ -199,24 +199,44 @@ var wc = {
         };
         
         list.sortable({
-            axis: 'y',
-            containment: 'div#burialLayersList',
+            //axis: 'y',
+            //containment: 'div#burialLayersList',
             forcePlaceholderSize: true,
             forceHelperSize: true,
             handle: '.sort-handle',
             update: function (event, ui) {
-                if (wc) wc.reorderLayers (list);
+                if (wc) window.setTimeout('wc.reorderLayers',200, list);
             },
             create: function (event, ui) {
-                if (wc) wc.reorderLayers (list);
+                if (wc) window.setTimeout('wc.reorderLayers',200, list);
             },
-            revert: 100
+            revert: 400
         });
+        
+        $('.sort-handle').live('click',function(){ return false; });
         
         this.initLayerDeleteButtons (scope);
         this.initWaterSlides (list);
         this.reorderLayers (scope);
         this.local.burial.nextIndex = $('input#BurialNumLayers', scope).val();
+        
+        $('select[id$="SoilNameId"]',scope).live('change', function () {
+            var $this = $(this);
+            console.log (wc.local.soilsData);
+        });
+        $('input:checkbox[id$="Custom"]',scope).live('change', function () {
+            var $this = $(this);
+            var $row = $this.parentsUntil ('fieldset');
+            if ($this.is(':checked')) {
+                $('.hide-custom',$row).show();
+                $('.show-custom',$row).hide();
+            }
+            else {
+                $('.hide-custom',$row).hide();
+                $('.show-custom',$row).show();
+            }
+        }).trigger('change');
+        
         
         $('#addSoilLayerButton', scope).click(function () {
             var template = list.data ('liTemplate').clone();
@@ -248,6 +268,7 @@ var wc = {
         });
         
     },
+    
     initWaterSlides: function (scope) {
         scope = scope || '#wizardContainer';
         $('div.waterSlider', scope).not ('.inited').each (function () {
@@ -269,9 +290,9 @@ var wc = {
                 change: udhv
             });
         })
-        .prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">WET</div>')
+        //.prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">WET</div>')
         .prepend('<div class="sliderLabelInternal" style="float: right">SATURATED</div>')
-        .prepend('<div class="sliderLabelInternal" style="float: left">DESICCATED</div>')
+        .prepend('<div class="sliderLabelInternal" style="float: left">DRY</div>')
 
         .addClass ('inited');
     },

@@ -816,8 +816,8 @@ div.moodSlider.ui-slider-horizontal {
     background: linear-gradient(left, #e21212 0%,#a4a861 50%,#63d313 100%);
 }
 .layerSliderWrapper {
-    padding: .4em 0;
-    margin: 0 auto;
+    padding: 15px 0;
+    margin: 0 6%;
 }
 div.waterSlider.ui-slider-horizontal {
     background: rgb(230,193,100);

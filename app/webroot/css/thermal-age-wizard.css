@@ -289,6 +289,7 @@ span.elevation::before {
 #burialLayersList {
     display: block;
     margin: 10px 4.5% 20px 4.5% !important; /* % is a hack cos automargins not working for some reason */
+    
     padding: 0px;
     list-style-type: none;    
 }
@@ -302,7 +303,7 @@ span.elevation::before {
     padding: 0px;
     clear: both;
 }
-li.burialLayer{
+li.burialLayer {
     margin-bottom: -1px !important;
     float: none;
     clear: both;
@@ -326,7 +327,7 @@ li.smartsharp {
     margin: .3em;
 }
 #burialLayersList div.input.checkbox {
-    margin-top: .5em;
+    /*margin-top: .5em;*/
 }
 
 #addSoilLayerButton {
@@ -334,29 +335,7 @@ li.smartsharp {
     box-shadow: 0px 0px 7px -2px rgba(240, 230, 220, .75);
 }
 
-.burialLayer .deleteLayerButton {
-    margin: -1px -1px -1px 0px; padding: 6px 10px; height: 5em;
-    float: right;
-}
-.burialLayer .sort-handle {
-    margin: -1px 0px -1px -1px; padding: 6px 10px; height: 5em;
-    float: left;
-}
 
-.mobile-layout .burialLayer .deleteLayerButton {
-    height: 10px;
-    width: 10px;
-    margin: -1px;
-    padding: 6px 7px;
-    -moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px;
-}
-.mobile-layout .burialLayer .sort-handle {
-    height: 10px;
-    width: 5px;
-    overflow: hidden;
-    margin: -1px;
-    -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px;
-}
 
 
 
@@ -439,7 +418,7 @@ div.loadValuesFrom.sentenceForm {
     }
 }    
 @media handheld, only screen and (max-width: 760px) {
-    /* Burial Layers */
+    /* Burial Layers * /
     .mobile-layout #wizardContainer .burialLayer .deleteLayerButton {
         margin-right: -11px;
     }
@@ -447,12 +426,12 @@ div.loadValuesFrom.sentenceForm {
         margin-left: -6px;
         margin-right: 3px;
     }
-
+    */
     
     #wizardContainer .mobileLayers .grid_3 {
         margin-top: 0;
         margin-bottom: 0;
-        
+        padding-top: 5px;
         padding-bottom: 0;
     }
     #burialLayersList div.input.checkbox {
@@ -472,4 +451,102 @@ div.loadValuesFrom.sentenceForm {
     min-width: 0%;
     padding: .23em;
     margin: .3em 0;
+}
+
+li.burialLayer .mobileLayers > div {
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.mobileLayers {
+    display: block;
+}
+
+.mobileLayers .grid_3 .common-height {
+    min-height: 45px !important;
+    margin: 0 auto;
+}
+
+div.blGridCell {
+    width: 30%;
+    float: left;
+    display: inline-block;
+    margin: .5% auto;
+    padding: 0 5px;
+    min-height: 46px;
+}
+
+@media handheld, only screen and (max-width: 965px) {
+    div.blGridCell {
+        width: 45%;
+    }
+}
+@media handheld, only screen and (max-width: 440px) {
+    div.blGridCell {
+        width: 98%;
+    }
+}
+
+.burialLayer .deleteLayerButton,
+.burialLayer .sort-handle {
+    padding: 0;
+    height: 22px;
+    width: 22px;
+    line-height: 22px;
+}
+@media handheld, only screen and (max-width: 440px) {
+    .burialLayer .deleteLayerButton,
+    .burialLayer .sort-handle {
+        margin: -1px -5px 0 0;
+        width: 50%;
+    }
+}
+@media handheld, only screen and (min-width: 440px) {
+    .burialLayer .deleteLayerButton {
+        margin: -1px -24px -1px 0px;
+        float: right;
+        -webkit-border-radius: 0px 4px 4px 0px;
+        border-radius: 0px 4px 4px 0px;
+    }
+    .burialLayer .sort-handle {
+        margin: -1px 0px -1px -24px;
+        float: left;
+        -webkit-border-radius: 4px 0px 0px 4px;
+        border-radius: 4px 0px 0px 4px;
+    }
+}
+
+
+
+#BurialForm ul,
+#BurialForm li,
+#BurialForm .smartbox {
+    overflow: visible;
+}
+#burialLayersList > div:first-of-type {
+    -webkit-border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
+}
+#burialLayersList > div:last-of-type {
+    -webkit-border-radius: 0px 0px 5px 5px;
+    border-radius: 0px 0px 5px 5px;
+}
+
+
+#BurialForm .mobile-layout #wizardContainer fieldset {
+    margin: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+
+.cakeInline div.error-message {
+    display: block;
+    font-size: smaller;
+    padding: 0 7px;
+    margin: 0 auto;
+    float: none;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    clear: both;
 }

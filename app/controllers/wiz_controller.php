@@ -849,11 +849,11 @@ HAX;
     function _prepareBurial () {
         $ssd = $this->Wizard->read('specimen.Temporothermal.stopdate_ybp');
         $this->set ('agebp', $ssd);
-
+        $auid = $this->Auth->user('id');
         $this->loadModel('Soil');
-        
+        $this->Soil->recursive = -1;
         $this->Soil->virtualFields['water_content_rounded'] = "ROUND(100*Soil.water_content,1)";
-        $soils = $this->Soil->find('all', array (
+        $sdsRaw = $this->Soil->find('all', array (
             'fields' => array (
                 'Soil.id',
                 'Soil.name',
@@ -861,7 +861,7 @@ HAX;
                 'Soil.thermal_diffusivity_m2_day'
             ),
             'conditions' => array (
-                'Soil.user_id' => '0'
+                'Soil.user_id' => array ('0', $auid)
             ),
             'order' => array (
                 'Soil.name',
@@ -869,19 +869,26 @@ HAX;
             )
         ));
         
-        /* This removed as can no longer just populate a list :-(
+        $soilsByName = array ();
+        foreach ($sdsRaw as $sd) {
+            if (empty ($soilsByName[$sd['Soil']['name']])) $soilsByName[$sd['Soil']['name']] = array ();
+        }
+        
+        
+        //* This removed as can no longer just populate a list :-(
         $this->Soil->virtualFields['scat'] = "IF(Soil.user_id = 0,'Public Soil Types','My Soil Types')";
         $this->Soil->virtualFields['snam'] = "CONCAT(Soil.name,' (',ROUND(100*Soil.water_content,1),'% h2o by mass)')";
         $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
             'fields' => array (
-                'Soil.id',
-                //'Soil.snam',
+                //'Soil.id',
                 'Soil.name',
+                'Soil.name',
+                'Soil.scat',
                 //'Soil.scat',
             ),
             'conditions' => array (
-                //'Soil.user_id' => array ('0', $this->Auth->user('id'))
-                'Soil.user_id' => '0'
+                'Soil.user_id' => array ('0', $this->Auth->user('id'))
+                //'Soil.user_id' => '0'
             ),
             'order' => array (
                 'Soil.scat DESC',
@@ -891,10 +898,9 @@ HAX;
                 'Soil.name'
             )
         )));
-         * 
-         */
+        //*/
         
-        $this->set(compact('soils'));
+        $this->set(compact('soils', 'soilsData'));
     }
     function _processBurial () {
         $this->loadModel('SoilTemporothermal');
