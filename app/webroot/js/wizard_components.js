@@ -225,7 +225,7 @@ var wc = {
             var $row = $this.parentsUntil ('fieldset');
             var graph = wc.local.soilsData.graphs[$this.val()];
             if (graph != undefined) {
-                $('.saturationSpark',scope)
+                $('.saturationSpark',$row)
                     .css({
                         width: $('.waterSlider',$row).css('width')
                     })
@@ -234,10 +234,10 @@ var wc = {
                         height: '23px'
                     })
                 ;
-                $('.show-graph:hidden',scope).show();
+                $('.show-graph:hidden',$row).show();
             }
             else
-                $('.show-graph:visible',scope).hide();
+                $('.show-graph:visible',$row).hide();
             
         }).trigger('change');
         $('input:checkbox[id$="Custom"]',scope).live('change', function () {
