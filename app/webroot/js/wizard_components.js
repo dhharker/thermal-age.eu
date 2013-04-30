@@ -228,7 +228,7 @@ var wc = {
                 $('.saturationSpark',$row)
                     .sparkline (graph, {
                         chartRangeMin: 0,
-                        chartRangeMax: wc.local.soilsData.graphMaxDh -1,
+                        chartRangeMax: wc.local.soilsData.graphMaxDh,
                         width: '95.5%',
                         height: '23px'
                     })
@@ -290,6 +290,8 @@ var wc = {
             $(newItem).appendTo (list).show ({
                 effect: 'blind',
                 duration: 300
+            }, function () {
+                $('select[id$="Id"]',this).trigger('change');
             });
             initialiseTAUI (list);
             wc.initLayerDeleteButtons (list);
@@ -312,7 +314,7 @@ var wc = {
                 var val = slider.slider('value');
                 inputPc.val (val);
                 inputMe.val (val / 100.0);
-                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][val]);
+                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][parseInt(val)]);
             };
             var fnSlide = function () {
                 fnUpdate();
@@ -335,7 +337,7 @@ var wc = {
             });
         })
         //.prepend('<div class="sliderLabelInternal" style="float: none; margin: -1px auto; clear: none; width: 8em; text-align: center;">WET</div>')
-        .prepend('<div class="sliderLabelInternal" style="float: right">SATURATED</div>')
+        .prepend('<div class="sliderLabelInternal" style="float: right">WET</div>')
         .prepend('<div class="sliderLabelInternal" style="float: left">DRY</div>')
 
         .addClass ('inited');

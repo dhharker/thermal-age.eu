@@ -897,10 +897,10 @@ HAX;
                 //echo "GI: $graphIndex\n";
                 foreach ($wcrs as $wi => $wcr) {
                     if ($graphIndex == $wcr || $lastWcr == $wcr) {
-                        $graph[] = $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr]  ];
+                        $graph[] = 0.0 + $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr]  ];
                     }
                     elseif ($graphIndex == $g) {
-                        $graph[] = $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$g]  ];
+                        $graph[] = 0.0 + $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$g]  ];
                     }
                     elseif ($wcr >= $graphIndex && $lastWcr <= $graphIndex) {
                         $wcrXDiff = $wcr - $lastWcr;
@@ -909,7 +909,7 @@ HAX;
                         $graphWcrXDiff = $graphIndex - $lastWcr;
                         $ratio = $graphWcrXDiff / $wcrXDiff;
                         $interp = round ($lastDh + ($wcrDhDiff * $ratio), 6);
-                        $graph[] = $interp;
+                        $graph[] = 0.0 + $interp;
                         //echo "\tInterp WCR $graphIndex% = $interp\n";
                     }
                     $lastWcr = $wcr;
