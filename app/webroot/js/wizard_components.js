@@ -311,10 +311,11 @@ var wc = {
             var inputMe = $row.find ('input[id$=H2o]').first();
             var inputDh = $row.find ('input[id$=ThermalDiffusivity]').first();
             var fnUpdate = function () {
-                var val = slider.slider('value');
+                var val = parseInt (slider.slider('value'));
                 inputPc.val (val);
                 inputMe.val (val / 100.0);
-                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][parseInt(val)]);
+                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][val]);
+                
             };
             var fnSlide = function () {
                 fnUpdate();
