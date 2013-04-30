@@ -148,12 +148,13 @@ if (!empty ($soilsData)) {
                                     
                                 </div>
                                 
-                                <div class="blGridCell hide-custom show-graph">
+                                <div class="blGridCell">
                                     <div class="common-height">
-                                        <div class="layerSliderWrapper">
+                                        <div class="hide-graph"><span style="font-size: small;">(dynamic H<sub>2</sub>O unavailable)</span></div>
+                                        <div class="layerSliderWrapper hide-custom show-graph">
                                             <span class="saturationSpark" style="margin-right: 3.5%;"></span>
                                             <div class="waterSlider" style=""></div>
-                                            <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_saturated_h2o', array (
+                                            <?=$this->Form->input('Soil.'.$n.'.percent_saturated_h2o', array (
                                                 'type' => 'hidden'
                                             ));?>
                                         </div>
@@ -163,7 +164,7 @@ if (!empty ($soilsData)) {
                                 <div class="blGridCell">
                                     
                                     <div class="common-height required-custom">
-                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.percent_mass_h2o', array (
+                                        <?=$this->Form->input('Soil.'.$n.'.water_content', array (
                                             'label' => "=",
                                             'div' => false,
                                             'disabled' => true,
@@ -175,7 +176,7 @@ if (!empty ($soilsData)) {
                                 
                                 <div class="blGridCell">
                                     <div class="common-height required-custom">
-                                        <?=$this->Form->input('SoilTemporothermal.'.$n.'.thermal_diffusivity', array (
+                                        <?=$this->Form->input('Soil.'.$n.'.thermal_diffusivity_m2_day', array (
                                             'label' => "=",
                                             'div' => false,
                                             'disabled' => true,

@@ -873,6 +873,8 @@ HAX;
         $graphableMax = array ();
         $graphs = array ();
         $graphMaxDh = 0;
+        $nameById = array ();
+        $dhById = array ();
         foreach ($sdsRaw as $sd) {
             if (empty ($soilsByName[$sd['Soil']['name']])) $soilsByName[$sd['Soil']['name']] = array (
                 'wcr2id' => array (),
@@ -880,7 +882,8 @@ HAX;
             );
             $soilsByName[  $sd['Soil']['name']  ]['wcr2id'][  $sd['Soil']['water_content_rounded']  ]   = $sd['Soil']['id'];
             $soilsByName[  $sd['Soil']['name']  ]['id2dh'][  $sd['Soil']['id']  ]                       = $sd['Soil']['thermal_diffusivity_m2_day'];
-            
+            $nameById[$sd['Soil']['id']] = $sd['Soil']['name'];
+            $dhById[$sd['Soil']['id']] = $sd['Soil']['thermal_diffusivity_m2_day'];
             if (count ($soilsByName[$sd['Soil']['name']]['wcr2id']) > 1) {
                 $graphableMax[$sd['Soil']['name']] = max (array_keys ($soilsByName[$sd['Soil']['name']]['wcr2id']));
                 if ($sd['Soil']['thermal_diffusivity_m2_day'] > $graphMaxDh)
@@ -928,6 +931,8 @@ HAX;
         //                              --> interpolated Dh value between nearest real soil(s)
         $soilsData = array (
             'byName' => $soilsByName,
+            'nameById' => $nameById,
+            'dhById' => $dhById,
             'graphs' => $graphs,
             'graphableMax' => $graphableMax,
             'graphMaxDh' => $graphMaxDh
@@ -939,7 +944,7 @@ HAX;
         $soils = $this->Soil->find('list', array (
             'fields' => array (
                 //'Soil.id',
-                'Soil.name',
+                'Soil.id',
                 'Soil.name',
                 'Soil.scat',
                 //'Soil.scat',
@@ -960,39 +965,61 @@ HAX;
         $this->set(compact('soils', 'soilsData'));
     }
     function _processBurial () {
+        
+        //print_r ($this->data);die();
         $this->loadModel('SoilTemporothermal');
         $this->Temporothermal->set ($this->data);
         $ok = TRUE;
         if (!$this->Temporothermal->validates()) {
             $ok = false;
         }
-        $invalid = array ();
+        $invalid = array (
+            'Soil' => array (),
+            'SoilTemporothermal' => array ()
+        );
         $newST = array ();
+        $newS = array ();
         
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if (isset ($soiltemporothermal['order']))
+            if (isset ($soiltemporothermal['order'])) {
                 $newST[$soiltemporothermal['order']] = $soiltemporothermal;
+                $newS[$soiltemporothermal['order']] = $this->data['Soil'][$index];
+            }
         }
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
-            if (!isset ($soiltemporothermal['order']))
+            if (!isset ($soiltemporothermal['order'])) {
                 $newST[] = $soiltemporothermal;
+                $newS[] = $this->data['Soil'][$index];
+            }
         }
         $this->data['SoilTemporothermal'] = $newST;
+        $this->data['Soil'] = $newS;
+        
         foreach ($this->data['SoilTemporothermal'] as $index => $soiltemporothermal) {
             $soiltemporothermal['order'] = 0;
             if (strlen (trim (str_replace ('0', '', implode ('', $soiltemporothermal)))) > 0 ) {
                 $soiltemporothermal = array ('SoilTemporothermal' => $soiltemporothermal);
                 $this->SoilTemporothermal->set ($soiltemporothermal);
+                if (!!$soiltemporothermal['SoilTemporothermal']['custom']) {
+                    unset ($soiltemporothermal['SoilTemporothermal']['soil_id']);
+                    $this->SoilTemporothermal->Soil->set (array ('Soil' => $this->data['Soil'][$index]));
+                    if (!$this->SoilTemporothermal->Soil->validates()) {
+                        $invalid['Soil'][$index] = $this->SoilTemporothermal->Soil->invalidFields ();
+                    }
+                }
                 if (!$this->SoilTemporothermal->validates()) {
-                    $invalid[$index] = $this->SoilTemporothermal->invalidFields ();
-                }    
+                    $invalid['SoilTemporothermal'][$index] = $this->SoilTemporothermal->invalidFields ();
+                }
             }
         }
         
-        if (!empty ($invalid)) {
+        if (!empty ($invalid['SoilTemporothermal'])) {
             $ok = false;
-            $this->SoilTemporothermal->validationErrors = $invalid;
-            //$this->set ('invalidSoilTemporothermalFields', $invalid);
+            $this->SoilTemporothermal->validationErrors = $invalid['SoilTemporothermal'];
+        }
+        if (!empty ($invalid['Soil'])) {
+            $ok = false;
+            $this->SoilTemporothermal->Soil->validationErrors = $invalid['Soil'];
         }
         return $ok;
     }

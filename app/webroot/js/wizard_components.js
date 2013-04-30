@@ -223,8 +223,18 @@ var wc = {
         $('select[id$="Id"]',scope).live('change', function () {
             var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
-            var graph = wc.local.soilsData.graphs[$this.val()];
-            if (graph != undefined) {
+            var val = $this.val();
+            var vName = wc.local.soilsData.nameById[val];
+            
+            
+            var graph = wc.local.soilsData.graphs[vName];
+            
+            var custom = $('input:checkbox[id$="Custom"]',$row).first().is(':checked');
+            
+            if (graph != undefined && $this.is(':visible') && !custom) {
+                
+                $('input[id$=Name]',$row).val(vName);
+                
                 $('.saturationSpark',$row)
                     .sparkline (graph, {
                         chartRangeMin: 0,
@@ -234,7 +244,8 @@ var wc = {
                     })
                 ;
                 $('.show-graph:hidden',$row).show();
-                var newMax = wc.local.soilsData.graphableMax[$this.val()];
+                $('.hide-graph:visible',$row).hide();
+                var newMax = wc.local.soilsData.graphableMax[vName];
                 var slider = $('.waterSlider',$row);
                 var oldVal = slider.slider('value')
                     
@@ -244,10 +255,14 @@ var wc = {
                 else
                     slider.slider('value',oldVal);
             }
-            else
+            else {
                 $('.show-graph:visible',$row).hide();
+                $('.hide-graph:hidden',$row).show();
+                var inputDh = $row.find ('input[id$=ThermalDiffusivityM2Day]').first();
+                inputDh.val (wc.local.soilsData.dhById[val]);
+            }
             
-        }).trigger('change'); 
+        });//.trigger('change'); 
         
         $(window).on('resize', function () {
              $('select[id$="Id"]',scope).trigger ('change');
@@ -257,15 +272,18 @@ var wc = {
             var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
             if ($this.is(':checked')) {
+                $('select[id$="Id"]',$row).attr('disabled',true);
                 $('.hide-custom',$row).hide();
                 $('.show-custom',$row).show();
                 $('.required-custom input',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
             }
             else {
+                $('select[id$="Id"]',$row).attr('disabled',false);
                 $('.hide-custom',$row).show();
                 $('.show-custom',$row).hide();
                 $('.required-custom input',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
             }
+            $('select[id$="Id"]',$row).trigger('change');
         }).trigger('change');
         
         
@@ -307,14 +325,14 @@ var wc = {
         $('div.waterSlider', scope).not ('.inited').each (function () {
             var slider = $(this);
             var $row = slider.parentsUntil ('fieldset');
-            var inputPc = $row.find ('input[id$=PercentMassH2o]').first();
+            var inputPc = $row.find ('input[id$=WaterContent]').first();
             var inputMe = $row.find ('input[id$=H2o]').first();
-            var inputDh = $row.find ('input[id$=ThermalDiffusivity]').first();
+            var inputDh = $row.find ('input[id$=ThermalDiffusivityM2Day]').first();
             var fnUpdate = function () {
                 var val = parseInt (slider.slider('value'));
                 inputPc.val (val);
                 inputMe.val (val / 100.0);
-                inputDh.val (wc.local.soilsData.graphs[$('select[id$=SoilId]',$row).first().val()][val]);
+                inputDh.val (wc.local.soilsData.graphs[$('input[id$=Name]',$row).first().val()][val]);
                 
             };
             var fnSlide = function () {
