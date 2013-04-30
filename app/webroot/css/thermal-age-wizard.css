@@ -460,6 +460,7 @@ li.burialLayer .mobileLayers > div {
 
 .mobileLayers {
     display: block;
+    text-align: center;
 }
 
 .mobileLayers .grid_3 .common-height {
@@ -471,14 +472,14 @@ div.blGridCell {
     width: 30%;
     float: left;
     display: inline-block;
-    margin: .5% auto;
-    padding: 0 5px;
+    margin: .5%;
+    padding: 0;
     min-height: 46px;
 }
 
 @media handheld, only screen and (max-width: 965px) {
     div.blGridCell {
-        width: 45%;
+        width: 47%;
     }
 }
 @media handheld, only screen and (max-width: 440px) {

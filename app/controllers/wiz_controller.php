@@ -872,6 +872,7 @@ HAX;
         $soilsByName = array ();
         $graphableMax = array ();
         $graphs = array ();
+        $graphMaxDh = 0;
         foreach ($sdsRaw as $sd) {
             if (empty ($soilsByName[$sd['Soil']['name']])) $soilsByName[$sd['Soil']['name']] = array (
                 'wcr2id' => array (),
@@ -879,8 +880,12 @@ HAX;
             );
             $soilsByName[  $sd['Soil']['name']  ]['wcr2id'][  $sd['Soil']['water_content_rounded']  ]   = $sd['Soil']['id'];
             $soilsByName[  $sd['Soil']['name']  ]['id2dh'][  $sd['Soil']['id']  ]                       = $sd['Soil']['thermal_diffusivity_m2_day'];
-            if (count ($soilsByName[$sd['Soil']['name']]['wcr2id']) > 1) 
+            
+            if (count ($soilsByName[$sd['Soil']['name']]['wcr2id']) > 1) {
                 $graphableMax[$sd['Soil']['name']] = max (array_keys ($soilsByName[$sd['Soil']['name']]['wcr2id']));
+                if ($sd['Soil']['thermal_diffusivity_m2_day'] > $graphMaxDh)
+                    $graphMaxDh = $sd['Soil']['thermal_diffusivity_m2_day'];
+            }
         }
             
         foreach ($graphableMax as $sn => $g) {
@@ -892,12 +897,12 @@ HAX;
                 //echo "GI: $graphIndex\n";
                 foreach ($wcrs as $wi => $wcr) {
                     if ($graphIndex == $wcr || $lastWcr == $wcr) {
-                        $Dh =     $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr]  ];
-                        //echo "\tCopy WCR $graphIndex% = $Dh\n";
-                        //echo "$graphIndex/{$g} | $wi | $wcr\n";
-                        $graph[] = $Dh;
+                        $graph[] = $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr]  ];
                     }
-                    else if ($wcr >= $graphIndex && $lastWcr <= $graphIndex) {
+                    elseif ($graphIndex == $g) {
+                        $graph[] = $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$g]  ];
+                    }
+                    elseif ($wcr >= $graphIndex && $lastWcr <= $graphIndex) {
                         $wcrXDiff = $wcr - $lastWcr;
                         $lastDh =     $soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$lastWcr]  ];
                         $wcrDhDiff = ($soilsByName[$sn]['id2dh'][  $soilsByName[$sn]['wcr2id'][$wcr    ]  ]) - $lastDh;
@@ -924,7 +929,8 @@ HAX;
         $soilsData = array (
             'byName' => $soilsByName,
             'graphs' => $graphs,
-            'graphableMax' => $graphableMax
+            'graphableMax' => $graphableMax,
+            'graphMaxDh' => $graphMaxDh
         );
         
         //* This removed as can no longer just populate a list :-(

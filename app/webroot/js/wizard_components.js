@@ -226,11 +226,9 @@ var wc = {
             var graph = wc.local.soilsData.graphs[$this.val()];
             if (graph != undefined) {
                 $('.saturationSpark',$row)
-                    .css({
-                        width: $('.waterSlider',$row).css('width')
-                    })
                     .sparkline (graph, {
                         chartRangeMin: 0,
+                        chartRangeMax: wc.local.soilsData.graphMaxDh -1,
                         width: '95.5%',
                         height: '23px'
                     })
@@ -249,19 +247,24 @@ var wc = {
             else
                 $('.show-graph:visible',$row).hide();
             
-        }).trigger('change');
+        }).trigger('change'); 
+        
+        $(window).on('resize', function () {
+             $('select[id$="Id"]',scope).trigger ('change');
+        });
+        
         $('input:checkbox[id$="Custom"]',scope).live('change', function () {
             var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
             if ($this.is(':checked')) {
                 $('.hide-custom',$row).hide();
                 $('.show-custom',$row).show();
-                $('.required-custom',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
+                $('.required-custom input',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
             }
             else {
                 $('.hide-custom',$row).show();
                 $('.show-custom',$row).hide();
-                $('.required-custom',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
+                $('.required-custom input',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
             }
         }).trigger('change');
         
