@@ -231,9 +231,10 @@ var wc = {
             
             var custom = $('input:checkbox[id$="Custom"]',$row).first().is(':checked');
             
-            if (graph != undefined && $this.is(':visible') && !custom) {
-                
+            if ($this.is(':visible') && !custom)
                 $('input[id$=Name]',$row).val(vName);
+            
+            if (graph != undefined && $this.is(':visible') && !custom) {
                 
                 $('.saturationSpark',$row)
                     .sparkline (graph, {
@@ -258,8 +259,10 @@ var wc = {
             else {
                 $('.show-graph:visible',$row).hide();
                 $('.hide-graph:hidden',$row).show();
-                var inputDh = $row.find ('input[id$=ThermalDiffusivityM2Day]').first();
-                inputDh.val (wc.local.soilsData.dhById[val]);
+                if ($this.is(':visible') && !custom) {
+                    var inputDh = $row.find ('input[id$=ThermalDiffusivityM2Day]').first();
+                    inputDh.val (wc.local.soilsData.dhById[val]);
+                }
             }
             
         });//.trigger('change'); 
@@ -361,7 +364,8 @@ var wc = {
                 else
                     inputPc.val (val);
                 inputMe.val (val / 100.0);
-                inputDh.val (wc.local.soilsData.graphs[$('input[id$=Name]',$row).first().val()][val]);
+                if (!$('input:checkbox[id$="Custom"]',$row).is(':checked'))
+                    inputDh.val (wc.local.soilsData.graphs[$('input[id$=Name]',$row).first().val()][val]);
                 
             };
             var fnSlide = function () {
