@@ -286,25 +286,30 @@ var wc = {
             $('select[id$="Id"]',$row).trigger('change');
         }).trigger('change');
         
-        $('.required-custom input[id$="WaterContent"]').live('blur',function () {
+        $('.required-custom input[id$="WaterContent"]').live('change',function () {
             var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
             var $ws = $('div.waterSlider',$row).first();
             var val = parseInt ($this.val());
             var max = $ws.slider('option', 'max');
             if (val > max) {
-                $this.val(max);
+                $this.val(parseInt(max));
             }
             else {
                 $ws.data('set-internally', true);
                 $ws.slider('value', val);
             }
         });
+        $('.required-custom input[id$="ThermalDiffusivityM2Day"]').live('focus',function () {
+            var $this = $(this);
+            $this.data('beforeFocus',$this.val());
+        });
         $('.required-custom input[id$="ThermalDiffusivityM2Day"]').live('change',function () {
+            var $this = $(this);
             var $row = $this.parentsUntil ('fieldset');
             var $ccb = $('input:checkbox[id$="Custom"]',$row);
-            if (!$ccb.is(':checked')) {
-                $ccb.attr('checked','checked').trigger('change');
+            if (!$ccb.is(':checked') && $this.data('beforeFocus') != $(this).val()) {
+                $ccb.attr('checked',true).trigger('change');
             }
         });
         
