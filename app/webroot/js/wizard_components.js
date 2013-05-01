@@ -265,7 +265,7 @@ var wc = {
                 }
             }
             
-        });//.trigger('change'); 
+        });
         
         $(window).on('resize', function () {
              $('select[id$="Id"]',scope).trigger ('change');

@@ -326,19 +326,47 @@ class Job extends AppModel {
         $addbur = false;
         if ($args['burial']['Burial']['numLayers'] > 0) {
             $this->_addToStatus ("There are {$args['burial']['Burial']['numLayers']} burial layers in this TT. Encoding...\n");
-            foreach ($args['burial']['SoilTemporothermal'] as $layer) {
-                $s = $this->_getSoil($layer['soil_id']);
-                if ($s !== false && $layer['thickness_m'] > 0) {
-                    $std = \ttkpl\scalarFactory::makeThermalDiffusivity ($s['Soil']['thermal_diffusivity_m2_day']);
+            foreach ($args['burial']['SoilTemporothermal'] as $layerIndex => $layer) {
+                
+                
+                $layerSoil = (!empty ($args['burial']['Soil'][$layerIndex])) ? $args['burial']['Soil'][$layerIndex] : false;
+                // Assume Dh will be set explicitly
+                $this->_addToStatus(print_r (compact ('layerSoil', 'layer'), 1));
+                
+                // Get soil just from DB?
+                if (($layerSoil == false || empty ($layerSoil['thermal_diffusivity_m2_day'])) && isset ($layer['soil_id'])) {
+                    $s = $this->_getSoil($layer['soil_id']);
+                    if ($s !== false && $layer['thickness_m'] > 0) {
+                        $std = \ttkpl\scalarFactory::makeThermalDiffusivity ($s['Soil']['thermal_diffusivity_m2_day']);
+                        $z = \ttkpl\scalarFactory::makeMetres ($layer['thickness_m']);
+                        $slayer = new \ttkpl\thermalLayer($z, $std, '');
+                        $bur->addThermalLayer($slayer);
+                        $addbur = true;
+                    }
+                    else {
+                        if (!isset ($layer['order'])) $layer['order'] = 0;
+                        $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
+                    }
+                }
+                elseif (!empty ($layerSoil['thermal_diffusivity_m2_day'])) {
+                    // If the row is custom then the name will come from the soil name field, otherwise the name of the soil by id specified
+                    if (!!$layer['custom']) {
+                        $sName = $layerSoil['name'];
+                    }
+                    elseif (!empty ($layer['soil_id']) && $this->Soil->idExists($layer['soil_id'])) {
+                        $snr = $this->Soil->read('name',$layer['soil_id']);
+                        $sName = $snr['Soil']['name'];
+                    }
+                    // values have been specified
+                    $std = \ttkpl\scalarFactory::makeThermalDiffusivity ($layerSoil['thermal_diffusivity_m2_day']);
                     $z = \ttkpl\scalarFactory::makeMetres ($layer['thickness_m']);
-                    $slayer = new \ttkpl\thermalLayer($z, $std, '');
+                    $slayer = new \ttkpl\thermalLayer($z, $std, $sName);
                     $bur->addThermalLayer($slayer);
                     $addbur = true;
+                    $this->_addToStatus("Added custom soil layer: {$layer['thickness_m']}m of $sName (Dh = {$layerSoil['thermal_diffusivity_m2_day']})");
                 }
-                else {
-                    if (!isset ($layer['order'])) $layer['order'] = 0;
-                    $this->_addToStatus("Ignoring invalid soil layer " . $layer['order']);
-                }
+                
+                
             }
             //print_r ($bur);
             $this->_addToStatus("Encode {$args['burial']['Burial']['numLayers']} burial layers: Done");
