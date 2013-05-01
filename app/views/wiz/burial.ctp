@@ -167,8 +167,9 @@ if (!empty ($soilsData)) {
                                         <?=$this->Form->input('Soil.'.$n.'.water_content', array (
                                             'label' => "=",
                                             'div' => false,
-                                            'disabled' => true,
-                                            'style' => 'float: left; width: 2em;'
+                                            //'disabled' => true,
+                                            'style' => 'float: left; width: 2em;',
+                                            'class' => 'make-it-custom'
                                         ));?>
                                         <label style="">% mass H<sub>2</sub>O</label>
                                     </div>
@@ -179,8 +180,9 @@ if (!empty ($soilsData)) {
                                         <?=$this->Form->input('Soil.'.$n.'.thermal_diffusivity_m2_day', array (
                                             'label' => "=",
                                             'div' => false,
-                                            'disabled' => true,
-                                            'style' => 'float: left;'
+                                            //'disabled' => true,
+                                            'style' => 'float: left;',
+                                            'class' => 'make-it-custom'
                                         ));?>
                                         <label>m<sup>2</sup>/day</label>
                                     </div>

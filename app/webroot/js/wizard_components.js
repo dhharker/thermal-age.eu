@@ -275,17 +275,38 @@ var wc = {
                 $('select[id$="Id"]',$row).attr('disabled',true);
                 $('.hide-custom',$row).hide();
                 $('.show-custom',$row).show();
-                $('.required-custom input',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
+                //$('.required-custom input',$row).attr('disabled',false).parent().addClass('required').find('label:first').hide();
             }
             else {
                 $('select[id$="Id"]',$row).attr('disabled',false);
                 $('.hide-custom',$row).show();
                 $('.show-custom',$row).hide();
-                $('.required-custom input',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
+                //$('.required-custom input',$row).attr('disabled',true).parent().removeClass('required').find('label:first').show();
             }
             $('select[id$="Id"]',$row).trigger('change');
         }).trigger('change');
         
+        $('.required-custom input[id$="WaterContent"]').live('blur',function () {
+            var $this = $(this);
+            var $row = $this.parentsUntil ('fieldset');
+            var $ws = $('div.waterSlider',$row).first();
+            var val = parseInt ($this.val());
+            var max = $ws.slider('option', 'max');
+            if (val > max) {
+                $this.val(max);
+            }
+            else {
+                $ws.data('set-internally', true);
+                $ws.slider('value', val);
+            }
+        });
+        $('.required-custom input[id$="ThermalDiffusivityM2Day"]').live('change',function () {
+            var $row = $this.parentsUntil ('fieldset');
+            var $ccb = $('input:checkbox[id$="Custom"]',$row);
+            if (!$ccb.is(':checked')) {
+                $ccb.attr('checked','checked').trigger('change');
+            }
+        });
         
         $('#addSoilLayerButton', scope).click(function () {
             var template = list.data ('liTemplate').clone();
@@ -330,7 +351,10 @@ var wc = {
             var inputDh = $row.find ('input[id$=ThermalDiffusivityM2Day]').first();
             var fnUpdate = function () {
                 var val = parseInt (slider.slider('value'));
-                inputPc.val (val);
+                if (slider.data('set-internally') === true)
+                    slider.data('set-internally', false);
+                else
+                    inputPc.val (val);
                 inputMe.val (val / 100.0);
                 inputDh.val (wc.local.soilsData.graphs[$('input[id$=Name]',$row).first().val()][val]);
                 
