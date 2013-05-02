@@ -350,7 +350,7 @@ class JobsController extends AppController {
     }
     
     function _publishAssociatedLabResults ($job_id, $date = null) {
-        if ($date === null) $date = (time () + (60 * 60 * 24));
+        if ($date === null) $date = time ();
         if ($this->authoriseWrite ('Job',$job_id) !== true) return false;
         $this->Job->LabResult->recursive = -1;
         $lrs = $this->Job->LabResult->find ('all', array (

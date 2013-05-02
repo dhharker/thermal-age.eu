@@ -57,7 +57,16 @@ else {
             echo $this->Element ('lab_results/form', compact('othersResultsTypes'));
             //echo "</li>";
         }
-        
+        if (!!$showForm)
+            echo $this->Html->link(
+                $this->Icons->i('&#xe020;'). "&ensp; Publish any unpublished Lab Results immediately",
+                array (
+                    'controller' => 'jobs',
+                    'action' => 'publish_results',
+                    $job['Job']['id']
+                ),
+                array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false))
+            ;
 }
 ?>
         

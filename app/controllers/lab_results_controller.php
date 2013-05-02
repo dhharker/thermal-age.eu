@@ -59,13 +59,26 @@ class LabResultsController extends AppController {
                 $id = $this->data['LabResult']['id'];
                 $job_id = $this->data['LabResult']['job_id'];
             }
-            //print_r (compact ('id','job_id'));echo("AS");
             if (!empty($this->data) && $this->LabResult->set($this->data)) {
+                //print_r ($this->data);echo("AS");die();
                 //print_r (compact ('id','job_id'));die("AB");
+                $ex = $this->LabResult->find('first',array (
+                    'fields' => array (
+                        'id',
+                        'experiment_type',
+                        'result_type'
+                    ),
+                    'conditions' => array (
+                        'LabResult.id' => $id
+                    )
+                ));
+                $this->data = array_merge_recursive($this->data, $ex);
                 if ($this->LabResult->validates()) {
                     $this->LabResult->_calculateLambdaFromExperimental ($this->data);
-                    $this->LabResult->save();
-                    $this->Session->setFlash(__('The lab results have been saved', true));
+                    if (!!$this->LabResult->save())
+                        $this->Session->setFlash(__('The lab results have been saved', true));
+                    else
+                        $this->Session->setFlash(__('Wrong something has gone...'.print_r($this->LabResult->error,1), true));
                     //die ("jid is $job_id");
                     $this->_redirectAfterDoingStuff($job_id);
                 } else {
@@ -99,6 +112,7 @@ class LabResultsController extends AppController {
     
     
     function job ($job_id = null) {
+        return $this->job_multi($job_id);
         if ($job_id === null && isset ($this->data['LabResult']) && isset ($this->data['LabResult']['job_id']))
             $job_id = $this->data['LabResult']['job_id'];
         if (!empty ($this->data)) {
