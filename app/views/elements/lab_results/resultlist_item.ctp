@@ -77,7 +77,7 @@ if (isset ($labResult) && is_array ($labResult)) {
         case "will_run":
             $big[0] = '<small style="color: #8a8a8a">'.$this->Icons->i('&#xe002;').'&ensp;Reminder'.'</small>';
             $small[0] = $l['remind_me'];
-            $small[1] = '<a href="http://www.google.com/calendar/event?action=TEMPLATE&text=Upload%20experimental%20results%20for%20Job%20'.$l['id'].'&dates='.date('Ymd', strtotime($l['remind_me'])).'/'.date('Ymd', strtotime($l['remind_me']) + (60*60*24)).'&details=&location=http%3A%2F%2Fthermal-age.localhost%2Fjobs%2Freport%2F'.$l['id'].'&trp=false&sprop=http%3A%2F%2Fthermal-age.eu&sprop=name:thermal-age.eu" target="_blank"><img src="//www.google.com/calendar/images/ext/gc_button2.gif" border=0></a>';
+            $small[1] = '<a href="http://www.google.com/calendar/event?action=TEMPLATE&text=Upload%20experimental%20results%20for%20Job%20'.$l['job_id'].'&dates='.date('Ymd', strtotime($l['remind_me'])).'/'.date('Ymd', strtotime($l['remind_me']) + (60*60*24)).'&details=&location=http%3A%2F%2Fthermal-age.localhost%2Fjobs%2Freport%2F'.$l['job_id'].'&trp=false&sprop=http%3A%2F%2Fthermal-age.eu&sprop=name:thermal-age.eu" target="_blank"><img src="//www.google.com/calendar/images/ext/gc_button2.gif" border=0></a>';
             break;
         case "wont_run":
             $big[3] = '<small style="color: #8a8a8a">'.$this->Icons->i('&#xe061;')."&ensp;Won't Run".'</small>';
