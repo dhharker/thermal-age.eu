@@ -118,11 +118,12 @@ class LabResultsController extends AppController {
 				$this->Session->setFlash(__('The lab results have been saved', true));
                 $this->redirect(array('action' => 'job', $this->data['LabResult']['job_id']), null, true, true);
 			} else {
-				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
+				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.', true));
+				//$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
 			}
         }
         elseif ($authd !== true) {
-            $this->setFlash ("Not authorised.");
+            $this->Session->setFlash ("Not authorised.");
         }
         if ($authd !== true) {
             $this->set('showForm', false);
@@ -148,11 +149,13 @@ class LabResultsController extends AppController {
 			
             $this->LabResult->create();
 			$this->LabResult->set($this->data);
+            //$this->LabResult->setConditionalValidation();
 			if ($this->LabResult->validates() && $this->LabResult->save()) {
 				$this->Session->setFlash(__('The lab results have been saved', true));
                 $this->redirect(array('action' => 'job', $this->data['LabResult']['job_id']), null, true, true);
 			} else {
-				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
+				$this->Session->setFlash(__('The lab results could not be saved. Please, try again.', true));
+				//$this->Session->setFlash(__('The lab results could not be saved. Please, try again.'.print_r ($this->LabResult->validationErrors,1), true));
 			}
         }
         if ($authd !== true) {

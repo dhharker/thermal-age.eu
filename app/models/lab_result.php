@@ -22,12 +22,39 @@ class LabResult extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
+		'result_type' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'experiment_type' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
 		'htp_mfl_less_contaminants' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
+                'allowEmpty' => true,
 				//'message' => 'Your custom message here',
-				'allowEmpty' => true,
-				'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+            'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
@@ -35,9 +62,16 @@ class LabResult extends AppModel {
 		'pcr_tgt_length' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
+                'allowEmpty' => true,
 				//'message' => 'Your custom message here',
-				'allowEmpty' => true,
-				'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+            'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
@@ -45,9 +79,16 @@ class LabResult extends AppModel {
 		'pcr_num_runs' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
+                'allowEmpty' => true,
 				//'message' => 'Your custom message here',
-				'allowEmpty' => true,
-				'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+            'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
@@ -55,9 +96,16 @@ class LabResult extends AppModel {
 		'pcr_num_successes' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
+                'allowEmpty' => true,
 				//'message' => 'Your custom message here',
-				'allowEmpty' => true,
-				'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+            'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
@@ -95,8 +143,34 @@ class LabResult extends AppModel {
     }
     function beforeSave() {
         $this->_calculateLambdaFromExperimental($this->data);
-        //die (print_r ($this->data,1));
         return parent::beforeSave();
+    }
+    function beforeValidate($options = array()) {
+        $this->setConditionalValidation();
+        parent::beforeValidate($options);
+    }
+    function setConditionalValidation () {
+        
+        $wipe = array ();
+        
+        if ($this->data[$this->name]['result_type'] != 'run') {
+            $wipe[] = 'experiment_type';
+        }
+        if ($this->data[$this->name]['experiment_type'] != 'htp') {
+            $wipe[] = 'htp_mfl_less_contaminants';
+        }
+        if ($this->data[$this->name]['experiment_type'] != 'pcr') {
+            $wipe [] = 'pcr_tgt_length';
+            $wipe [] = 'pcr_num_runs';
+            $wipe [] = 'pcr_num_successes';
+        }
+        
+        foreach ($wipe as $field) {
+            if (isset ($this->data[$this->name][$field]))
+                unset ($this->data[$this->name][$field]);
+            if (isset ($this->validate[$field]) && isset ($this->validate[$field]['notempty']))
+                unset ($this->validate[$field]['notempty']);
+        }
     }
     
     function _calculateLambdaFromExperimental (&$data = null) {
