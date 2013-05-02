@@ -350,7 +350,7 @@ class JobsController extends AppController {
     }
     
     function _publishAssociatedLabResults ($job_id, $date = null) {
-        if ($date === null) $date = time ();
+        if ($date === null || strlen($date) == 0 || $date == 0) $date = time ();
         if ($this->authoriseWrite ('Job',$job_id) !== true) return false;
         $this->Job->LabResult->recursive = -1;
         $lrs = $this->Job->LabResult->find ('all', array (
@@ -360,17 +360,19 @@ class JobsController extends AppController {
                 //'LabResult.published NOT' => '1'
             ),
             'fields' => array (
-                'id'
+                'LabResult.id'
             )
         ));
         if (!!$lrs && !empty ($lrs))
             foreach ($lrs as $lr) {
+                // This fixes results not saving
+                $this->Job->LabResult->read(null,$lr['LabResult']['id']);
                 // E for Experimental result
                 $lr['LabResult']['pub_ref'] = 'TAEU-E-' . $lr['LabResult']['id'];
                 $lr['LabResult']['published'] = '1';
                 $lr['LabResult']['published_date'] = date ('Y-m-d',strtotime($date));
-                $this->Job->LabResult->set ($lr);   
-                $this->Job->LabResult->save ();   
+                $this->Job->LabResult->id = $lr['LabResult']['id'];
+                $this->Job->LabResult->save ($lr, false);   
             }
         return count ($lrs);
     }
