@@ -310,7 +310,8 @@ class JobsController extends AppController {
             
             // J for Job (generic)
             $pubRefTypeIdentifier = 'J';
-            switch ($this->data['Job']['reporter_name']) {
+            $rptn = $this->Job->read('reporter_name', $id);
+            switch ($rptn['Job']['reporter_name']) {
                 // B for Batch, S for Single
                 case "thermal_age_csv": $pubRefTypeIdentifier = 'B'; break; 
                 case "dna_screener":    $pubRefTypeIdentifier = 'S'; break;
