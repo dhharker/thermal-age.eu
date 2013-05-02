@@ -114,6 +114,8 @@ class JobsController extends AppController {
      * @param int $id of job to get report for
      */
     function report ($id = null) {
+        if ($id === null)
+            $id = $this->params['id'];
         $j = $this->Job->read(null, $id);
         
         //debug ($this->view); die();
