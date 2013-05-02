@@ -43,7 +43,7 @@ if (isset ($labResult) && is_array ($labResult)) {
     if (!!$showForm) {
         $actions = '<div style="" class="fg-buttonset fg-buttonset-single ui-helper-clearfix">';
         $delCor = 'right';
-        if ($l['result_type'] == 'run' && strlen ($l['experiment_type']) > 0 && in_array ($l['experiment_type'], array ('pcr','htp')))
+        if (0 && $l['result_type'] == 'run' && strlen ($l['experiment_type']) > 0 && in_array ($l['experiment_type'], array ('pcr','htp')))
             $actions .= $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-left", 'style' => $fgbc['style']));
         else
             $delCor = 'all';
