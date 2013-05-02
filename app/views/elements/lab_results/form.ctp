@@ -23,7 +23,7 @@
             if (!isset ($lockTypes)) $lockTypes = false;
             if (!isset ($editMode)) $editMode = false;
             ?>
-            <div class="labResults form sentenceForm cakeInline smxartbox" style="max-width: 650px; margin: 0 auto; padding: 1.5em 2em .25em 2em;">
+            <div id="LabResultJobForm" class="labResults form sentenceForm cakeInline smxartbox" style="max-width: 650px; margin: 0 auto; padding: 1.5em 2em .25em 2em;">
                 <?php
                 //$a = new FormHelper;
                 //$a->cre
@@ -134,7 +134,7 @@
             <script type="text/javascript">
                 (function ($) {
                     $(document).ready (function () {
-                        $('.sentenceForm').each (function () {
+                        $('#LabResultJobForm.sentenceForm').each (function () {
                             var $fm = $(this);
                             $fm.find('.datePicker').datepicker({
                                 showAnim: 'slideDown',
@@ -170,7 +170,7 @@
                             
                         });
 
-                        var $fm = $('.labResults form');
+                        var $fm = $('#LabResultJobForm.labResults form');
                         $fm.ajaxForm ({
                             type: 'post',
                             target: $('#LabResultsScope')

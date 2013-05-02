@@ -1,7 +1,7 @@
 <?php
 if (!isset ($editMode)) $editMode = false;
 ?>
-<div class="labResults form sentenceForm cakeInline smxartbox" style="max-width: 650px; margin: 0 auto; padding: 1.5em 2em .25em 2em;">
+<div id="PublishJobForm" class="labResults form sentenceForm cakeInline smxartbox" style="max-width: 650px; margin: 0 auto; padding: 1.5em 2em .25em 2em;">
     <?php
     if ($isAjax) {
         echo $this->Session->flash();
@@ -48,7 +48,7 @@ if (!isset ($editMode)) $editMode = false;
             'label' => false,
             'class' => 'datePicker',
             'default' => date('Y-m-d'),
-            'value' => date('Y-m-d', strtotime($job['Job']['published_date']))
+            'value' => date('Y-m-d', !empty ($job['Job']['published_date']) ? strtotime($job['Job']['published_date']) : time()+(60*60*24)),
         ));
         ?>
     </div>
@@ -61,12 +61,12 @@ if (!isset ($editMode)) $editMode = false;
 <script type="text/javascript">
     (function ($) {
         $(document).ready (function () {
-            $('.sentenceForm').each (function () {
+            $('#PublishJobForm.sentenceForm').each (function () {
                 var $fm = $(this);
                 $fm.find('.datePicker').datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd'
-                }).css({width: '5.5em'});
+                }).css({width: '6em'});
                 $fm.find ('div').each (function () {
                     var $this = $(this);
                     var df = $this.attr('data-det-field');
@@ -99,12 +99,12 @@ if (!isset ($editMode)) $editMode = false;
 
             });
 
-            var $fm = $('.labResults form');
+            var $fm = $('#PublishJobForm form');
             $fm.ajaxForm ({
                 type: 'post',
-                target: $('#LabResultsScope')
+                target: $('#PublishJobForm').parent()
             });
-            $('#LabResultsScope a.fg-button').click(function(e) {
+            $('#PublishJobForm a.fg-button').click(function(e) {
                 var $this = $(this);
                 var r = null;
                 if (!!$this.attr('onload')) {
@@ -112,7 +112,7 @@ if (!isset ($editMode)) $editMode = false;
                 }
                 e.preventDefault();
                 if (r === false) return false;
-                $('#LabResultsScope').load($(this).attr('href'));
+                $('#PublishJobForm').load($(this).attr('href'));
             });
         });
 
