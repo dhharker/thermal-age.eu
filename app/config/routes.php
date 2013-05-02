@@ -41,5 +41,5 @@
         array('controller' => 'jobs', 'action' => 'report'),
         array('typeidchar' => '[A-Z]', 'id' => '[1-9][0-9]*')
     );
-    Router::connect('/pub/*', array('controller' => 'jobs', 'action' => 'report'));
+    Router::connect('/pub/', array('controller' => 'jobs', 'action' => 'report'));
     

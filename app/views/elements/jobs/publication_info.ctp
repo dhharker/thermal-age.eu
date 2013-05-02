@@ -7,11 +7,12 @@
                 <?
                 if (!!$job['Job']['published'] && strtotime($job['Job']['published_date']) < time()) {
                     echo "<p>This job is published and publicly accessible from the following URL: <br />";
-                    $jurls = array (
+                    /*$jurls = array (
                         'controller' => 'jobs',
                         'action' => 'published',
                         $job['Job']['pub_ref']
-                    );
+                    );*/
+                    $jurls = "/pub/" . $job['Job']['pub_ref'];
                     
                     $jurl = $this->Html->url ($jurls, true);
                     echo $this->Html->link ($jurl, $jurl, array (
