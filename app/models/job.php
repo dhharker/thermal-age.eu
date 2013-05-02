@@ -1513,7 +1513,7 @@ class Job extends AppModel {
         //if ($increase_by_points == 0) die ($increase_by_points);
 
         $current = $this->getJobPercentComplete($id);
-        if ($current -1) {
+        if ($current != -1) {
             $this->_updateJobPercentComplete($current + $increase_by_points + 0.0);
             return true;
         }
