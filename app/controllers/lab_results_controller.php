@@ -88,15 +88,12 @@ class LabResultsController extends AppController {
 	}
 
 	function delete($id = null, $job_id = null) {
-		if (!$id || !$this->authoriseWrite('LabResult',$id)) {
+		if (!$id || !$this->authoriseWrite('LabResult',$id))
 			$this->Session->setFlash(__('Invalid id for lab results or not authorised', true));
-			$this->_redirectAfterDoingStuff($job_id);
-		}
-		if ($this->LabResult->delete($id)) {
+		elseif ($this->LabResult->delete($id))
 			$this->Session->setFlash(__('Lab result deleted', true));
-			$this->_redirectAfterDoingStuff($job_id);
-		}
-		$this->Session->setFlash(__('Lab result was not deleted', true));
+        else
+            $this->Session->setFlash(__('Lab result was not deleted', true));
 		$this->_redirectAfterDoingStuff($job_id);
 	}
     
@@ -565,6 +562,10 @@ class LabResultsController extends AppController {
     function _redirectAfterDoingStuff ($job_id = null) {
         if (!$job_id) die ("no jid $job_id");
         $jid = ($job_id === null && isset ($this->data['LabResult']['job_id'])) ? $this->data['LabResult']['job_id'] : $job_id;
+        
+        if (!$this->RequestHandler->isAjax() && $this->LabResult->Job->idExists($jid))
+            $this->redirect(array('controller' => 'jobs', 'action' => 'report', $jid), null, true, true);
+        
         if ((isset ($this->data['LabResult']['after_success']) && 
             $this->data['LabResult']['after_success'] == 'job' && 
             isset ($this->data['LabResult']['job_id']) && 
@@ -576,6 +577,7 @@ class LabResultsController extends AppController {
         else
             $this->redirect(array('action' => 'index'), null, true, true);
     }
+    
     function _setFormStuffByJobId ($job_id = null) {
         if (!$this->LabResult->Job->idExists($job_id))
             $this->_redirectAfterDoingStuff($job_id);

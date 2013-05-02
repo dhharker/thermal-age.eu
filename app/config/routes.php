@@ -36,5 +36,6 @@
     Router::connect('/feedback', array('controller' => 'feedbacks', 'action' => 'add'));
     
     
-    Router::connect('/pub/*', array('controller' => 'jobs', 'action' => 'published'));
+    Router::connect('/pub/', array('controller' => 'jobs', 'action' => 'published'));
+    //Router::connect('/pub/TAEU', array('controller' => 'jobs', 'action' => 'published'));
     

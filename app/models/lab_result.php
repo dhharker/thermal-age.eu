@@ -19,7 +19,7 @@ class LabResult extends AppModel {
 				//'allowEmpty' => false,
 				'required' => true,
 				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
 		'result_type' => array(
@@ -29,7 +29,7 @@ class LabResult extends AppModel {
 				//'allowEmpty' => false,
 				'required' => true,
 				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
 		'experiment_type' => array(
@@ -153,13 +153,17 @@ class LabResult extends AppModel {
         
         $wipe = array ();
         
-        if ($this->data[$this->name]['result_type'] != 'run') {
+        $this->recursive = -1;
+        
+        $testData = $this->data;
+        
+        if (!isset ($testData[$this->name]['result_type']) || $testData[$this->name]['result_type'] != 'run') {
             $wipe[] = 'experiment_type';
         }
-        if ($this->data[$this->name]['experiment_type'] != 'htp') {
+        if (!isset ($testData[$this->name]['experiment_type']) || $testData[$this->name]['experiment_type'] != 'htp') {
             $wipe[] = 'htp_mfl_less_contaminants';
         }
-        if ($this->data[$this->name]['experiment_type'] != 'pcr') {
+        if (!isset ($testData[$this->name]['experiment_type']) || $testData[$this->name]['experiment_type'] != 'pcr') {
             $wipe [] = 'pcr_tgt_length';
             $wipe [] = 'pcr_num_runs';
             $wipe [] = 'pcr_num_successes';

@@ -41,10 +41,15 @@ if (isset ($labResult) && is_array ($labResult)) {
     $big[3] = '';
     $small[3] = array ();
     if (!!$showForm) {
-        $small[3][] = '<div style="" class="fg-buttonset fg-buttonset-single ui-helper-clearfix">' . 
-            $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-left", 'style' => $fgbc['style'])) .
-            $this->Html->link(__('Delete', true), array('action' => 'delete', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-right", 'style' => $fgbc['style']), sprintf(__('Are you sure you want to delete # %s?', true), $labResult['LabResult']['id'])) .
-            '</div>';
+        $actions = '<div style="" class="fg-buttonset fg-buttonset-single ui-helper-clearfix">';
+        $delCor = 'right';
+        if (in_array ($l['result_type'], array ('pcr','htp')))
+            $actions .= $this->Html->link(__('Edit', true), array('action' => 'edit', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-left", 'style' => $fgbc['style']));
+        else
+            $delCor = 'all';
+        $actions .= $this->Html->link(__('Delete', true), array('action' => 'delete', $labResult['LabResult']['id'],$l['job_id']), array ('class' => $fgbc['class'] . " ui-corner-".$delCor, 'style' => $fgbc['style']), sprintf(__('Are you sure you want to delete # %s?', true), $labResult['LabResult']['id']));
+        $actions .= '</div>';
+        $small[3][] = $actions;
     }
     if (strlen($l['labs_ref']) > 0)
         $big[3] = '<span style="display: block; font-size: 20px; height: 35px; line-height: 38px; margin-top: -5px; overflow: hidden;">'.htmlspecialchars($l['labs_ref']).'</span>';
