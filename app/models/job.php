@@ -1051,6 +1051,32 @@ class Job extends AppModel {
     function Ps ($length, $λ) { // probability that a DNA strand of a given length will survive
         return pow (1 - $λ, $length - 1);
     }
+    
+    function _generate_latex_pdf ($arrOpts = null) {
+        if (!is_array ($arrOpts)) $arrOpts = array ();
+        $defaults = array (
+            
+        );
+        $options = array_merge_recursive($defaults, $arrOpts);
+        
+        // Collate data to go in view and locate required files
+        
+        // Generate LaTeX source from view
+        
+        // Output LaTeX source to own tmp dir
+        
+        // Run LaTeX a few times
+        
+        // Return array ( 'pdf_filename' => $pdfFile | 'error' = "error msg" )
+    }
+    
+    function _generate_dna_screener_pdf ($data) {
+        
+    }
+    function _generate_csv_pdf ($data) {
+        
+    }
+    
     function _task_dna_screener_reporter ($args) {
         $this->_addToStatus ("Reporter: DNA Screener");
         global $tempDir;
