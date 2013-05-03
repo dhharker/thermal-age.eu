@@ -1386,14 +1386,17 @@ class Job extends AppModel {
 
         // BADNESS ENDS.
 
-        $n = $opts['web_uri_path'] . sprintf ("%s_%s.%s", $opts['file_id'], $opts['filename_base'], $opts['file_ext']);
-        $fn = $opts['webroot'] . $n;
+        $nbase = $opts['web_uri_path'] . sprintf ("%s_%s", $opts['file_id'], $opts['filename_base']);
+        $n = $nbase . '.' . $opts['file_ext'];
+        $fn = $opts['webroot'] . $nbase;
         
-        $plot->export($fn);
-        $this->_addToStatus("Saving temporothermal graph to $fn");
+        $this->_addToStatus("Saving temporothermal graph to $n");
+        
+        \ttkpl\ttkplPlot::__export ($plot, $fn, $opts['all_ext']);
+        
         $plot->close();
 
-        return (file_exists ($fn)) ? $n : false;
+        return (file_exists ($fn . '.' . $opts['file_ext'])) ? $n : false;
 
     }
 
@@ -1441,11 +1444,14 @@ class Job extends AppModel {
                 $plot->addData ($l, $this->Ps ($l, $λ), $li+2);
             }
         }
-        $n = $opts['web_uri_path'] . sprintf ("%s_%s.%s", $opts['file_id'], $opts['filename_base'], $opts['file_ext']);
-        $fn = $opts['webroot'] . $n;
-        $this->_addToStatus("Saving lambda graph to $fn");
-        $plot->plot($fn);
-        return (file_exists ($fn)) ? $n : false;
+        $nbase = $opts['web_uri_path'] . sprintf ("%s_%s", $opts['file_id'], $opts['filename_base']);
+        $n = $nbase . '.' . $opts['file_ext'];
+        $fn = $opts['webroot'] . $nbase;
+        
+        $this->_addToStatus("Saving lambda graph to $n");
+        $plot->plot($fn, $opts['all_ext']);
+        
+        return (file_exists ($fn . '.' . $opts['file_ext'])) ? $n : false;
 
     }
 
@@ -1453,7 +1459,8 @@ class Job extends AppModel {
         return array(
             'web_uri_path' => 'reports/', // with trailing/ not /leading slash <-- bad nerd poetry?
             'filename_base' => 'user_graph',
-            'file_ext' => 'svg',
+            'file_ext' => 'svg', // this is returned for use somewhere
+            'all_ext' => array ('svg','pdf','png'), // these are those which are actually generated (should include above!)
             'file_id' => microtime (1),
             'webroot' => WWW_ROOT,
             'colours' => array (
