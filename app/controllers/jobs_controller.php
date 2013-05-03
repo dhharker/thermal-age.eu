@@ -216,6 +216,43 @@ class JobsController extends AppController {
         }
         
     }
+    
+    // TESTING ONLY!!
+    function test_pdf () {
+        $this->autoLayout = false;
+        $this->autoRender = false;
+        $ctlr =& $this;
+        $this->Job->_set_renderer_closure (function ($arrOpts) use ($ctlr) {
+            return  ($ctlr->_render ($arrOpts));
+        });
+        print_r ($this->Job->_generate_latex_pdf());
+        
+    }
+    
+    /**
+     * This gets exported to the model by the background shell to allow pdf generation
+     */
+    function _render ($arrOpts) {
+        
+        if (!is_array ($arrOpts)) $arrOpts = array ();
+        $defaults = array (
+            'action' => $this->name,
+            'layout' => null,
+            'file' => null,
+            'data' => array (
+                'meta' => array (
+                    'rendered_timestamp' => time()
+                )
+            )
+        );
+        $options = array_merge($defaults, $arrOpts);
+        
+        $this->set($options['data']);
+        //print_r ($options);die();
+        return $this->render($options['action'], $options['layout'], $options['file']);
+        
+    }
+    
 
     /**
      * Users are redirected here after submitting a job for processing.

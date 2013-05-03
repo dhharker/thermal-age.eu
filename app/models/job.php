@@ -1060,8 +1060,21 @@ class Job extends AppModel {
         $options = array_merge_recursive($defaults, $arrOpts);
         
         // Collate data to go in view and locate required files
+        $data = array ();
         
-        // Generate LaTeX source from view
+        // Generate LaTeX source
+        if (!is_callable ($this->fnRenderer)) {
+            $this->_addToStatus("ERROR: Renderer closure not set!");
+            return array ('error' => 'Renderer closure not set.');
+        }
+        $fnR = $this->fnRenderer;
+        $latex = $fnR (array (
+            'action' => 'latex/report.tex',
+            'data' => $data
+        ));
+        
+        // TESTING ONLY!
+        return $latex;
         
         // Output LaTeX source to own tmp dir
         
@@ -1075,6 +1088,20 @@ class Job extends AppModel {
     }
     function _generate_csv_pdf ($data) {
         
+    }
+    
+    var $fnRenderer = null;
+    /**
+     * Store view renderer closure
+     * @param function $fnRenderer
+     * @return boolean true if $fnRenderer is_callable and has been set
+     */
+    function _set_renderer_closure ($fnRenderer) {
+        if (is_callable($fnRenderer))
+            $this->fnRenderer = $fnRenderer;
+        else
+            return false;
+        return true;
     }
     
     function _task_dna_screener_reporter ($args) {
