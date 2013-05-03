@@ -218,14 +218,20 @@ class JobsController extends AppController {
     }
     
     // TESTING ONLY!!
-    function test_pdf () {
+    function test_pdf ($job_id = null) {
+        
+        if ($this->authoriseRead ('Job', $job_id) !== true) die ("Unable to access job.");
+        
+        
         $this->autoLayout = false;
         $this->autoRender = false;
+        
         $ctlr =& $this;
         $this->Job->_set_renderer_closure (function ($arrOpts) use ($ctlr) {
             return  ($ctlr->_render ($arrOpts));
         });
-        print_r ($this->Job->_generate_latex_pdf());
+        
+        print_r ($this->Job->_generate_dna_screener_pdf ($job_id));
         
     }
     
@@ -234,7 +240,8 @@ class JobsController extends AppController {
      */
     function _render ($arrOpts) {
         
-        if (!is_array ($arrOpts)) $arrOpts = array ();
+        $arrOpts = (array) $arrOpts;
+        
         $defaults = array (
             'action' => $this->name,
             'layout' => null,
@@ -245,11 +252,14 @@ class JobsController extends AppController {
                 )
             )
         );
-        $options = array_merge($defaults, $arrOpts);
+        $options = Set::merge ($defaults, $arrOpts);
+        
+        //print_r (array ($defaults, $arrOpts));die(__FUNCTION__);
         
         $this->set($options['data']);
-        //print_r ($options);die();
-        return $this->render($options['action'], $options['layout'], $options['file']);
+        $o = $this->render($options['action'], $options['layout'], $options['file']);
+        $this->output = '';
+        return $o;
         
     }
     

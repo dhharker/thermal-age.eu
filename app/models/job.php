@@ -1057,10 +1057,7 @@ class Job extends AppModel {
         $defaults = array (
             
         );
-        $options = array_merge_recursive($defaults, $arrOpts);
-        
-        // Collate data to go in view and locate required files
-        $data = array ();
+        $options = Set::merge ($defaults, $arrOpts);
         
         // Generate LaTeX source
         if (!is_callable ($this->fnRenderer)) {
@@ -1068,10 +1065,7 @@ class Job extends AppModel {
             return array ('error' => 'Renderer closure not set.');
         }
         $fnR = $this->fnRenderer;
-        $latex = $fnR (array (
-            'action' => 'latex/report.tex',
-            'data' => $data
-        ));
+        $latex = $fnR ($options);
         
         // TESTING ONLY!
         return $latex;
@@ -1083,10 +1077,49 @@ class Job extends AppModel {
         // Return array ( 'pdf_filename' => $pdfFile | 'error' = "error msg" )
     }
     
-    function _generate_dna_screener_pdf ($data) {
+    function _generate_dna_screener_pdf ($job_id = null) {
+        if ($job_id === null) $job_id = $this->id;
+        $job = $this->read (null, $job_id);
+        $job['Job']['data'] = unserialize ($job['Job']['data']);
+        $report = unserialize ($this->_bgpGetJobFileContent ('report', $job_id));
+        
+        $defaults = array (
+            'action' => 'latex/report.tex',
+            'data' => array (
+                'title' => 'MY TITLE',
+                'author' => 'AM AUTHOR',
+                'keywords' => 'DNA, Collagen, thermal age, depurination, curation, ancient, bone',
+                'job' => $job,
+                'report' => $report
+            ),
+        );
+        
+        $options = Set::merge ($defaults, compact ('data'));
+        
+        return $this->_generate_latex_pdf ($options);
         
     }
-    function _generate_csv_pdf ($data) {
+    function _generate_csv_pdf ($job_id) {
+        
+        if ($job_id === null) $job_id = $this->id;
+        $job = $this->read (null, $job_id);
+        $job['Job']['data'] = unserialize ($job['Job']['data']);
+        $report = unserialize ($this->Job->_bgpGetJobFileContent ('report', $job_id));
+        
+        $defaults = array (
+            'action' => 'latex/report_multi.tex',
+            'data' => array (
+                'title' => 'MY CSV TITLE',
+                'author' => 'AM CSV AUTHOR',
+                'keywords' => 'DNA, Collagen, thermal age, depurination, curation, ancient, bone',
+                'job' => $job,
+                'report' => $report
+            ),
+        );
+        
+        $options = Set::merge ($defaults, compact ('data'));
+        
+        return $this->_generate_latex_pdf ($options);
         
     }
     
@@ -1791,6 +1824,8 @@ class Job extends AppModel {
                 if (!mkdir ($dir, 0777))
                     return false;
             }
+            elseif (is_die ($dir))
+                return $dir;
             $thisDir = $dir;
             return $dir;
         }
