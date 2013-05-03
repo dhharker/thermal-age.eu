@@ -1824,7 +1824,7 @@ class Job extends AppModel {
                 if (!mkdir ($dir, 0777))
                     return false;
             }
-            elseif (is_die ($dir))
+            elseif (is_dir ($dir))
                 return $dir;
             $thisDir = $dir;
             return $dir;
