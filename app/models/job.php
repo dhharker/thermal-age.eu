@@ -1053,9 +1053,13 @@ class Job extends AppModel {
     }
     
     function _generate_latex_pdf ($arrOpts = null) {
+        
+        $this->_addToStatus("Generating PDF file...");
+        
         if (!is_array ($arrOpts)) $arrOpts = array ();
         $defaults = array (
-            
+            'filename' => 'report',
+            'latex_runs' => 4
         );
         $options = Set::merge ($defaults, $arrOpts);
         
@@ -1065,18 +1069,43 @@ class Job extends AppModel {
             return array ('error' => 'Renderer closure not set.');
         }
         $fnR = $this->fnRenderer;
+        
+        // get paths
+        $tmpDir = $this->_makeJobTmpDir() . DS;
+        if ($tmpDir == false) return array ('error' => 'Couldn\'t create/access tmp folder');
+        $pkgDir = APP.'vendors'.DS.'latex'.DS;
+        $baseFile = sprintf ('%s%s.',$tmpDir,$options['filename']);
+        $texFile = $baseFile . 'tex';
+        $pdfFile = $baseFile . 'pdf';
+        $reportGraphBasepath = APP.WEBROOT_DIR.DS;
+        
+        // send rgb to view
+        $options['data']['rgbPath'] = $reportGraphBasepath;
+        
+        // Render LaTeX view
         $latex = $fnR ($options);
         
-        // get tmp dir
-        $tmp = $this->_makeJobTmpDir();
+        // symlink latex pkg deps to tmp folder
+        $pkgs = scandir($pkgDir);
+        $exclude = array ('.','..');
+        foreach ($pkgs as $pkg)
+            if (!in_array ($pkg, $exclude) && !is_dir($pkg) && !file_exists($tmpDir.$pkg))
+                symlink ($pkgDir.$pkg, $tmpDir.$pkg);
         
+        // output tex to file
+        file_put_contents ($texFile, $latex);
         
-        // TESTING ONLY!
-        return $latex;
+        while ($options['latex_runs'] > 0) {
+            $last_run_output = shell_exec("cd \"$tmpDir\" && pdflatex \"$texFile\"");
+            if (!file_exists ($pdfFile)) {
+                $this->_addToStatus("Error generating PDF report: " . $last_run_output);
+                return array ('error' => 'pdflatex failed', 'details' => $last_run_output);
+            }
+            $options['latex_runs']--;
+        }
         
-        // Output LaTeX source to own tmp dir
+        return array ('pdf_filename' => $pdfFile);
         
-        // Run LaTeX a few times
         
         // Return array ( 'pdf_filename' => $pdfFile | 'error' = "error msg" )
     }
@@ -1089,6 +1118,7 @@ class Job extends AppModel {
         
         $defaults = array (
             'job_id' => $job_id,
+            'filename' => 'S'.$job_id.'_dna_screening_report',
             'action' => 'latex/report.tex',
             'data' => array (
                 'title' => 'TITLE NOT SET',
@@ -1112,6 +1142,8 @@ class Job extends AppModel {
         $report = unserialize ($this->Job->_bgpGetJobFileContent ('report', $job_id));
         
         $defaults = array (
+            'job_id' => $job_id,
+            'filename' => 'B'.$job_id.'_dna_screening_batch_report',
             'action' => 'latex/report_multi.tex',
             'data' => array (
                 'title' => 'MY CSV TITLE',
