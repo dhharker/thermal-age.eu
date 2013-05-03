@@ -1,6 +1,6 @@
 <?php
 /**
- * This is started a) by the web interface b) by CRON
+ * This is started by the web interface
  */
 class BackgroundShell extends Shell {
 
