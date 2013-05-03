@@ -1067,6 +1067,10 @@ class Job extends AppModel {
         $fnR = $this->fnRenderer;
         $latex = $fnR ($options);
         
+        // get tmp dir
+        $tmp = $this->_makeJobTmpDir();
+        
+        
         // TESTING ONLY!
         return $latex;
         
@@ -1084,11 +1088,12 @@ class Job extends AppModel {
         $report = unserialize ($this->_bgpGetJobFileContent ('report', $job_id));
         
         $defaults = array (
+            'job_id' => $job_id,
             'action' => 'latex/report.tex',
             'data' => array (
-                'title' => 'MY TITLE',
-                'author' => 'AM AUTHOR',
-                'keywords' => 'DNA, Collagen, thermal age, depurination, curation, ancient, bone',
+                'title' => 'TITLE NOT SET',
+                'author' => 'AUTHOR NOT SET',
+                'keywords' => 'thermal-age.eu, DNA, Collagen, thermal age, depurination, curation, ancient, bone',
                 'job' => $job,
                 'report' => $report
             ),
