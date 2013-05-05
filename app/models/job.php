@@ -1074,13 +1074,14 @@ class Job extends AppModel {
         $tmpDir = $this->_makeJobTmpDir() . DS;
         if ($tmpDir == false) return array ('error' => 'Couldn\'t create/access tmp folder');
         $pkgDir = APP.'vendors'.DS.'latex'.DS;
+        $rptDir = APP.'webroot/reports/';
         $baseFile = sprintf ('%s%s.',$tmpDir,$options['filename']);
         $texFile = $baseFile . 'tex';
         $pdfFile = $baseFile . 'pdf';
         $reportGraphBasepath = APP.WEBROOT_DIR.DS;
         
         // send rgb to view
-        $options['data']['rgbPath'] = $reportGraphBasepath;
+        //$options['data']['rgbPath'] = $reportGraphBasepath;
         
         // Render LaTeX view
         $latex = $fnR ($options);
@@ -1091,6 +1092,16 @@ class Job extends AppModel {
         foreach ($pkgs as $pkg)
             if (!in_array ($pkg, $exclude) && !is_dir($pkg) && !file_exists($tmpDir.$pkg))
                 symlink ($pkgDir.$pkg, $tmpDir.$pkg);
+        // symlink report images to tmp folder
+        $allowed = implode ('|',array ('png','pdf','eps','tex','svg'));
+        $rpts = array_filter (scandir($rptDir), function ($v) use ($allowed, $options) {
+            if (strpos($v, $options['job_id']) !== 0) return false;
+            if (preg_match ('/\.('.$allowed.')$/i', $v) > 0) return true;
+            return false;
+        });
+        foreach ($rpts as $rpt)
+            if (!is_dir($rpt) && !file_exists($tmpDir.$rpt))
+                symlink ($rptDir.$rpt, $tmpDir.$rpt);
         
         // output tex to file
         file_put_contents ($texFile, $latex);
@@ -1492,7 +1503,7 @@ class Job extends AppModel {
             'web_uri_path' => 'reports/', // with trailing/ not /leading slash <-- bad nerd poetry?
             'filename_base' => 'user_graph',
             'file_ext' => 'svg', // this is returned for use somewhere
-            'all_ext' => array ('svg','pdf','png'), // these are those which are actually generated (should include above!)
+            'all_ext' => array ('png', 'svg', 'pdf'), // these are those which are actually generated (should include above!)
             'file_id' => microtime (1),
             'webroot' => WWW_ROOT,
             'colours' => array (
