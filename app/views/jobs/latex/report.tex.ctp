@@ -8,13 +8,16 @@ if (is_array ($job)) {
 $report = $this->getVar ('report');
 if (is_array ($report)) {
     $drawGraphs = array ();
-    $rgbPath = $this->getVar ('rgbPath');
+    //$rgbPath = $this->getVar ('rgbPath');
+    $rgbPath = '';
     if (!empty ($report['graphs'])) {
         foreach ($report['graphs'] as $gt => $gu) {
+            $gu = basename ($gu);
             $drawGraphs[] = array (
                 'name' => $gt,
                 'svg' => $rgbPath . $gu,
-                'pdf' => $rgbPath . preg_replace ('/\.svg$/i', '.pdf', $gu)
+                'pdf' => $rgbPath . preg_replace ('/\.svg$/i', '.pdf', $gu),
+                'png' => $rgbPath . preg_replace ('/\.svg$/i', '.png', $gu)
             );
         }
     }
@@ -31,7 +34,7 @@ if (is_array ($report)) {
 }
 
 ?>
-\documentclass[11pt,a4paper]{report}
+\documentclass[11pt,a4paper,notitlepage]{report}
 
 \usepackage[latin1]{inputenc}
 \usepackage{amsmath}
@@ -101,6 +104,8 @@ foreach ($drawGraphs as $gi => $graph) {
 \begin{figure}
  \centering
  \includegraphics[width=<?=$graphs[$graph['name']]['width_cm']?>cm]{<?=$graph['pdf']?>}
+ <?/*\resizebox{\columnwidth}{!}{\input{<?=$graph['tex']?>}}*/;?>
+
  \caption{<?=$graphs[$graph['name']]['title']?>}
  (Graph SVG \attachfile[appearance=false,icon=Paperclip]{<?=$graph['svg']?>})
  \label{fig:graph_<?=$graph['name'].'_'.$gi;?>}
