@@ -1059,7 +1059,10 @@ class Job extends AppModel {
         if (!is_array ($arrOpts)) $arrOpts = array ();
         $defaults = array (
             'filename' => 'report',
-            'latex_runs' => 4
+            'latex_runs' => 4,
+            'data' => array (
+                'author' => 'http://thermal-age.eu',
+            )
         );
         $options = Set::merge ($defaults, $arrOpts);
         
@@ -1132,8 +1135,8 @@ class Job extends AppModel {
             'filename' => 'S'.$job_id.'_dna_screening_report',
             'action' => 'latex/report.tex',
             'data' => array (
-                'title' => 'TITLE NOT SET',
-                'author' => 'AUTHOR NOT SET',
+                'title' => 'DNA Screener Report (Job '.$job_id.')',
+                'author' => 'http://thermal-age.eu',
                 'keywords' => 'thermal-age.eu, DNA, Collagen, thermal age, depurination, curation, ancient, bone',
                 'job' => $job,
                 'report' => $report
@@ -1239,6 +1242,12 @@ class Job extends AppModel {
                 $results['graphs']['burial'] = $this->_draw_temporothermal_history_graph (array (
                     'temporothermal' => $tt,
                     'filename_base' => "temporothermal_{$ttInd}_graph",
+                    'histogram' => $tao->histograms[$ttInd],
+                    'file_id' => $this->field ('id')
+                ));
+                $results['graphs']['histogram'] = $this->_draw_temporothermal_histogram_graph (array (
+                    'temporothermal' => $tt,
+                    'filename_base' => "temporothermal_{$ttInd}_histogram",
                     'histogram' => $tao->histograms[$ttInd],
                     'file_id' => $this->field ('id')
                 ));
@@ -1429,6 +1438,87 @@ class Job extends AppModel {
 
         // BADNESS ENDS.
 
+        $nbase = $opts['web_uri_path'] . sprintf ("%s_%s", $opts['file_id'], $opts['filename_base']);
+        $n = $nbase . '.' . $opts['file_ext'];
+        $fn = $opts['webroot'] . $nbase;
+        
+        $this->_addToStatus("Saving temporothermal graph to $n");
+        
+        \ttkpl\ttkplPlot::__export ($plot, $fn, $opts['all_ext']);
+        
+        $plot->close();
+
+        return (file_exists ($fn . '.' . $opts['file_ext'])) ? $n : false;
+
+    }
+    /**
+     * This most definitely needs refactoring into ttkpl at some point!
+     * @param array $arrOpts string indexed array of options to overide the defaults
+     */
+    function _draw_temporothermal_histogram_graph ($arrOpts = null) {
+        $opts = array_merge ($this->_graphDefaults(), array (
+            'filename_base' => 'temporothermal_histogram',
+            'temporothermal' => null,
+            'histogram' => null
+        ), $arrOpts);
+
+        // WARNING: FOLLOWING LIFTED WHOLESALE FROM DEV WORK AND IS PROBABLY INCONSISTENT
+
+
+
+
+        $plot = new \ttkpl\GNUPlot();
+        //$plot->reset();
+
+        // $plot->set ("size 2.5/5.0, 2.5/3.5");
+        // $plot->set ("origin 0.5/5.0, 0.5/3.5");
+
+
+        $plot->setSize( 1.0, 1.0 );
+
+        // $plot->set ("tmargin 0");
+        //$plot->set ("rmargin 10");
+        //$plot->set ("bmargin 30");
+        // $plot->set ("lmargin 0");
+
+        $tt = '';
+        $tt .= "\\n";
+        $tt .= $opts['histogram']->numPoints . " nominal days sampled at " . $opts['temporothermal']->chunkSize . "yr intervals over " . $opts['temporothermal']->stopDate->getYearsBp() . " to " . $opts['temporothermal']->startDate->getYearsBp() . "yrs. b.p.\\n";
+        $mrsp = round ($opts['temporothermal']->meanCorrection->source[1]->regRSqPc (), 2);
+        $tt .= "T at ".$opts['temporothermal']->location."/K = " . round ($opts['temporothermal']->meanCorrection->a, 2) . " * T(global anom.) + " . round ($opts['temporothermal']->meanCorrection->offset->a, 2) . " ($mrsp%)\\n";
+        $arsp = round ($opts['temporothermal']->ampCorrection->source[1]->regRSqPc (), 2);
+        $tt .= "A(p-p) at ".$opts['temporothermal']->location."/K = " . round ($opts['temporothermal']->ampCorrection->a, 2) . " * T(global anom.) + " . round ($opts['temporothermal']->ampCorrection->offset->a, 2) . " ($arsp%)\\n";
+        if (!empty ($opts['temporothermal']->burial)) $tt .= "Burial(z,Dh): " . $opts['temporothermal']->burial;
+
+        $plot->setTitle($tt);
+
+        $plot->set ("autoscale");
+        //$plot->set ("log y");
+        //$plot->set ("log y2");
+        //$plot->set ("xtics rotate by 330");
+        $plot->set ("nolog y");
+        $plot->setTics ("y", 'nomirror');
+        $plot->setTics ("x", 'nomirror');
+        $plot->set ('border 3 "black"');
+
+        $plot->setDimLabel ("x", "Bin temperature/C");
+        $plot->setDimLabel ("y", "# days at bin temperature");
+        $plot->set ("key left below");
+        // $plot->set ("key box");
+        $plot->set ("size ratio 0.5");
+
+
+        $deq = "# days";
+        $dH = new \ttkpl\PGData($deq);
+        foreach ($opts['histogram']->bins as $bi => $bc) {
+            $dH->addDataEntry( array(($opts['histogram']->labels[$bi] + \ttkpl\scalarFactory::kelvinOffset), $bc) );
+        }
+        
+        $plot->plotData( $dH, 'boxes', '1:2', 'x1y1', 'fs solid 0.5 lc rgb "#999999"');
+        
+        //$plot->setRange('x', $opts['temporothermal']->startDate->getYearsBp(), $opts['temporothermal']->stopDate->getYearsBp());
+
+        
         $nbase = $opts['web_uri_path'] . sprintf ("%s_%s", $opts['file_id'], $opts['filename_base']);
         $n = $nbase . '.' . $opts['file_ext'];
         $fn = $opts['webroot'] . $nbase;
