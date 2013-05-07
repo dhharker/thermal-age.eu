@@ -1052,6 +1052,19 @@ class Job extends AppModel {
         return pow (1 - $λ, $length - 1);
     }
     
+    function _latex_strings ($arrIn) {
+        if (!array ($arrIn)) return $arrIn;
+        $doFor = array ('description','desc','name');
+        foreach ($arrIn as $k => &$v) {
+            if (!is_array ($v) && in_array ($k, $doFor)) {
+                $v = self::XHTML2LaTeX ($v);
+            }
+            elseif (is_array ($v))
+                $v = $this->_latex_strings ($v);
+        }
+        return $arrIn;
+    }
+    
     function _generate_latex_pdf ($arrOpts = null) {
         
         $this->_addToStatus("Generating PDF file...");
@@ -1086,6 +1099,8 @@ class Job extends AppModel {
         // send rgb to view
         //$options['data']['rgbPath'] = $reportGraphBasepath;
         
+        // Parse HTML-like strings into LaTeX
+        $options = $this->_latex_strings($options);
         // Render LaTeX view
         $latex = $fnR ($options);
         
@@ -2090,6 +2105,216 @@ class Job extends AppModel {
         $this->_addToStatus("Collected $numCorpses corpses.");
         return $numCorpses;
     }
+    
+    
+    
+    // LaTeX preprocessing functions lifted from The Post Hole original website - it lives again!
+    static function XHTML2LaTeX ($xhtml) {
+        
+        $options = array (
+            // class=bigImage, w/cm
+            'cmImageWidth' => 12,
+            // class=smallImage, w/cm
+            'cmSImageWidth' => 4,
+            // Which side to float small images on if they lack a "float:" value in the style="" property
+            'SImageDefaultWrap' => 'right'
+        );
+        
+        // any tag pair (tag = \\1, inner = \\2)                "{<([a-z]+?)[^>]*>(.*?)</\\\\1>}"
+        // link (href = \\2, inner = \\3)                       "{<a\\s[^>]*href\\s*=\\s*(["'])(.*?)\\\\1[^>]*>(.*?)</a>}"
+        $from = array (
+            // Any excess whitespace
+            "{\s\s+}",
+            // % signs
+            "/[^%]%[^%]/",
+            // Big and small images
+            // Original and broken:
+                //"/<div\\s[^>]*class=\"(big|small)Image\">\\s[^>]*<img\\s[^>]*src=\"(\/(:[\w\d]+[\w\d-_]*?\/)*[\w\d-_]*\.(jpg|png))\"\\s[^>]*(:alt=\"[^\">]*\"\\s[^>]*)? ?\\/>\\s[^>]*(:<br \\/>\\s?[^>]*)? (.*?)(?!<\\/div>)<\\/div>/es",
+            // Special custom %%...[%%..]%% tags
+            // Flash embed
+            
+            // Bork--> "/<div\\s[^>]*class=\"(small)Image\"[^>]*\\s(?=style=\"[^\"]*\\sfloat:\\s*(l|r)(?=eft|ight)\\s[^\"]*)\">\\s*<img\\s[^>]*src=\"((?!\.\.).*?\.(png|jpg))\"\\s[^>]*>(.*?)<\\/div>/s",
+            // Match external links
+            "/<a\\s[^>]*href\\s*=\\s*([\"'])http([s]?):\\/\\/(.*?)\\1[^>]*>\\s*http(\\2):\/\/(\\3)\\s*<\/a>/se",
+            "/<a\\s[^>]*href\\s*=\\s*([\"'])http([s]?):\\/\\/(.*?)\\1[^>]*>(.*?)<\/a>/se",
+            // Match email links
+            "{<a\\s[^>]*href\\s*=\\s*([\"'])mailto:(.*?)\\1[^>]*>(.*?)</a>}",
+
+            // unlinked urls
+            "/[\s(](https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/",
+            // headings
+            self::srx ('h1'),
+            self::srx ('h2'),
+            self::srx ('h3'),
+            // Paragraphs
+            self::srx ('p'),
+            // Lists | Note the /s modifier for ul/ol allows . to include the \n included after the \items by the <li> match.
+            "/<ul[^>]*>/s",
+            "/<\/ul>/",
+            "/<ol[^>]*>/s",
+            "/<\/ol>/",
+            "/<li[^>]*>/s",
+            "/<\/li>/",
+            // Random formatting
+            self::srx ('address'),
+            self::srx ('pre'),
+            
+            self::srx ('em'),
+            self::srx ('i'),
+            self::srx ('strong'),
+            self::srx ('b'),
+            self::srx ('blockquote', 's'),
+            "/([\w\.,;:]+)\s*(<br \/>|<br>)/", // adding /s modifier would break this
+            // special chars o' doom
+            '/&([oO])slash;/',
+            '/&([A-Za-z])acute;/',
+            '/&([A-Za-z])cedil;/',
+            '/&([A-Za-z])uml;/',
+            '/&([A-Za-z])ring;/',
+            '/&nbsp;/',
+            '/&pound;/',
+            // no more entities after here!
+            
+            
+            '{&}',
+            '/\\\\&amp;/',
+            '/(\.\.\.|…)/',
+            '/(\s—\s|\s\\&ldash;\s|\s-\s)/',
+            '/£/',
+            
+            '/’/',
+            //'/(:[^\\\\])_/',
+            '/([^\\\\])_/',
+            // Unescape underscores in image paths
+            "/(includegraphics\[width=[0-9]+cm\]\{[^\}]+\})/e",
+             
+            
+            // quote marks... ruh roh!
+            //'/&quot;(\V+)&quot;/U',
+            
+            // KEEP LAST THING!
+            '/\\}\\s*?(\\n|\\r)+\\s*\\\\/s',
+            
+        );
+        $to = array (
+            // Replaces all extra whitespace. This must come before paragraphs.
+            ' ',
+            // % sign escaping
+            '\%',
+            // Deal with costom %%...[%%...]%% tags
+            // Flash > url notice:
+            // URLs in brackets after link text
+            // external
+            ' "\\url{" . tinyUrl::shrink ("http$2://$3", $db) . "}" ',
+            '"\\4 (\\url{" . tinyUrl::shrink ("http$2://$3", $db) . "})"',
+            // email
+            "\\3~(\\url{mailto:\$2})",
+
+            // unlinked URLs linked...
+            " \\url{\$1} ",
+            // Headings
+            "\n\\pagebreak[4]\n" . self::ltxs ('section'),
+            "\n\n" . self::ltx ('subsection*') . "\n",
+            "\n\n" . self::ltx ('subsubsection*') . "\n",
+            // Paragraphs
+            "\n\n\$1\n\n",
+            // Lists
+            self::ltenv_begin ('itemize'),
+            self::ltenv_end ('itemize'),
+            self::ltenv_begin ('enumerate'),
+            self::ltenv_end ('enumerate'),
+            self::ltx ('item{} ','','',''),
+            "\n",
+            
+            // Formatting
+            self::ltenv ('verbatim*'),
+            self::ltenv ('verbatim*'),
+            
+            self::ltx ('textit'),
+            self::ltx ('textit'),
+            self::ltx ('textbf'),
+            self::ltx ('textbf'),
+            self::ltenv ('quote'),
+            "\$1 \\newline{}",
+            '\\\$1{}',
+            "\'{\$1}",
+            "\c{\$1}",
+            "\\\"{\$1}",
+            "\\r{\$1}",
+            "~",
+            '\pounds{}',
+            
+            
+            '\&',
+            '\&',
+            
+            '\\ldots ',
+            ' -- ',
+            '\pounds{}',
+            
+            '\'',
+            "\$1\_",
+            // Unescape underscores in image paths
+            ' str_replace ("\\\\_","_","$1") ',
+            
+            //"\"\\1\"",
+            
+            // KEEP LAST THING
+            "}\n\\",
+            
+        );
+        $output = preg_replace ($from, $to, $xhtml);
+        
+        $output = strip_tags ($output);
+        
+        // Fix quotes (this breaks tags and stops them being removed so must be done after strip_tags)
+        $from = array (
+            '/\\\\&quot;(\V+?)\\\\&quot;/',
+            "/(\s?)\"(.*?)\"(\s?)/i",
+            "/\s'(.+?)'([\s.,:;-])/s",
+            
+            
+        );
+        $to = array (
+            "\"\\1\"",
+            "\$1``\$2''\$3",
+            " `\$1'\$2 ",
+            
+        );
+        $output = preg_replace ($from, $to, $output);
+        
+        return $output;
+    }
+    static function srx ($st, $mod='') {
+        return "/<{$st}[^>]*>(.*?)<\/$st>/$mod";
+    }
+    static function ltx ($cm,$a='$1',$oa='',$after="") {
+        $oa = (strlen ($oa)) ? "[$oa]" : '';
+        $a = (strlen ($a)) ? "{".$a."}" : '';
+        $after = (strlen ($after)) ? " $after\n" : '';
+        
+        return "\\{$cm}{$oa}{$a}{$after}";
+    }
+    static function ltxs ($cm,$a='$1',$oa='',$after="") {
+        // the below is nonesense. this function needs to return a /e modifier compatible eval()'able string for the below to work.
+        // $oa = (strlen ($oa) == 0) ? "[" . str_replace (array ("`", "'", "&quot;", '"'), '', $a) . "]" : '';
+        $oa = (strlen ($oa)) ? "[$oa]" : '';
+        $a = (strlen ($a)) ? "{".$a."}" : '';
+        $after = (strlen ($after)) ? " $after\n" : '';
+        
+        return "\\{$cm}{$oa}{$a}{$after}";
+    }
+    static function ltenv ($ev,$inside="\n\$1") {
+        return "\n\\begin{{$ev}}{$inside}\n\\end{{$ev}}\n\n";
+    }
+    static function ltenv_begin ($ev) {
+        return "\n\\begin{{$ev}}\n";
+    }
+    static function ltenv_end ($ev) {
+        return "\n\\end{{$ev}}\n";
+    }
+    
+    
     
 
 	var $validate = array(

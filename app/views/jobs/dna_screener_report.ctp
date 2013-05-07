@@ -49,6 +49,26 @@ else {
         </div>
     </div>
     
+ 
+    <div class="grid_12">
+        <div class="smartbox">
+            <h2 class="sbHeading">Full Report</h2>
+            <?php
+            if (!empty ($results['pdfs'])) {
+                foreach ($results['pdfs'] as $pdf) {
+                    echo $this->Html->link(
+                        $this->Icons->i('&#xe055;'). "&ensp; Download ".  basename($pdf),
+                        '/'.$pdf,
+                        array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false))
+                    ;
+                }
+            }
+            ?>
+
+        </div>
+    </div>
+
+
     <?php
     echo $this->Element ('jobs/publication_info', compact('job'));
     ?>
@@ -73,24 +93,9 @@ else {
                 })
             }(jQuery));
         </script>
-        
-    <div class="grid_12">
-        <div class="smartbox">
-            <h2 class="sbHeading">Full Report</h2>
-            <?php
-            if (!empty ($results['pdfs'])) {
-                foreach ($results['pdfs'] as $pdf) {
-                    echo $this->Html->link(
-                        $this->Icons->i('&#xe055;'). "&ensp; Download $pdf",
-                        '/'.$pdf,
-                        array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false))
-                    ;
-                }
-            }
-            ?>
-
-        </div>
-    </div>
+       
+    <?php 
+    /*
     <div class="grid_12">
         <div class="smartbox">
             <div class="expand-embeds">
@@ -114,8 +119,6 @@ else {
             </div>
         </div>
     </div>
-    <?php 
-    /*
 
     <div class="grid_7">
         <div class="smartbox">
