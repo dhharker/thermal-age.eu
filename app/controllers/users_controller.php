@@ -181,6 +181,9 @@ class UsersController extends AppController {
         if (!empty($this->data)) {
 			$this->User->create();
 			$this->User->set($this->data);
+            if (strlen ($this->data['User']['repeat_password']) < 8) {
+                $this->User->invalidate('password',"Password must be at least 8 characters long");
+            }
 			if (!!$this->data && $this->data['User']['password'] != $this->Auth->password($this->data['User']['repeat_password'])) {
                 $this->User->invalidate('password',"Passwords do not match");
             }
