@@ -24,7 +24,7 @@
         ));
 		echo $this->Form->input('url', array (
             'label' => 'URL for your staff info page or website',
-            'default' => 'http://'
+            'default' => ''
         ));
 		echo $this->Form->input('institution', array (
             'label' => 'Your academic/commercial context'
