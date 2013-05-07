@@ -94,8 +94,7 @@ else {
             }(jQuery));
         </script>
        
-    <?php 
-    /*
+
     <div class="grid_12">
         <div class="smartbox">
             <div class="expand-embeds">
@@ -132,8 +131,7 @@ else {
             </div>
         </div>
     </div>
-     * 
-     */
-
+     
+<?php
 }
 ?>

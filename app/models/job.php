@@ -1056,9 +1056,8 @@ class Job extends AppModel {
         if (!array ($arrIn)) return $arrIn;
         $doFor = array ('description','desc','name');
         foreach ($arrIn as $k => &$v) {
-            if (!is_array ($v) && in_array ($k, $doFor)) {
+            if (!is_array ($v) && in_array ($k, $doFor))
                 $v = self::XHTML2LaTeX ($v);
-            }
             elseif (is_array ($v))
                 $v = $this->_latex_strings ($v);
         }
@@ -1140,10 +1139,11 @@ class Job extends AppModel {
         }
         
         $gd = $this->_graphDefaults();
-        $outPath = $gd['webroot'].$gd['web_uri_path'].$options['filename'].'.pdf';
+        $theFileName = $gd['web_uri_path'].$options['filename'].'_'.crc32($pdfFile).'.pdf';
+        $outPath = $gd['webroot'].$theFileName;
         copy ($pdfFile, $outPath);
         
-        return array ('pdf_filename' => $gd['web_uri_path'].$options['filename'].'.pdf');
+        return array ('pdf_filename' => $theFileName);
         
         
         // Return array ( 'pdf_filename' => $pdfFile | 'error' = "error msg" )
