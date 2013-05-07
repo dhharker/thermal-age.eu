@@ -19,6 +19,9 @@ class BackgroundShell extends Shell {
 
             $Jobs = new JobsController;
             $Jobs->constructClasses();
+            
+            $Jobs->autoLayout = false;
+            $Jobs->autoRender = false;
 
             return $Jobs->_render ($arrOpts);
         };

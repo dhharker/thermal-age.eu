@@ -23,11 +23,11 @@ if (is_array ($report)) {
     }
     $graphs = array (
         'lambda' => array (
-            'title' => 'Distribution of DNA Fragment Lengths',
+            'title' => 'Distribution of DNA fragment lengths',
             'width_cm' => '12'
         ),
         'burial' => array (
-            'title' => 'Temperature and Rate of Reaction Over Time',
+            'title' => 'Temperature and rate of reaction over time',
             'width_cm' => '14'
         ),
         'histogram' => array (
@@ -65,6 +65,7 @@ if (!function_exists('opgraph')) {
 \usepackage{amssymb}
 \usepackage{cite}
 \usepackage{longtable}
+%\usepackage{harvard}
 \usepackage{graphicx}
 \usepackage{setspace}
 %uncomment for linked PDFs:
@@ -99,6 +100,8 @@ urlcolor=blue,%
 %\listoftables
 %\listoffigures
 %\clearpage
+
+
 
 \maketitle
 \begin{abstract}
@@ -136,7 +139,7 @@ urlcolor=blue,%
     of the EU SYNTHESYS\footnote{See \href{http://www.synthesys.info/}{http://www.synthesys.info/}.} project.
     
     The predictive model and web application software was developed by David Harker\footnote{Technical contact \href{mailto:david@wtds.co.uk}{david@wtds.co.uk}. Developed the algorithms and modelling software and created the web application. See \href{http://wtds.co.uk/?src=taeupdf}{http://wtds.co.uk/}.}
-    and Matthew Collins\footnote{Academic contact \href{mailto:matthew.collins@york.ac.uk}{matthew.collins@york.ac.uk}. Initial concept \& design of model, development guidance and data synthesis/analysis. See \href{https://www.york.ac.uk/archaeology/staff/academic-staff/matthew-collins/}{https://www.york.ac.uk/archaeology/staff/academic-staff/matthew-collins/}.}
+    and Matthew Collins\footnote{Academic contact \href{mailto:matthew.collins@york.ac.uk}{matthew.collins@york.ac.uk}. Initial concept\cite{oldcold} \& design of model, development guidance and data synthesis/analysis. See \href{https://www.york.ac.uk/archaeology/staff/academic-staff/matthew-collins/}{https://www.york.ac.uk/archaeology/staff/academic-staff/matthew-collins/}.}
     at BioArCh\footnote{BioArCh provides archaeologists with analytical facilities. BioArCh is a joint venture between the Departments of Biology, Archaeology, and Chemistry at the University of York. See \href{http://www.york.ac.uk/palaeo/facilities/bioarch/}{http://www.york.ac.uk/palaeo/facilities/bioarch/}.}, 
     University of York\footnote{See \href{http://www.york.ac.uk/}{http://www.york.ac.uk/}}.
     
@@ -488,7 +491,7 @@ would incur the same $\lambda$ value as the specimen has done.
 As well as being $k\times{}t$, $\lambda$ is also the probability that any single bond between the
 base pairs of a DNA molecule will have broken. It follows that the probability of the bond \textit{not}
 having broken is $1-\lambda$ and the probability of a fragment of DNA of length $l$ having survived
-is given as:
+is then:
 $$
 P(l)\,=\,(1-\lambda)^{l-1}
 $$
@@ -508,24 +511,56 @@ opgraph('lambda', $graphs, $drawGraphs);
 
 \section{Temperature}
 
+The thermal-age.eu model works by correcting the global average temperature and temperature amplitude 
+from \cite{bintanja} against geolocal estimates of ``modern'' (pre-industrial), mid-holocene and last
+glacial maximum temperatures from PMIP2 \cite{pmipii}.
 
+<?php
+opgraph('burial', $graphs, $drawGraphs);
+?>
 
+Figure \ref{fig:graph_burial} shows the average temperature, effective temperature and temperature
+variation both at the ground surface and below ground, if burial has been configured.
 
+The thermal age model samples up to 500 evenly spaced years from the interpolated temperature history
+of the specimen (this allows for a good compromise between accuracy and computational intensity).
+The temperature on each day of each of the sampled years is then binned and, once all days have been
+processed, the rate of reaction for each of the bin temperatures is calculated and this is used to
+arrive at the effective rate of reaction ($k$). Figure \ref{fig:graph_histogram} shows the number of
+days at each bin temperature used for the calculations in this report. The temperatures in this
+figure take into account burial where specified.
 
-
-
-
-
-
-
+<?php
+opgraph('histogram', $graphs, $drawGraphs);
+?>
 
 
 
 \appendix
 
 \chapter{About This Report}
-This report has been generated automatically using tools at \href{http://thermal-age.eu}{thermal-age.eu} including the \href{https://github.com/dhharker/ttkpl}{ttkpl} palaeotemperature estimation and kinetic calculation library.
+
+This report has been generated automatically by the 
+\href{http://thermal-age.eu}{http://thermal-age.eu} web application. The calculations were performed
+by TTKPL (Temporo-Thermal Kinetic Prediction Library). Both the web application and library are
+Open Source Software under the EU Public License and you can access the source code at
+\url{https://github.com/dhharker/thermal-age.eu}
+and
+\url{https://github.com/dhharker/ttkpl}
+respectively. If you have noticed an error or would like to contribute an improvement then please
+create an issue or submit a pull request in the relevant github repository (above).
+
+\section{Third Party Datasets Used}
+
+The thermal age model makes use of several third party datasets and web based data sources; 
 
 
+
+\section{Terms \& Conditions of Use}
+
+
+
+\bibliographystyle{plain}
+\bibliography{rptbib}
 
 \end{document}

@@ -1077,7 +1077,7 @@ class Job extends AppModel {
         $tmpDir = $this->_makeJobTmpDir() . DS;
         if ($tmpDir == false) return array ('error' => 'Couldn\'t create/access tmp folder');
         $pkgDir = APP.'vendors'.DS.'latex'.DS;
-        $rptDir = APP.'webroot/reports/';
+        $rptDir = APP.'webroot/reports/'.$this->id.'/';
         $baseFile = sprintf ('%s%s.',$tmpDir,$options['filename']);
         $texFile = $baseFile . 'tex';
         $pdfFile = $baseFile . 'pdf';
@@ -1108,17 +1108,27 @@ class Job extends AppModel {
         
         // output tex to file
         file_put_contents ($texFile, $latex);
-        
+        $nDone = 0;
         while ($options['latex_runs'] > 0) {
             $last_run_output = shell_exec("cd \"$tmpDir\" && pdflatex \"$texFile\"");
             if (!file_exists ($pdfFile)) {
                 $this->_addToStatus("Error generating PDF report: " . $last_run_output);
                 return array ('error' => 'pdflatex failed', 'details' => $last_run_output);
             }
+            else
+                $nDone++;
+            if ($nDone == 1) {
+                $this->_addToStatus("Processing bibliography...");
+                $last_run_output = shell_exec("cd \"$tmpDir\" && bibtex \"".preg_replace ('/\.tex$/','.aux',$texFile)."\"");
+            }
             $options['latex_runs']--;
         }
         
-        return array ('pdf_filename' => $pdfFile);
+        $gd = $this->_graphDefaults();
+        $outPath = $gd['webroot'].$gd['web_uri_path'].$options['filename'].'.pdf';
+        copy ($pdfFile, $outPath);
+        
+        return array ('pdf_filename' => $gd['web_uri_path'].$options['filename'].'.pdf');
         
         
         // Return array ( 'pdf_filename' => $pdfFile | 'error' = "error msg" )
@@ -1315,8 +1325,19 @@ class Job extends AppModel {
             //file_put_contents($debug, print_r ($dbg, true));
         }
 
-
-
+        $this->_addToStatus("Generating report...");
+        $rptg = $this->_generate_dna_screener_pdf ($job_id);
+        if (!is_array ($rptg))
+            $this->_addToStatus ("PDF generation failed badly!");
+        elseif (isset ($rptg['pdf_filename'])) {
+            $results['pdfs'] = array ($rptg['pdf_filename']);
+            $this->_addToStatus("Adding PDF refs to report...");
+            file_put_contents($report, serialize ($results));
+        }
+        elseif (isset ($rptg['error']))
+            $this->_addToStatus ("PDF generation failed: " . print_r ($rptg['error'], 1));
+        
+        
         $this->_clearJobTmpDir();
     }
 
@@ -1368,14 +1389,14 @@ class Job extends AppModel {
         $plot->set ("nolog y");
         $plot->setTics ("y", 'nomirror');
         $plot->setTics ("x", 'nomirror');
-        $plot->setTics ("y2", 'nomirror');
-        $plot->setTics ("x2", 'nomirror');
-        $plot->set ("grid noy2tics ytics");
-        $plot->set ("grid nox2tics xtics");
+        //$plot->setTics ("y2", 'nomirror');
+        //$plot->setTics ("x2", 'nomirror');
+        //$plot->set ("grid noy2tics ytics");
+        //$plot->set ("grid nox2tics xtics");
         $plot->set ('border 3 "black"');
 
-        $plot->setDimLabel ("x2", "Bin temperature/C");
-        $plot->setDimLabel ("y2", "# days at bin temperature");
+        //$plot->setDimLabel ("x2", "Bin temperature/C");
+        //$plot->setDimLabel ("y2", "# days at bin temperature");
         $plot->setDimLabel ("x", "Years b.p.");
         $plot->setDimLabel ("y", "Absolute or relative temperature/C at time");
         $plot->set ("key left below");
@@ -1383,11 +1404,11 @@ class Job extends AppModel {
         $plot->set ("size ratio 0.5");
 
 
-        $deq = "# days";
-        $dH = new \ttkpl\PGData($deq);
-        foreach ($opts['histogram']->bins as $bi => $bc) {
-            $dH->addDataEntry( array(($opts['histogram']->labels[$bi] + \ttkpl\scalarFactory::kelvinOffset), $bc) );
-        }
+        //$deq = "# days";
+        //$dH = new \ttkpl\PGData($deq);
+        //foreach ($opts['histogram']->bins as $bi => $bc) {
+        //    $dH->addDataEntry( array(($opts['histogram']->labels[$bi] + \ttkpl\scalarFactory::kelvinOffset), $bc) );
+        //}
         if (isset($opts['temporothermal']->twData['TGraph'])) {
             $dLS = new \ttkpl\PGData("Local temp range");
             $dLB = new \ttkpl\PGData("Local temp range (buried)");
@@ -1413,7 +1434,7 @@ class Job extends AppModel {
             $dga->addDataEntry( array($years, $opts['temporothermal']->temperatures->getGlobalMeanAnomalyAt($ypt)->getScalar()->getValue() ));
 
         }
-        $plot->plotData( $dH, 'boxes', '1:2', 'x2y2', 'fs solid 0.5 lc rgb "#999999"');
+        //$plot->plotData( $dH, 'boxes', '1:2', 'x2y2', 'fs solid 0.5 lc rgb "#999999"');
         if (isset($opts['temporothermal']->twData['TGraph'])) {
             $plot->set ("style fill solid 0.1 noborder");
             $plot->plotData( $dLS, 'filledcu', '1:2:3', 'x1y1');
@@ -1589,8 +1610,11 @@ class Job extends AppModel {
     }
 
     function _graphDefaults () {
+        $graphPath = 'reports/'.$this->id.'/';
+        if (!is_dir(WWW_ROOT.$graphPath))
+            mkdir (WWW_ROOT.$graphPath);
         return array(
-            'web_uri_path' => 'reports/', // with trailing/ not /leading slash <-- bad nerd poetry?
+            'web_uri_path' => $graphPath, // with trailing/ not /leading slash <-- bad nerd poetry?
             'filename_base' => 'user_graph',
             'file_ext' => 'svg', // this is returned for use somewhere
             'all_ext' => array ('png', 'svg', 'pdf'), // these are those which are actually generated (should include above!)
