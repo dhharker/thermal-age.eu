@@ -1,5 +1,7 @@
 <div class="grid_7"><div class="smartbox">
-<h1>Login</h1>
+
+
+<h1 class="sbHeading">Login</h1>
 
 <?php echo $this->Form->create  ('User', array('url' => $this->here, 'class' => 'ui-corner-all', 'style' => "margin: 1em")); ?>
 
@@ -12,13 +14,16 @@
     'placeholder' => '',
     'value' => ''
 ));?>
-<?= $this->Form->submit("Login");?>
+<?= $this->Form->submit("Login", array (
+    'class' => 'fg-button cta-button ui-state-default'
+));?>
 
 <?php echo $this->Form->end(); ?>
 
 </div></div>
-<div class="grid_5"><div class="smartbox">
-<h2>External</h2>
+<div class="grid_5">
+<div class="smartbox">
+<h2 class="sbHeading">External</h2>
 <ul>
 
 <?php
@@ -40,4 +45,16 @@ echo $this->Html->link ($this->Html->image('oauth_google_red_large.png', array (
 ?>
 </li>
 </ul>
-</div></div>
+</div>
+<br />
+<div class="smartbox">
+<h2 class="sbHeading">Create Account</h2>
+<?= $this->Html->link("Sign Up", array (
+    'action' => 'signup'
+), array (
+    'class' => 'fg-button ui-state-default ui-corner-all cta-button',
+    
+));?>
+    </div>
+
+</div>

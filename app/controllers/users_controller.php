@@ -6,7 +6,7 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow(array ('login','oauth'));
+        $this->Auth->allow(array ('login','oauth','signup'));
     }
         
     function login() {
@@ -27,7 +27,9 @@ class UsersController extends AppController {
     }
     
     function profile () {
-        $this->redirect(array ('action' => 'dashboard'));
+        //$this->redirect(array ('action' => 'dashboard'));
+        $user = $this->Auth->user();
+        $this->set(compact('user'));
     }
     
     function dashboard () {
@@ -163,6 +165,7 @@ class UsersController extends AppController {
 	}
 
 	function add() {
+        $this->redirect(array ('action' => 'dashboard'));return;
 		if (!empty($this->data)) {
 			$this->User->create();
 			if ($this->User->save($this->data)) {
@@ -173,11 +176,32 @@ class UsersController extends AppController {
 			}
 		}
 	}
-
+    
+    function signup () {
+        if (!empty($this->data)) {
+			$this->User->create();
+			$this->User->set($this->data);
+			if (!!$this->data && $this->data['User']['password'] != $this->Auth->password($this->data['User']['repeat_password'])) {
+                $this->User->invalidate('password',"Passwords do not match");
+            }
+            if ($this->User->validates()) {
+                $this->User->save();
+                $this->Session->setFlash(__('Your account has been created', true));
+                $this->redirect(array('action' => 'login'));
+			} else {
+				$this->Session->setFlash(__('One or more errors. Please, try again.', true));
+			}
+		}
+    }
+    
 	function edit($id = null) {
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid user', true));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'dashboard'));
+		}
+		if (!$id && empty($this->data)) {
+			$this->Session->setFlash(__('Invalid user', true));
+			$this->redirect(array('action' => 'dashboard'));
 		}
 		if (!empty($this->data)) {
 			if ($this->User->save($this->data)) {
@@ -193,6 +217,7 @@ class UsersController extends AppController {
 	}
 
 	function delete($id = null) {
+        $this->redirect(array ('action' => 'dashboard'));return;
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for user', true));
 			$this->redirect(array('action'=>'index'));
