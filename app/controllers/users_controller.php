@@ -11,7 +11,7 @@ class UsersController extends AppController {
         
     function login() {
         if ($this->Session->check('Auth.User')) {
-            $this->redirect(array ('action' => 'profile'));
+            $this->redirect(array ('action' => 'dashboard'));
         }
         $of = $this->Session->read('oauth.fail');
         if (is_array($of)) {
