@@ -20,6 +20,22 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+    // Load secrets
+    $path_parts = pathinfo(__FILE__);
+    $secretsPath = $path_parts['dirname'].DS.'secrets.php';
+    if (file_exists ($secretsPath))
+        include ($secretsPath);
+    else {
+        class Secrets {
+            static function okToStart () {
+                die ("Rename /app/config/secrets.php.default to secrets.php and put the secret values in it.");
+            }
+        }
+    }
+    Secrets::okToStart();
+
+
+
 /**
  * CakePHP Debug Level:
  *
@@ -202,12 +218,12 @@
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'g2D3FKo;L8g7p4SnXZ0XC8C9BVaswJ9KeKL8;g;;f;9h8L1V,V J UFD20Z3Ztghaoksmvc');
+	Configure::write('Security.salt', Secrets::config_security_salt);
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '60286Y800210138643867740723');
+	Configure::write('Security.cipherSeed', Secrets::config_security_cipher_seed);
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).

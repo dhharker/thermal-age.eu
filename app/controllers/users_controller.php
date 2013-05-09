@@ -64,8 +64,8 @@ class UsersController extends AppController {
             'callback'
         ), true);
         
-	$client->client_id = '642707952741.apps.googleusercontent.com';
-	$client->client_secret = 'QCeN-NpJIOTqDy3dPVTANaDW';
+	$client->client_id = Secrets::google_client_id;
+	$client->client_secret = Secrets::google_client_secret;
         
         return $client;
     }
