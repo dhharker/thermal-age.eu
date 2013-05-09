@@ -1085,9 +1085,9 @@ HAX;
         echo $csv;
     }
     function _prepareSpreadsheetDownload () {
-
-        //echo debug ($this->Wizard->read ('')); die();
-
+        
+        $this->set('hideCopyFromControls', true);
+        
         // @TODO is this redundant?!
         $this->loadModel('Soil');
         $soils = array_merge (array ('0' => ' '), $this->Soil->find('list', array (
@@ -1115,7 +1115,7 @@ HAX;
 
     function _prepareReview () {
         $this->set ('input', $this->Wizard->read());
-
+        $this->set ('hideCopyFromControls', true);
         $sr = $this->Wizard->read('set_review');
         if ($sr) {
             $this->data['Job'] = $sr['Job'];
