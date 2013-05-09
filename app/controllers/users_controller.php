@@ -73,7 +73,7 @@ class UsersController extends AppController {
     // Redirect user to google oauth login
     function oauth ($cbflag=null) {
         if ($this->Session->check('Auth.User')) {
-            $this->redirect(array ('action' => 'profile'));
+            $this->redirect(array ('action' => 'dashboard'));
         }
         
         $client = $this->_loadOAuth();
