@@ -53,13 +53,16 @@
                     </div>
             </div>
 
-
+            <?php
+            /*
             <div class="grid_11 alpha">
                 <?= $this->Form->input('Reaction.citation_id', array (
                     'style' => 'width: 100%',
 
                 )); ?>
             </div>
+            */
+            ?>
         </fieldset>
 	</fieldset>
 

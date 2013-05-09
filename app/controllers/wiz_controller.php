@@ -822,6 +822,10 @@ HAX;
             $this->Session->setFlash(__('Invalid Reaction ID!', true));
             return false;
         }
+        else {
+            unset ($this->data['Reaction']['k_sec']);
+            unset ($this->data['Reaction']['ea_kj_per_mol']);
+        }
         return true;
         
     }
