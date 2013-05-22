@@ -457,7 +457,7 @@ The following table summarises the output of the model for this specific sample.
     Effective Rate          & $k$               & $<?=sprintf('%0.2E', $r['k (sec)'])?>$    & $\text{mol}\,\cdot\,\text{sec}^{-1}$      \\ 
                             &                   & $<?=sprintf('%0.2E', $r['k (yr)'])?>$     & $\text{mol}\,\cdot\,\text{year}^{-1}$     \\ \hline
     Effective Temperature   & $T_{\text{eff}}$  & $<?=sprintf('%0.1f', $r['Teff'])?>$       & $^\circ{}C$                               \\ \hline
-    Thermal Age             & $T_{\text{eff}}$  & $<?=sprintf('%d',$r['Thermal age'])?>$    & $10^\circ$C Thermal Years                 \\ \hline
+    Thermal Age             & $C$               & $<?=sprintf('%d',$r['Thermal age'])?>$    & $10^\circ$C Thermal Years                 \\ \hline
     
     \end{tabular}
 \end{center}
