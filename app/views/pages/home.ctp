@@ -22,7 +22,7 @@
                     If you know a little bit about the conditions a bone was buried in, how old it is and where in the world it came from then why not see how well the DNA could be preserved?
                 </p>
                 <?php echo $this->Html->link(
-                        $this->Icons->i('&#xe009;') . " &ensp;Start the DNA Screening Wizard!",
+                        $this->Icons->i('&#xe009;') . " &ensp;Start the Screening Wizard!",
                         array ('controller' => 'wiz', 'action' => 'dna_survival_screening_tool'),
                         array('class' => 'fg-button ui-state-default ui-corner-all cta-button', 'escape' => false)); ?>
             </div>
