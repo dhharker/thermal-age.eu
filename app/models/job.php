@@ -1763,8 +1763,8 @@ class Job extends AppModel {
             $this->pid = posix_getpid ();
             if (file_exists($this->bg['pid'])) {
                 $exPid = file_get_contents ($this->bg['pid']);
-                if (!empty ($exPid)) {
-                    $this->_addToStatus("Oops, Job $id is already being processed by process $exPid");
+                if (!empty ($exPid) && $this->bgpIsRunning($exPid)) {
+                    $this->_addToStatus("Oops, Job $id is already being processed by process $exPid and that process is still running.");
                     return false;
                 }
             }
