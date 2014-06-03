@@ -12,8 +12,8 @@ class JobsController extends AppController {
         if (Configure::read('debug') == 0) {
             $this->Session->setFlash ("Unsafe re-run not allowed in production.");
             $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
+            return;
         }
-        return;
         $job = $this->Job->read(null,$job_id);
         if (!$job) {
             $this->Session->setFlash ("Job not found.");
