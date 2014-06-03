@@ -129,7 +129,10 @@ class Job extends AppModel {
             
             $this->read (null, $next['Job']['id']);
 
-            $this->_startProcessing();
+            if ($this->_startProcessing() !== true) {
+                $this->_addToStatus ("Didn't start processing {$next['Job']['id']}.\n");
+                return $this->_forkToBackground ();
+            }
             
             $input = unserialize ($this->field('data'));
             
@@ -1758,6 +1761,13 @@ class Job extends AppModel {
             foreach (array ('pid', 'status','percent') as $f)
                 $this->bg[$f] = $this->bgpGetJobFileName($f);
             $this->pid = posix_getpid ();
+            if (file_exists($this->bg['pid'])) {
+                $exPid = file_get_contents ($this->bg['pid']);
+                if (!empty ($exPid)) {
+                    $this->_addToStatus("Oops, Job $id is already being processed by process $exPid");
+                    return false;
+                }
+            }
             file_put_contents($this->bg['pid'], $this->pid);
             if (!file_exists($this->bg['status'])   || $forceReload === true)     file_put_contents($this->bg['status'],    '');
             if (!file_exists($this->bg['percent'])  || $forceReload === true)     file_put_contents($this->bg['percent'],   '0');
@@ -1812,13 +1822,34 @@ class Job extends AppModel {
         $fmsg = sprintf("%f %d %s\n", microtime (true), $this->pid, $message);
         if (PHP_SAPI == 'cli') echo $fmsg;
         if (!empty ($this->bg) && !empty ($this->bg['status']) && file_exists ($this->bg['status'])) {
-            // @TODO rewrite this to append to file properly rather than this abomination!
-            $fh = fopen($this->bg['status'],'a');
-            fwrite($fh, $fmsg);
-            fclose ($fh);
+            /**
+             * This writes more efficiently to the END of the file, but only for debugging use
+             */
+//            $fh = fopen($this->bg['status'],'a');
+//            fwrite($fh, $fmsg);
+//            fclose ($fh);
+            $this->_prependToFile($fmsg, $this->bg['status']);
+            
         }
         return false;
     }
+    
+    /**
+     * Convenience; prepend to file a bit more efficiently.
+     * @param type $string
+     * @param type $filename
+     */
+    function _prependToFile ($string, $filename) {
+        $context = stream_context_create();
+        $fp = fopen($filename, 'r', 1, $context);
+        $tmpname = md5($string);
+        file_put_contents($tmpname, $string);
+        file_put_contents($tmpname, $fp, FILE_APPEND);
+        fclose($fp);
+        unlink($filename);
+        rename($tmpname, $filename);
+    }
+    
     /**
      * 
      * @param int $percent_complete save percentage completeness of this job id to status file
