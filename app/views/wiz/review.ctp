@@ -103,7 +103,7 @@ $convert = array ( // !!! is in format step -> field NOT stop -> model -> field
             if (preg_match_all ('/%%(([a-z0-9_]+)\.([a-z0-9_]+))%%/i', $frag, $m, PREG_SET_ORDER) > 0) {
                 $op = true;
                 foreach ($m as $f) {
-                    $v = (isset ($convert[$stepName])
+                    @$v = (isset ($convert[$stepName])
                             && isset ($convert[$stepName][$f[3]])
                             && is_callable($convert[$stepName][$f[3]])) ?
                         $convert[$stepName][$f[3]]($models[$f[2]][$f[3]]) : $models[$f[2]][$f[3]];
