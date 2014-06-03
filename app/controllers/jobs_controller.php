@@ -19,7 +19,7 @@ class JobsController extends AppController {
             $this->Session->setFlash ("Job not found.");
             $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
         }
-        elseif (!$this->authoriseWrite ('Job',$id)) {
+        elseif (!$this->authoriseWrite ('Job',$job['Job']['id'])) {
             $this->Session->setFlash ("Verboten!");
             $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
         }
@@ -29,8 +29,8 @@ class JobsController extends AppController {
             $rm = array ('status','percent','report');
             foreach ($rm as $rmf) {
                 $file = $this->Job->bgpGetJobFileName($rmf,$job['Job']['id']);
-                if (file_exists ($file));
-                unlink ($file);
+                if (file_exists ($file))
+                    unlink ($file);
             }
             $this->redirect (array ('controller' => 'jobs', 'action' => 'status', $job['Job']['id']));
         }
