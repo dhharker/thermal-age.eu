@@ -88,6 +88,12 @@ class JobsController extends AppController {
             )
         ));
         
+        // Occasionally, batched jobs will just stop randomly for some reason.
+        // The following works around said feature.
+        if ($numProcs['queue'] > 0 && $numProcs['running'] < $this->Job->maxThreads) {
+            $this->Job->tryProcessNext();
+        }
+        
         $jobbage = array (&$running, &$queue);
         foreach ($jobbage as &$jobs) {
             if (is_array ($jobs))
