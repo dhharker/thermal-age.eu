@@ -69,7 +69,7 @@ class Spreadsheet extends AppModel {
                 $xplRows[1][] = "4";
         }
 
-        $heads[] = "Year Deposited (b.p)";
+        $heads[] = "Year Deposited (b.p.)";
             $xplRows[0][] = "5205";
                 $xplNotes[0] .= "Ötzi died around 3255BC, which is 5205 years before 'present' (i.e. before 1950 AD). ";
             $xplRows[1][] = "1000";
