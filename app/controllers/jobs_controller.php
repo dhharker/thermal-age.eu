@@ -8,6 +8,33 @@ class JobsController extends AppController {
         $this->Auth->allow(array('system', 'published', 'report'));
     }
     
+    function rerun ($job_id) {
+        if (Configure::read('debug') == 0) {
+            $this->Session->setFlash ("Unsafe re-run not allowed in production.");
+            $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
+        }
+        return;
+        $job = $this->Job->read(null,$job_id);
+        if (!$job) {
+            $this->Session->setFlash ("Job not found.");
+            $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
+        }
+        elseif (!$this->authoriseWrite ('Job',$id)) {
+            $this->Session->setFlash ("Verboten!");
+            $this->redirect (array ('controller' => 'users', 'action' => 'dashboard'));
+        }
+        else {
+            $this->Job->id = $job['Job']['id'];
+            $this->Job->saveField('status','0');
+            $rm = array ('status','percent','report');
+            foreach ($rm as $rmf) {
+                $file = $this->Job->bgpGetJobFileName($rmf,$job['Job']['id']);
+                if (file_exists ($file));
+                unlink ($file);
+            }
+            $this->redirect (array ('controller' => 'jobs', 'action' => 'status', $job['Job']['id']));
+        }
+    }
     
     // System status, ax fn
     function system ($mod = null) {
