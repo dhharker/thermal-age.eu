@@ -273,6 +273,7 @@ class Job extends AppModel {
             }
             else {
                 $this->_addToStatus("Skipping temporothermal with zero timerange.");
+//                $this->_addToStatus(print_r($args,true));die('');
             }
         }
 
@@ -501,6 +502,9 @@ class Job extends AppModel {
                     //$parsed[] = $runIt;
                     $stime = microtime(1);
                     //print_r ($args['unParsed'][$running]);
+//                    $this->_addToStatus("Args Parsed" . print_r ($args['parsed'], true));
+//                    $this->_addToStatus("Args Unparsed" . print_r ($args['unparsed'], true));
+//                    die();
 
                     $res = $this->_task_thermal_age_processor($runIt);
 
@@ -726,7 +730,9 @@ class Job extends AppModel {
         
         
         // load csv file
-        
+        $toSlug = function ($title) {
+            return strtolower (Inflector::slug(str_replace (".","",$title)));
+        };
         $orig_csv_path = @isset ($args['spreadsheet_csv']['Spreadsheet']['filename']) ? $args['spreadsheet_csv']['Spreadsheet']['filename'] : false;
         if (file_exists($orig_csv_path)) {
             $this->_addToStatus(basename($orig_csv_path) . " exists. Trying to open it...");
@@ -734,20 +740,23 @@ class Job extends AppModel {
             $this->_addToStatus("Headers found: " . implode ("|", $cp->titles));
             
             // Columns which might be missing in place of "human readable" alternatives which me must parse into these "proper" cols
-            $addCols = array ('Year Analysed (AD)', 'Year Deposited (b.p.)');
-            foreach ($addCols as $cn)
-                if ($cp->addColumn($cn) !== false)
-                    $this->_addToStatus ("Added missing column '$cn' to sheet.");
             
             
             // slug  (-and then detect headers (not all are required)-)
             $s2e = array ();
             foreach ($cp->titles as $title)
-                $s2e[strtolower (Inflector::slug(str_replace (".","",$title)))] = $title;
+                $s2e[$toSlug($title)] = $title;
             
-            
-            //$this->_addToStatus(print_r ($s2e, true));
+            $addCols = array ('Year Analysed (AD)', 'Year Deposited (b.p.)');
+            foreach ($addCols as $cn)
+                if (!in_array ($s2e, $toSlug($cn)) && $cp->addColumn($cn) !== false)
+                    $this->_addToStatus ("Added missing column '$cn' to sheet.");
+//            $this->_addToStatus("GCDBGD1: ".print_r ($cp->debugDump(), true));
 
+            $s2e = array ();
+            foreach ($cp->titles as $title)
+                $s2e[$toSlug($title)] = $title;
+            
             // count soil layer col sets
             $sKeys = array_keys ($s2e);
             $SLCnum = 0;
@@ -822,16 +831,53 @@ class Job extends AppModel {
                 
                 // find any of our "parse me more first" columns and parse them first
                 $this->_addToStatus("Pre-parsing any human-readable columns...");
-                // (for each new val, need to set $row for following logic and setColumn to save back to sheet
-                if (isset ($s2e['hr_ya_ad']) && !empty ($row[$cp->getColumn($s2e['hr_ya_ad'])]) && empty ($row[$cp->getColumn($s2e['year_analysed_ad'])])) {
-                    $row[$cp->getColumn($s2e['year_analysed_ad'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_ya_ad'])], 'ad');
-                    $cp->setColumn($s2e['year_analysed_ad'], $row[$cp->getColumn($s2e['year_analysed_ad'])]);
+                
+                
+                $hrYears = array ('analysed', 'excavated', 'deposited');
+                $hrScales = array ('ad' => array ('ad', 'ad2bp'), 'bc' => array ('(?:cal)?\s*BC', 'bc2bp'));
+                foreach ($hrYears as $hry) {
+                    $mrColName = "year_{$hry}_bp";
+                    if (!isset ($s2e[$mrColName])) {
+                        $rv = $cp->addColumn ($mrColName);
+                        $this->_addToStatus("Added column $mrColName ($rv)");
+                        $s2e[$mrColName] = $mrColName;
+                    }
                 }
-                if (isset ($s2e['hr_yd_bp']) && !empty ($row[$cp->getColumn($s2e['hr_yd_bp'])]) && empty ($row[$cp->getColumn($s2e['year_deposited_bp'])])) {
-                    $row[$cp->getColumn($s2e['year_deposited_bp'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_yd_bp'])], '(?:cal)?\s*BC', 'bc2bp');
-                    $cp->setColumn($s2e['year_deposited_bp'], $row[$cp->getColumn($s2e['year_deposited_bp'])]);
+                foreach ($hrYears as $hry) foreach ($hrScales as $suffix => $suffixPatCon) {
+                    $hrColName = "year_{$hry}_{$suffix}";
+                    $mrColName = "year_{$hry}_bp";
+//                    $this->_addToStatus("**looking for $hrColName");
+                    
+//                    $this->_addToStatus("  exists? " . (!!isset ($s2e[$hrColName]) ? 'yes' : 'no'));
+//                    if (!empty($s2e[$hrColName])) $this->_addToStatus("  !empty " . (!empty ($row[$cp->getColumn($s2e[$hrColName])]) ? 'yes' : 'no'));
+//                    if (!empty($s2e[$hrColName])) $this->_addToStatus("  mrCol empty? = " . $row[$cp->getColumn($s2e[$mrColName])] );
+                    
+                    
+                    
+                    if (isset ($s2e[$hrColName]) && !empty ($row[$cp->getColumn($s2e[$hrColName])]) && empty ($row[$cp->getColumn($s2e[$mrColName])])) {
+                        $valBp = $this->_hrToOneDate ($row[$cp->getColumn($s2e[$hrColName])], $suffixPatCon[0], $suffixPatCon[1]);
+                        $row[$cp->getColumn($s2e[$mrColName])] = $valBp;
+                        $cp->setColumn($s2e[$mrColName], $valBp);
+                        $this->_addToStatus("Set col: $mrColName to $valBp (based on:".$row[$cp->getColumn($s2e[$hrColName])].")");
+                    }
+//                    $this->_addToStatus("\$row = ".print_r (array_combine(array_keys($s2e),$row), true));
                 }
                 
+//                // (for each new val, need to set $row for following logic and setColumn to save back to sheet
+//                if (isset ($s2e['hr_ya_ad']) && !empty ($row[$cp->getColumn($s2e['hr_ya_ad'])]) && empty ($row[$cp->getColumn($s2e['year_analysed_ad'])])) {
+//                    $row[$cp->getColumn($s2e['year_analysed_ad'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_ya_ad'])], 'ad');
+//                    $cp->setColumn($s2e['year_analysed_ad'], $row[$cp->getColumn($s2e['year_analysed_ad'])]);
+//                    
+//                    $this->_addToStatus("Set col: {$s2e['year_analysed_ad']} to " . $row[$cp->getColumn($s2e['year_analysed_ad'])]);
+//                }
+//                if (isset ($s2e['hr_yd_bp']) && !empty ($row[$cp->getColumn($s2e['hr_yd_bp'])]) && empty ($row[$cp->getColumn($s2e['year_deposited_bp'])])) {
+//                    $row[$cp->getColumn($s2e['year_deposited_bp'])] = $this->_hrToOneDate ($row[$cp->getColumn($s2e['hr_yd_bp'])], '(?:cal)?\s*BC', 'bc2bp');
+//                    $cp->setColumn($s2e['year_deposited_bp'], $row[$cp->getColumn($s2e['year_deposited_bp'])]);
+//                    
+//                    $this->_addToStatus("Set col: {$s2e['year_deposited_bp']} to " . $row[$cp->getColumn($s2e['year_deposited_bp'])]);
+//                }
+                
+//                $this->_addToStatus("S2E Keys: ".implode(", ", array_keys($s2e)));
                 
                 
                 $this->_addToStatus("Finished pre-parsing.");
@@ -878,6 +924,19 @@ class Job extends AppModel {
                     
                     // deposition date
                     $me['specimen']['Temporothermal']['stopdate_ybp'] = $row[$cp->getColumn($s2e['year_deposited_bp'])];
+                    if (empty ($me['specimen']['Temporothermal']['stopdate_ybp'])) {
+                        $this->_addToStatus("Fatal error: couldn't parse year deposited bp. Ensure that the column heading in your input spreadsheet reads \"Year Deposited (b.p.)\" noting the \".\" after the \"p\".");
+                        exit(1);
+                    }
+//                    $this->_addToStatus("\$row = ".print_r (array_combine(array_keys($s2e),$row), true));
+//                    $this->_addToStatus("\$row = ".print_r ($row, true));
+//                    $this->_addToStatus("GC: ".$cp->getColumn($s2e['year_deposited_bp']));
+//                    $this->_addToStatus("GCDBGD2: ".print_r ($cp->debugDump(), true));
+                    //DBG
+//                    $this->_addToStatus("s/T/stop = ".$row[$cp->getColumn($s2e['year_deposited_bp'])]);
+//                    $this->_addToStatus("index = ".$cp->getColumn($s2e['year_deposited_bp']));
+//                    $this->_addToStatus("\$row = ".print_r($row,true));
+                    
                     
                     $me['burial']['Burial']['numLayers'] = 0;
                     if (!(isset ($row[$cp->getColumn($s2e['latitude_decimal'])]) && isset ($row[$cp->getColumn($s2e['longitude_decimal'])]) &&
@@ -972,6 +1031,8 @@ class Job extends AppModel {
                         
                     }
                     //print_r ($me); die();
+                    //DBG
+//                    $this->_addToStatus("\$me['specimen'] = ".print_r ($me['specimen'], true));
                     
 
                     
@@ -1696,7 +1757,8 @@ class Job extends AppModel {
 
             foreach (array ('pid', 'status','percent') as $f)
                 $this->bg[$f] = $this->bgpGetJobFileName($f);
-            file_put_contents($this->bg['pid'], posix_getpid ());
+            $this->pid = posix_getpid ();
+            file_put_contents($this->bg['pid'], $this->pid);
             if (!file_exists($this->bg['status'])   || $forceReload === true)     file_put_contents($this->bg['status'],    '');
             if (!file_exists($this->bg['percent'])  || $forceReload === true)     file_put_contents($this->bg['percent'],   '0');
             $this->_addToStatus("Starting processor for job $id");
@@ -1747,13 +1809,13 @@ class Job extends AppModel {
      * @return bool false if status file doesn't exist or can't be written else true
      */
     function _addToStatus ($message) {
-        $fmsg = sprintf("%f %s\n", microtime (true), $message);
+        $fmsg = sprintf("%f %d %s\n", microtime (true), $this->pid, $message);
         if (PHP_SAPI == 'cli') echo $fmsg;
         if (!empty ($this->bg) && !empty ($this->bg['status']) && file_exists ($this->bg['status'])) {
             // @TODO rewrite this to append to file properly rather than this abomination!
-            $st = file_get_contents ($this->bg['status']);
-            $st = $fmsg . $st;
-            return file_put_contents ($this->bg['status'], $st);
+            $fh = fopen($this->bg['status'],'a');
+            fwrite($fh, $fmsg);
+            fclose ($fh);
         }
         return false;
     }
