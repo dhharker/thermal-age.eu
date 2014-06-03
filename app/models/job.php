@@ -10,7 +10,7 @@ class Job extends AppModel {
 	var $name = 'Job';
 	var $displayField = 'title';
     var $statusCodes = array ('pending', 'running', 'finished', 'error', 'incomplete');
-
+    var $pid = null; // stores pid
     var $maxThreads = 2; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
     // The number of row·samples before the spreadsheet processor is eating all the RAM
@@ -1764,8 +1764,11 @@ class Job extends AppModel {
             if (file_exists($this->bg['pid'])) {
                 $exPid = file_get_contents ($this->bg['pid']);
                 if (!empty ($exPid) && $this->bgpIsRunning($exPid)) {
-                    $this->_addToStatus("Oops, Job $id is already being processed by process $exPid and that process is still running.");
-                    return false;
+                    usleep(500000); // wait for previous process to finish (when this process is resuming a batched job)
+                    if (!empty ($exPid) && $this->bgpIsRunning($exPid)) {
+                        $this->_addToStatus("Oops, Job $id is already being processed by process $exPid and that process is still running.");
+                        return false;
+                    }
                 }
             }
             file_put_contents($this->bg['pid'], $this->pid);
@@ -1846,8 +1849,8 @@ class Job extends AppModel {
         file_put_contents($tmpname, $string);
         file_put_contents($tmpname, $fp, FILE_APPEND);
         fclose($fp);
-        unlink($filename);
-        rename($tmpname, $filename);
+        copy($tmpname, $filename);
+        unlink($tmpname);
     }
     
     /**
@@ -2059,22 +2062,31 @@ class Job extends AppModel {
     function bgpGetStatusFileSince ($since = null) {
         $since = ($since === null) ? 1 : $since;
         $fn = $this->bgpGetJobFileName ('status');
-        if (!file_exists ($fn)) return false;
-        return file_get_contents($fn);
+        
+        // Wait for file to exist
+        $tries = 5;
+        while (!file_exists ($fn) && --$tries >= 0) { usleep(25000); }
+        if ($tries <= 0) return false;
+        //return file_get_contents ($fn);
         
         $handle = fopen ($fn, 'r');
+        $num_lines = 20;
         $op = '';
-        $old = false;
-        while (!feof ($handle) && !$old) {
-            $line = fgets ($handle, 4096);
-            if (preg_match ("/^(\d+?:(\.\d}))\s/", $line, $m) > 0) {
-                $ts = (float) $m[1];
-                if ($ts > $since)
-                    $op .= $line;
-                else
-                    $old = true;
-            }
-        }
+        while ($num_lines-- > 0)
+            $op .= fgets ($handle);
+        
+        
+//        $old = false;
+//        while (!feof ($handle) && !$old) {
+//            $line = fgets ($handle, 4096);
+//            if (preg_match ("/^([\d]+?:(\.[\d]+))\s/", $line, $m) > 0) {
+//                $ts = (float) $m[1];
+//                if ($ts > $since)
+//                    $op .= $line;
+//                else
+//                    $old = true;
+//            }
+//        }
         return (strlen ($op) == 0) ? false : $op;
     }
     /**
