@@ -1006,6 +1006,9 @@ img.profilePhoto {
 .objectList:last-child {
     border-bottom: none;
 }
+ul.objectList ul.objectList li:last-child {
+    border-bottom-width: 1px;
+}
 
 .resultBarInner {
     min-height: 75px;
