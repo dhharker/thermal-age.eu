@@ -621,7 +621,7 @@ class Job extends AppModel {
                     //die ($this->_addToStatus(print_r ($args['resume'], true)));
                     $args['resume']['rowsReported']++;
                     $stop = $args['resume']['rowsReported'] >= $args['resume']['rowsParsed'] ? true : false;
-                    if ($this->_stopIfRunningOutOfMemory()) $stop = true;
+                    //if ($this->_stopIfRunningOutOfMemory()) $stop = true;
                 }
                 $this->increaseJobPercentComplete('report');
             } while ($cp->next() && !$stop);
