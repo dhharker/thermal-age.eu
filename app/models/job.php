@@ -14,7 +14,7 @@ class Job extends AppModel {
     var $maxThreads = 2; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
     // The number of row·samples before the spreadsheet processor is eating all the RAM
-    var $criticalRowSampleThreshold = 7500; 
+    var $criticalRowSampleThreshold = 5000; 
     
     
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
@@ -1812,7 +1812,8 @@ class Job extends AppModel {
             if (file_exists($this->bg['pid'])) {
                 $exPid = file_get_contents ($this->bg['pid']);
                 if (!empty ($exPid) && $this->bgpIsRunning($exPid)) {
-                    usleep(500000); // wait for previous process to finish (when this process is resuming a batched job)
+                    usleep(500000 + rand(0,1000000)); // wait for previous process to finish (when this process is resuming a batched job)
+                    $exPid = file_get_contents ($this->bg['pid']);
                     if (!empty ($exPid) && $this->bgpIsRunning($exPid)) {
                         $this->_addToStatus("Oops, Job $id is already being processed by process $exPid and that process is still running.");
                         return false;
