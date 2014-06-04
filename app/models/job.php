@@ -1101,11 +1101,11 @@ class Job extends AppModel {
         $margin = $ff - $fraction_remaining_constituting_a_shortage;
         $stop = $margin < 0;
         if ($stop) {
-            $this->_addToStatus (sprintf("The server has started to run out of memory so this process will be replaced. %d%% RAM remaining. %d%% over-budget",$ff*100,$margin*-100));
+            $this->_addToStatus (sprintf("The server has started to run out of memory so this process will be replaced. %d%% remaining. %d%% over-budget",$ff*100,$margin*-100));
             sleep(self::preventRunawayDelaySecs);
         }
         else
-            $this->_addToStatus (sprintf("%d%% server RAM remaining. %d%% margin before fresh process spawn.",$ff*100,$margin*100));
+            $this->_addToStatus (sprintf("%d%% server memory remaining. %d%% margin before fresh process spawn.",$ff*100,$margin*100));
         return $stop;
     }
     
@@ -1113,7 +1113,7 @@ class Job extends AppModel {
         $si = $this->_getSystemMemInfo();
         if (!isset ($si['Mem']) || !isset ($si['Mem']['FractionFree'])) return 1;
         if (!isset ($si['Swap']) || !isset ($si['Swap']['FractionFree'])) return 1;
-        return ($si['Mem']['FractionFree'] + $si['Swap']['FractionFree']) / 2;
+        return ($si['Mem']['Free'] + $si['Swap']['Free']) / ($si['Mem']['Total'] + $si['Swap']['Total']);
     }
     
     /**
