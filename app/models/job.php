@@ -621,6 +621,7 @@ class Job extends AppModel {
                     //die ($this->_addToStatus(print_r ($args['resume'], true)));
                     $args['resume']['rowsReported']++;
                     $stop = $args['resume']['rowsReported'] >= $args['resume']['rowsParsed'] ? true : false;
+                    if ($this->_stopIfRunningOutOfMemory()) $stop = true;
                 }
                 $this->increaseJobPercentComplete('report');
             } while ($cp->next() && !$stop);
@@ -1061,6 +1062,7 @@ class Job extends AppModel {
                 if (isset ($args['resume']) && isset ($args['resume']['rowsParsed'])) {
                     $args['resume']['rowsParsed']++;
                     $dontStop = ($rowCount <= $rowsDonePreviously + $nPerBatch) ? true : false;
+                    if ($this->_stopIfRunningOutOfMemory()) $dontStop = false;
                 }
                 $this->increaseJobPercentComplete('parse');
             } while ($cp->next() && !!$dontStop);
@@ -1089,6 +1091,52 @@ class Job extends AppModel {
         return false;
 
 
+    }
+    /**
+     * @const int preventRunawayDelaySecs How long to sleep() before returning false
+     */
+    const preventRunawayDelaySecs = 15;
+    function _stopIfRunningOutOfMemory ($fraction_remaining_constituting_a_shortage = 0.18) {
+        $ff = $this->getFreeMemAll();
+        $margin = $ff - $fraction_remaining_constituting_a_shortage;
+        $stop = $margin < 0;
+        if ($stop) {
+            $this->_addToStatus (sprintf("The server has started to run out of memory so this process will be replaced. %d%% RAM remaining. %d%% over-budget",$ff*100,$margin*-100));
+            sleep(self::preventRunawayDelaySecs);
+        }
+        else
+            $this->_addToStatus (sprintf("%d%% server RAM remaining. %d%% margin before fresh process spawn.",$ff*100,$margin*100));
+        return $stop;
+    }
+    
+    function getFreeMemAll () {
+        $si = $this->_getSystemMemInfo();
+        if (!isset ($si['Mem']) || !isset ($si['Mem']['FractionFree'])) return 1;
+        if (!isset ($si['Swap']) || !isset ($si['Swap']['FractionFree'])) return 1;
+        return ($si['Mem']['FractionFree'] + $si['Swap']['FractionFree']) / 2;
+    }
+    
+    /**
+     * Get free RAM and swap
+     * @return array
+     */
+    function _getSystemMemInfo() {
+        $data = explode("\n", file_get_contents("/proc/meminfo"));
+        $memInfo = array();
+        foreach ($data as $line) {
+//            list($key, $val) = explode(":", $line);
+//            $meminfo[$key] = $val;
+            if (preg_match ('/^(Mem|Swap)(Total|Free):\s*(\d+)\s*kB$/',$line,$m) > 0) {
+                if (!is_array ($memInfo[$m[1]])) $memInfo[$m[1]] = array ();
+                if (!is_array ($memInfo[$m[1]][$m[2]])) $memInfo[$m[1]][$m[2]] = array ();
+                $memInfo[$m[1]][$m[2]] = $m[3];
+            }
+            foreach ($memInfo as $memType => &$sizes)
+                if (isset ($sizes['Free']) && isset ($sizes['Total']))
+                    $sizes['FractionFree'] = round ($sizes['Free'] / $sizes['Total'],2);
+        }
+        $this->_addToStatus("memInfo:".print_r($memInfo,true));
+        return $memInfo;
     }
     
     function _stripVerbal ($arrIn) {
