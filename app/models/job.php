@@ -335,7 +335,7 @@ class Job extends AppModel {
                 
                 $layerSoil = (!empty ($args['burial']['Soil'][$layerIndex])) ? $args['burial']['Soil'][$layerIndex] : false;
                 // Assume Dh will be set explicitly
-                $this->_addToStatus(print_r (compact ('layerSoil', 'layer'), 1));
+                //$this->_addToStatus(print_r (compact ('layerSoil', 'layer'), 1));
                 
                 // Get soil just from DB?
                 if (($layerSoil == false || empty ($layerSoil['thermal_diffusivity_m2_day'])) && isset ($layer['soil_id'])) {
@@ -1135,7 +1135,8 @@ class Job extends AppModel {
                 if (isset ($sizes['Free']) && isset ($sizes['Total']))
                     $sizes['FractionFree'] = round ($sizes['Free'] / $sizes['Total'],2);
         }
-        $this->_addToStatus("memInfo:".print_r($memInfo,true));
+        //
+        //$this->_addToStatus("memInfo:".print_r($memInfo,true));
         return $memInfo;
     }
     
