@@ -18,8 +18,10 @@ if ($jid == 0) {
 
 
 $show = false;
+$error = false;
 if (isset ($job['Job']['status']) && $job['Job']['status'] == 3) {
     $this->error (500, 'Error', "Unfortunately the job has crashed.");
+    $error = true;
 }
 elseif (!is_array ($results) || empty ($results['output_csv_url'])) {
     $this->error (500, 'Error', "Couldn't find results - job is probably one of not started, not finished or not successful.");
@@ -84,6 +86,15 @@ if (!!$show) {
             })
         }(jQuery));
     </script>
+    <div class="grid_12">
+        <div class="smartbox">
+            <p>
+                <?=@$status['statusText']?> 
+                You can download the debug log (contains output during processing) here:
+                <?=$this->Html->link('Download Job Status Log', array ('controller'=>'jobs','action'=>'report_files',$jid,'status'));?>.
+            </p>
+        </div>
+    </div>
     <?php
 }
 else {

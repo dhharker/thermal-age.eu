@@ -51,13 +51,31 @@ if (!isset ($editMode)) $editMode = false;
             'value' => date('Y-m-d', !empty ($job['Job']['published_date']) ? strtotime($job['Job']['published_date']) : time()+(60*60*24)),
         ));
         ?>
+        <br />
+        <span><?=$this->Icons->i('&#xe066;');?> Warning: Results cannot be unpublished after embargo date.</span>
+        
+        
     </div>
 
     <?php
-         echo $this->Form->submit ("Save",array ('class' => 'fg-button ui-state-default cta-button', 'style'=>'display: block; margin-left: auto; margin-right: auto;', 'div' => array ('style'=>'width: 100%; display: block;')));
+    echo $this->Form->submit ("Save",array ('class' => 'fg-button ui-state-default cta-button', 'style'=>'display: block; margin-left: auto; margin-right: auto;', 'div' => array ('style'=>'width: 100%; display: block;')));
     echo $this->Form->end();
     ?>
 </div>
+        <?php
+        if (!empty ($job['Job']['pub_ref'])) {
+            $jurls = "/pub/" . $job['Job']['pub_ref'];
+
+            $jurl = $this->Html->url ($jurls, true);
+            echo '<div data-det-field="data[Job][published]" data-det-val="1" class="ui-ish clearfix">';
+            echo '<div class="smartHr"></div>';
+            echo "<p>You can change your mind up until the embargo date. If the <em>Publish</em> box is ticked and the embargo date is in the past then this job is published forever. This URL will be the canonical, publicly accessible reference thereafter:";
+            echo $this->Html->link ($jurl, $jurl, array (
+                'style' => 'display: block; text-align: center; margin: .9em; font-size: large;'
+            ));
+            echo '</p></div>';
+        }
+        ?>
 <script type="text/javascript">
     (function ($) {
         $(document).ready (function () {
