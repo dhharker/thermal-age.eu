@@ -110,28 +110,41 @@ else {
         </div>
     </div>
 
-    <div class="grid_5">
+    <div class="grid_12">
         <div class="smartbox">
-            <div id="">
-                <pre><?=print_r ($results, true)?></pre>
-                <pre><?=print_r ($job, true)?></pre>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid_7">
-        <div class="smartbox">
-            <div id="">
-                <p>
-                    <?=@$status['statusText']?>
-                </p>
-                <p>
-                    <?=nl2br(@$status['statusFile'])?>
-                </p>
-            </div>
+            <p>
+                <?=@$status['statusText']?> Please download the PDF report above; reproducible copies of the graphs are attached.
+                You can download the debugging output (contains a bit more idea of what the model actually did to produce your numbers) here: 
+                <?=$this->Html->link('Download Job Status Log', array ('controller'=>'jobs','action'=>'report_files',$jid,'status'));?>.
+            </p>
         </div>
     </div>
      
 <?php
+
+/*
+<div class="grid_5">
+    <div class="smartbox">
+        <div id="">
+            <pre><?=print_r ($results, true)?></pre>
+            <pre><?=print_r ($job, true)?></pre>
+        </div>
+    </div>
+</div>
+
+<div class="grid_7">
+    <div class="smartbox">
+        <div id="">
+            <p>
+                <?=@$status['statusText']?>
+            </p>
+            <p>
+                <?=nl2br(@$status['statusFile'])?>
+            </p>
+        </div>
+    </div>
+</div>
+ */
+
 }
 ?>
