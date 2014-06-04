@@ -14,7 +14,7 @@ class Job extends AppModel {
     var $maxThreads = 2; // maximum number of concurrent bg processors at a time
     var $sleepyTime = 2; // number of seconds to wait before checking for new job and starting it
     // The number of row·samples before the spreadsheet processor is eating all the RAM
-    var $criticalRowSampleThreshold = 5000; 
+    var $criticalRowSampleThreshold = 3500; 
     
     
     private $jobDir = ''; // temporary folder for graph scratch, zipping etc.
