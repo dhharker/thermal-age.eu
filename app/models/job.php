@@ -1439,7 +1439,7 @@ class Job extends AppModel {
         
 
         $report = $this->bgpGetJobFileName('report');
-        $this->_addToStatus("Saving report to $report");
+        $this->_addToStatus("Saving report...");
         file_put_contents($report, serialize ($results));
         if (1) {
             //$debug = $this->bgpGetJobFileName('debug');
