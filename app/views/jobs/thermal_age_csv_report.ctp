@@ -86,6 +86,21 @@ if (!!$show) {
     </script>
     <?php
 }
+else {
+    ?>
+        
+    <div class="grid_12">
+        <div class="smartbox">
+            <p>
+                <?=@$status['statusText']?> 
+                You can download the debugging output (please include this if reporting a problem) here:
+                <?=$this->Html->link('Download Job Status Log', array ('controller'=>'jobs','action'=>'report_files',$jid,'status'));?>.
+            </p>
+        </div>
+    </div>
+    
+        <?php
+}
 ?>
 
 <div class="ui-helper-clearfix"></div>
