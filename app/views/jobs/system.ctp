@@ -5,6 +5,7 @@ if (is_array ($running)) {
     
     // Number and availability of processor threads
     echo '<li>'.$this->Icons->i('&#xe033;').' &ensp;Slots Available <span class="bigNumR">'.($numProcs['maxThreads'] - $numProcs['running']).'</span></li>';
+    echo '<li>'.$this->Icons->i('&#xe073;').' &ensp;Memory Use <span class="bigNumR">'.(round((1-$memFree)*100)).'%</span></li>';
     
     echo '<li>'.$this->Icons->i('&#xe026;').' &ensp;Jobs Running <span class="bigNumR">'.$numProcs['running'].'</span>';
         // Jobs which (should) be running
@@ -33,6 +34,7 @@ if (is_array ($running)) {
             echo "</ul>";
         }
     echo "</li>";
+    
 }
 ?>
 </ul>

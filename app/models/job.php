@@ -1127,8 +1127,8 @@ class Job extends AppModel {
 //            list($key, $val) = explode(":", $line);
 //            $meminfo[$key] = $val;
             if (preg_match ('/^(Mem|Swap)(Total|Free):\s*(\d+)\s*kB$/',$line,$m) > 0) {
-                if (!is_array ($memInfo[$m[1]])) $memInfo[$m[1]] = array ();
-                if (!is_array ($memInfo[$m[1]][$m[2]])) $memInfo[$m[1]][$m[2]] = array ();
+                if (!isset ($memInfo[$m[1]]) || !is_array ($memInfo[$m[1]])) $memInfo[$m[1]] = array ();
+                if (!isset ($memInfo[$m[1]][$m[2]]) || !is_array ($memInfo[$m[1]][$m[2]])) $memInfo[$m[1]][$m[2]] = array ();
                 $memInfo[$m[1]][$m[2]] = $m[3];
             }
             foreach ($memInfo as $memType => &$sizes)

@@ -102,8 +102,10 @@ class JobsController extends AppController {
                 }
         }
         
+        $memFree = $this->Job->getFreeMemAll();
+        
         // Handle header update info timestamps n stuff
-        $data = compact ('running', 'numProcs', 'queue');
+        $data = compact ('running', 'numProcs', 'queue', 'memFree');
         $sd = serialize($data);
         if ($this->Session->read ('Job.status.lastStatusData') !== $sd) {
             // data have changed
